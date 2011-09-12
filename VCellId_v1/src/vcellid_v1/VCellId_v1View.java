@@ -50,6 +50,16 @@ public class VCellId_v1View extends FrameView {
         }
         VCellId_v1App.getApplication().show(cellIdChooser);
     }
+     
+    @Action
+    public void showImageSetup() {
+        if (imageSetup == null) {
+            JFrame mainFrame = VCellId_v1App.getApplication().getMainFrame();
+            imageSetup = new ImageSetup(mainFrame,true);
+            imageSetup.setLocationRelativeTo(mainFrame);
+        }
+        VCellId_v1App.getApplication().show(imageSetup);
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -97,6 +107,8 @@ public class VCellId_v1View extends FrameView {
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         mainToolbar.add(jButton1);
 
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(vcellid_v1.VCellId_v1App.class).getContext().getActionMap(VCellId_v1View.class, this);
+        jButton2.setAction(actionMap.get("showImageSetup")); // NOI18N
         jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -104,6 +116,7 @@ public class VCellId_v1View extends FrameView {
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         mainToolbar.add(jButton2);
 
+        jButton3.setAction(actionMap.get("showSegmentationSetup")); // NOI18N
         jButton3.setText(resourceMap.getString("jButton3.text")); // NOI18N
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -131,7 +144,7 @@ public class VCellId_v1View extends FrameView {
         treePanelLayout.setVerticalGroup(
             treePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, treePanelLayout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(14, Short.MAX_VALUE)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 395, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -148,20 +161,20 @@ public class VCellId_v1View extends FrameView {
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 487, Short.MAX_VALUE)
+            .add(0, 517, Short.MAX_VALUE)
             .add(imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(imagePanelLayout.createSequentialGroup()
                     .add(15, 15, 15)
-                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
+                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 435, Short.MAX_VALUE)
+            .add(0, 421, Short.MAX_VALUE)
             .add(imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(imagePanelLayout.createSequentialGroup()
                     .add(11, 11, 11)
-                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
+                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -193,7 +206,6 @@ public class VCellId_v1View extends FrameView {
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(vcellid_v1.VCellId_v1App.class).getContext().getActionMap(VCellId_v1View.class, this);
         cellIdPathMenuItem.setAction(actionMap.get("showCellIdChooser")); // NOI18N
         cellIdPathMenuItem.setText(resourceMap.getString("cellIdPathMenuItem.text")); // NOI18N
         cellIdPathMenuItem.setName("cellIdPathMenuItem"); // NOI18N
@@ -213,10 +225,17 @@ public class VCellId_v1View extends FrameView {
         loadImageMenuItem.setName("loadImageMenuItem"); // NOI18N
         setupMenu.add(loadImageMenuItem);
 
+        imagesSetupMenuItem.setAction(actionMap.get("showImageSetup")); // NOI18N
         imagesSetupMenuItem.setText(resourceMap.getString("imagesSetupMenuItem.text")); // NOI18N
         imagesSetupMenuItem.setName("imagesSetupMenuItem"); // NOI18N
+        imagesSetupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imagesSetupMenuItemActionPerformed(evt);
+            }
+        });
         setupMenu.add(imagesSetupMenuItem);
 
+        segmentationMenuItem.setAction(actionMap.get("showSegmentationSetup")); // NOI18N
         segmentationMenuItem.setText(resourceMap.getString("segmentationMenuItem.text")); // NOI18N
         segmentationMenuItem.setName("segmentationMenuItem"); // NOI18N
         setupMenu.add(segmentationMenuItem);
@@ -251,6 +270,21 @@ public class VCellId_v1View extends FrameView {
         setMenuBar(menuBar);
     }// </editor-fold>//GEN-END:initComponents
 
+    @Action
+    public void showSegmentationSetup() {
+        if (segmentationSetup == null) {
+            JFrame mainFrame = VCellId_v1App.getApplication().getMainFrame();
+            segmentationSetup = new SegmentationSetup(mainFrame,true);
+            segmentationSetup.setLocationRelativeTo(mainFrame);
+        }
+        VCellId_v1App.getApplication().show(segmentationSetup);
+    }
+
+    
+private void imagesSetupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imagesSetupMenuItemActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_imagesSetupMenuItemActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem cellIdPathMenuItem;
@@ -275,4 +309,6 @@ public class VCellId_v1View extends FrameView {
 
     private JDialog aboutBox;
     private JDialog cellIdChooser;
+    private JDialog imageSetup;
+    private JDialog segmentationSetup;
 }
