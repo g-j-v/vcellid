@@ -61,6 +61,16 @@ public class VCellId_v1View extends FrameView {
         VCellId_v1App.getApplication().show(imageSetup);
     }
 
+    @Action
+    public void showLoadImages() {
+        if (loadImages == null) {
+            JFrame mainFrame = VCellId_v1App.getApplication().getMainFrame();
+            loadImages = new LoadImages(mainFrame,true);
+            loadImages.setLocationRelativeTo(mainFrame);
+        }
+        VCellId_v1App.getApplication().show(loadImages);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -99,6 +109,8 @@ public class VCellId_v1View extends FrameView {
         mainToolbar.setRollover(true);
         mainToolbar.setName("mainToolbar"); // NOI18N
 
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(vcellid_v1.VCellId_v1App.class).getContext().getActionMap(VCellId_v1View.class, this);
+        jButton1.setAction(actionMap.get("showLoadImages")); // NOI18N
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(vcellid_v1.VCellId_v1App.class).getContext().getResourceMap(VCellId_v1View.class);
         jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
@@ -107,7 +119,6 @@ public class VCellId_v1View extends FrameView {
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         mainToolbar.add(jButton1);
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(vcellid_v1.VCellId_v1App.class).getContext().getActionMap(VCellId_v1View.class, this);
         jButton2.setAction(actionMap.get("showImageSetup")); // NOI18N
         jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
         jButton2.setFocusable(false);
@@ -144,7 +155,7 @@ public class VCellId_v1View extends FrameView {
         treePanelLayout.setVerticalGroup(
             treePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, treePanelLayout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 395, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -161,20 +172,20 @@ public class VCellId_v1View extends FrameView {
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 517, Short.MAX_VALUE)
+            .add(0, 487, Short.MAX_VALUE)
             .add(imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(imagePanelLayout.createSequentialGroup()
                     .add(15, 15, 15)
-                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 421, Short.MAX_VALUE)
+            .add(0, 435, Short.MAX_VALUE)
             .add(imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(imagePanelLayout.createSequentialGroup()
                     .add(11, 11, 11)
-                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                    .add(appTitleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -220,6 +231,7 @@ public class VCellId_v1View extends FrameView {
         setupMenu.setText(resourceMap.getString("setupMenu.text")); // NOI18N
         setupMenu.setName("setupMenu"); // NOI18N
 
+        loadImageMenuItem.setAction(actionMap.get("showLoadImages")); // NOI18N
         loadImageMenuItem.setText(resourceMap.getString("loadImageMenuItem.text")); // NOI18N
         loadImageMenuItem.setActionCommand(resourceMap.getString("loadImageMenuItem.actionCommand")); // NOI18N
         loadImageMenuItem.setName("loadImageMenuItem"); // NOI18N
@@ -311,4 +323,5 @@ private void imagesSetupMenuItemActionPerformed(java.awt.event.ActionEvent evt) 
     private JDialog cellIdChooser;
     private JDialog imageSetup;
     private JDialog segmentationSetup;
+    private JDialog loadImages;
 }

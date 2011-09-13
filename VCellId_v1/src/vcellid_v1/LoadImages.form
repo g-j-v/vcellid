@@ -28,7 +28,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jSeparator1" pref="466" max="32767" attributes="0"/>
+                      <Component id="jSeparator1" pref="478" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -107,17 +107,17 @@
                       <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                       <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="161" max="-2" attributes="0"/>
-                      <Component id="jComboBox5" pref="125" max="32767" attributes="0"/>
+                      <Component id="jComboBox5" pref="131" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="275" max="32767" attributes="0"/>
+                      <EmptySpace pref="307" max="32767" attributes="0"/>
                       <Component id="jCheckBox6" min="-2" pref="127" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="314" max="32767" attributes="0"/>
+              <EmptySpace pref="318" max="32767" attributes="0"/>
               <Component id="jButton2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton1" min="-2" pref="79" max="-2" attributes="0"/>
@@ -125,7 +125,7 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSeparator2" pref="466" max="32767" attributes="0"/>
+              <Component id="jSeparator2" pref="478" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -159,7 +159,7 @@
                                   <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="jSeparator3" alignment="0" pref="80" max="32767" attributes="0"/>
+                          <Component id="jSeparator3" alignment="0" pref="100" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -433,6 +433,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButton2">
       <Properties>
+        <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+          <action class="vcellid_v1.LoadImages" id="close" methodName="close"/>
+        </Property>
         <Property name="text" type="java.lang.String" resourceKey="jButton2.text"/>
         <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
       </Properties>

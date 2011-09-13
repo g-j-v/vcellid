@@ -10,6 +10,8 @@
  */
 package vcellid_v1;
 
+import org.jdesktop.application.Action;
+
 /**
  *
  * @author gdelavil
@@ -20,6 +22,11 @@ public class ImageSetup extends javax.swing.JDialog {
     public ImageSetup(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+
+    @Action
+    public void close() {
+        dispose();
     }
 
     /** This method is called from within the constructor to
@@ -59,6 +66,8 @@ public class ImageSetup extends javax.swing.JDialog {
 
         jSeparator1.setName("jSeparator1"); // NOI18N
 
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(vcellid_v1.VCellId_v1App.class).getContext().getActionMap(ImageSetup.class, this);
+        jButton1.setAction(actionMap.get("close")); // NOI18N
         jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
 
@@ -136,14 +145,14 @@ public class ImageSetup extends javax.swing.JDialog {
                 .addGroup(imageSetupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(imageSetupLayout.createSequentialGroup()
                         .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 178, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 209, Short.MAX_VALUE))
                     .addGroup(imageSetupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, imageSetupLayout.createSequentialGroup()
                             .addComponent(jCheckBox2)
                             .addGap(18, 18, 18)
                             .addComponent(jTextField1))
                         .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jComboBox1, 0, 247, Short.MAX_VALUE))
+                    .addComponent(jComboBox1, 0, 285, Short.MAX_VALUE))
                 .addContainerGap())
         );
         imageSetupLayout.setVerticalGroup(
@@ -195,7 +204,7 @@ public class ImageSetup extends javax.swing.JDialog {
                             .addComponent(jRadioButton2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         miscLayout.setVerticalGroup(
             miscLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,7 +234,7 @@ public class ImageSetup extends javax.swing.JDialog {
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
                     .addComponent(misc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
