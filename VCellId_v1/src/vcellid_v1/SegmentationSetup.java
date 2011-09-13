@@ -346,4 +346,8 @@ public class SegmentationSetup extends javax.swing.JDialog {
     private javax.swing.JSpinner jSpinner5;
     private javax.swing.JSpinner jSpinner6;
     // End of variables declaration//GEN-END:variables
+
+//TODO: en segmentation setup se agrega el botón de test cellID sólo cuando hay 
+//imágenes cargadas, ver cómo lograr eso. El botón es distinto si se llama a 
+//test cellID y a run cellID
 }
