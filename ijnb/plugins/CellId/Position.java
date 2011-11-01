@@ -42,7 +42,8 @@ public class Position {
         return number;
     }
 
-    public String toSrting(){
-        return "position" + number;
+    @Override
+    public String toString(){
+        return "position" + number + "_" ;
     }
 }

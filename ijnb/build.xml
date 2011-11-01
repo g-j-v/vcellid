@@ -14,7 +14,7 @@
     </target>
   
    <target name="compilePlugins" description="Compile plugins">
-      <javac srcdir="plugins" destdir="plugins" optimize="on" source="1.3" target="1.3" debug="on"
+      <javac srcdir="plugins" destdir="plugins" optimize="on" source="1.6" target="1.6" debug="on"
       classpath="plugins/_ijJif.jar;./ij.jar;"/>
     </target>
     

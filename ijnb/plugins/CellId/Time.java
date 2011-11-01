@@ -86,6 +86,7 @@ public class Time {
         return position;
     }
 
+    @Override
     public String toString(){
 
         if(number > 99){
