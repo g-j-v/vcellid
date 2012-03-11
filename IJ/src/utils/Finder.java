@@ -5,13 +5,22 @@
 
 package utils;
 
+import ij.IJ;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.JTextArea;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -60,10 +69,28 @@ public class Finder {
     }
 
     public JTree generateTree(){
-        JTree tree;
+        final JTree tree;
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
     createNodes(top);
     tree = new JTree(top);
+    tree.addTreeSelectionListener(new TreeSelectionListener() {
+		
+		@Override
+		public void valueChanged(TreeSelectionEvent e) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+			System.out.println("Evento");
+			if(node == null || node.getChildCount() > 0){
+				System.out.println("hola");
+				return;
+			}
+			
+			String filePath = node.getUserObject().toString();
+			System.out.println(directory.getAbsolutePath());
+			System.out.println(filePath);
+			IJ.open(directory.getAbsolutePath() + "/" +filePath);				
+			
+		}
+	});
         return tree;
     }
 
