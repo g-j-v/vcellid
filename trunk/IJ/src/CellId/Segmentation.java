@@ -19,15 +19,15 @@ import utils.Finder;
 
 /**
  * 
- * @author alejandropetit
+ * @author Gisela
  */
-public class LoadImages_ extends ij.plugin.frame.PlugInFrame implements ActionListener{
+public class Segmentation extends ij.plugin.frame.PlugInFrame implements ActionListener{
 
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTree jTree1;
 
-	public LoadImages_() {
-		super("Load Images");
+	public Segmentation() {
+		super("Segmentation");
 
 	}
 
@@ -105,7 +105,7 @@ public class LoadImages_ extends ij.plugin.frame.PlugInFrame implements ActionLi
 
 		JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int returnVal = fc.showOpenDialog(LoadImages_.this);
+		int returnVal = fc.showOpenDialog(Segmentation.this);
 		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
