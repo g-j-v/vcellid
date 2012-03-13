@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 
 import utils.Finder;
+import utils.TreeGenerator;
 
 /**
  * 
@@ -120,12 +121,14 @@ public class ImagesSetup extends ij.plugin.frame.PlugInFrame implements ActionLi
 		// Pattern para el tiempo
 		patterns.add("time_\\d{3}\\.tif");
 		
-		Finder finder = new Finder(file, patterns);
+		Finder finder = new Finder(patterns);
 //		Finder finder = new Finder(new File(
 //				"/Volumes/APETIT/2004-11-11-TCY3154-inhibitor-effect/"),
 //				patterns);
 
-		jTree1 = finder.generateTree();
+		TreeGenerator treeGenerator = new TreeGenerator(finder, file);
+		
+		jTree1 = treeGenerator.generateTree();
 		jScrollPane1 = new javax.swing.JScrollPane();
 
 		jTree1.setName("jTree1"); // NOI18N
