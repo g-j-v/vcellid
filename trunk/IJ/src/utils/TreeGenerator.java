@@ -86,12 +86,14 @@ public class TreeGenerator {
         for(String name: fileNames){
             int aux;
             // Busco el segundo separador para ver el identificador de la posicion
-            int endPos = name.toLowerCase().indexOf(finder.separator,name.indexOf(finder.separator + 1));
+            String[] info = name.split(finder.separator);
+            int endPos = info[1].length();
             int i;
             for(i = endPos - 1; name.charAt(i) >= '0' && name.charAt(i) <= '9' ; i--){
             	;
             }
-            aux = Integer.valueOf(name.substring(i,endPos));
+            System.out.println(i + " - " + endPos + " - " + info[1].substring(endPos - i,endPos));
+            aux = Integer.valueOf(info[1].substring(i ,endPos));
             if(aux > max){
                 max = aux;
             }
@@ -115,8 +117,8 @@ public class TreeGenerator {
                 for(i = endPos - 1; name.charAt(i) >= '0' && name.charAt(i) <= '9' ; i--){
                 	;
                 }
-                aux = Integer.valueOf(name.substring(i,endPos));
-//                System.err.println("Num de time" + name.substring(startPos+5,endPos));
+                System.out.println("time: " + (i + 1) + " - " + endPos + " - " + name.substring(i,endPos));
+                aux = Integer.valueOf(name.substring(i + 1,endPos));
                 if(aux > max){
                     max = aux;
                 }
