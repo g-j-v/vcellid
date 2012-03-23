@@ -1,15 +1,22 @@
 package utils;
 
 import ij.IJ;
+import ij.gui.ImageCanvas;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import panels.PicturePanel;
 
 public class TreeGenerator {
 	
@@ -23,7 +30,7 @@ public class TreeGenerator {
 		this.fileNames = finder.find(directory);
 	}
 	
-	public JTree generateTree(){
+	public JTree generateTree(final PicturePanel picturePanel){
         final JTree tree;
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
     createNodes(top,directory);
@@ -42,7 +49,11 @@ public class TreeGenerator {
 			String filePath = node.getUserObject().toString();
 			System.out.println(directory.getAbsolutePath());
 			System.out.println(filePath);
-			IJ.open(directory.getAbsolutePath() + "/" +filePath);				
+			if(picturePanel != null){
+				picturePanel.setImage(new ImageCanvas(IJ.openImage(directory.getAbsolutePath() + "/" +filePath)));
+				picturePanel.getImage().paint(picturePanel.getGraphics());
+			}
+//			IJ.open(directory.getAbsolutePath() + "/" +filePath);
 			
 		}
 	});

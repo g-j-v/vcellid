@@ -128,7 +128,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame implements ActionL
 
 		TreeGenerator treeGenerator = new TreeGenerator(finder, file);
 		
-		jTree1 = treeGenerator.generateTree();
+		jTree1 = treeGenerator.generateTree(null);
 		jScrollPane1 = new javax.swing.JScrollPane();
 
 		jTree1.setName("jTree1"); // NOI18N
