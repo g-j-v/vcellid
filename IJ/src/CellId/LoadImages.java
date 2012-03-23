@@ -18,6 +18,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -114,6 +117,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 		
 		jTree1 = treeGenerator.generateTree(picturePanel);
 		jTree1.setExpandsSelectedPaths(true);
+		
 		jScrollPane1 = new javax.swing.JScrollPane();
 
 		jTree1.setName("jTree1"); // NOI18N
@@ -151,7 +155,9 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 						return;
 					}
 					if(previousNode != null ){
-						jTree1.setSelectionPath(new TreePath(previousNode));
+						TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot(previousNode));
+						jTree1.setSelectionPath(path);
+						jTree1.scrollPathToVisible(path);
 						System.out.println(file.getAbsolutePath() + "/" +previousNode.getUserObject().toString());
 					}
 				}
@@ -179,7 +185,9 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 						return;
 					}
 					if(previousNode != null){
-						jTree1.setSelectionPath(new TreePath(previousNode));
+						TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot(previousNode));
+						jTree1.setSelectionPath(path);
+						jTree1.scrollPathToVisible(path);
 						System.out.println(file.getAbsolutePath() + "/" +previousNode.getUserObject().toString());
 					}
 				}
@@ -197,9 +205,13 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
 					DefaultMutableTreeNode previousNode = node.getPreviousSibling();
 					if(previousNode != null && previousNode.isLeaf()){
-						TreePath path = new TreePath(previousNode);
+						
+						TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot(previousNode));
 						jTree1.setSelectionPath(path);
-						jTree1.scrollPathToVisible(path);
+						jTree1.scrollPathToVisible(path);	
+						jTree1.expandPath(path);
+						DefaultTreeSelectionModel model = (DefaultTreeSelectionModel) (jTree1.getSelectionModel());
+						model.setSelectionPath(path);
 						System.out.println(file.getAbsolutePath() + "/" +previousNode.getUserObject().toString());
 						picturePanel.setImage(new ImageCanvas(IJ.openImage(file.getAbsolutePath() + "/" +previousNode.getUserObject().toString())));
 						picturePanel.getImage().paint(picturePanel.getGraphics());
@@ -209,24 +221,47 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 		});
 	    buttonsPanel.add(previousButton);
 	    
+	    JButton rootButton = new JButton("Root");
+	    rootButton.setPreferredSize(new Dimension(150,20));
+	    rootButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot((TreeNode)jTree1.getModel().getRoot()));
+				jTree1.setSelectionPath(path);
+				jTree1.scrollPathToVisible(path);
+			}
+		});
+	    buttonsPanel.add(rootButton);
+	    
 	    JButton nextButton = new JButton("Next Image");
 	    nextButton.setPreferredSize(new Dimension(150,20));
 	    nextButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(jTree1.getLastSelectedPathComponent() != null){
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-					DefaultMutableTreeNode nextNode = node.getNextSibling();
-					if(nextNode != null && nextNode.isLeaf()){
-						TreePath path = new TreePath(nextNode);
-						jTree1.setSelectionPath(path);
-						jTree1.scrollPathToVisible(path);
-						System.out.println(file.getAbsolutePath() + "/" +nextNode.getUserObject().toString());
-						picturePanel.setImage(new ImageCanvas(IJ.openImage(file.getAbsolutePath() + "/" + nextNode.getUserObject().toString())));
-						picturePanel.getImage().paint(picturePanel.getGraphics());
-					}
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+				DefaultMutableTreeNode nextNode = null;
+				if(node == null){
+					nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)jTree1.getModel().getRoot()).getFirstChild().getChildAt(0).getChildAt(0);
+				}else if(node.isLeaf()){
+					nextNode = node.getNextSibling();
+				}else if(node.getUserObject().toString().toLowerCase().contains("time")){
+					nextNode = (DefaultMutableTreeNode)node.getFirstChild();
+				}else if(node.getUserObject().toString().toLowerCase().contains("position")){
+					nextNode = (DefaultMutableTreeNode)node.getFirstChild().getChildAt(0);
+				}else if(node.isRoot()){
+					nextNode = (DefaultMutableTreeNode)node.getFirstChild().getChildAt(0).getChildAt(0);
+				}else{
+					return;
 				}
+				TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot(nextNode));
+				jTree1.setSelectionPath(path);
+				jTree1.scrollPathToVisible(path);
+				System.out.println(file.getAbsolutePath() + "/" +nextNode.getUserObject().toString());
+				picturePanel.setImage(new ImageCanvas(IJ.openImage(file.getAbsolutePath() + "/" + nextNode.getUserObject().toString())));
+				picturePanel.getImage().paint(picturePanel.getGraphics());
+
 			}
 		});
 	    buttonsPanel.add(nextButton);
@@ -237,23 +272,27 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(jTree1.getLastSelectedPathComponent() != null){
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-					DefaultMutableTreeNode nextNode;
-					if(node.isLeaf()){
-						DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
-						nextNode = parent.getNextSibling();
-					}else if(node.getUserObject().toString().toLowerCase().contains("time")){
-						nextNode = node.getNextSibling();
-					}else if(node.getUserObject().toString().toLowerCase().contains("position")){
-						nextNode = (DefaultMutableTreeNode) node.getFirstChild();
-					}else{
-						return;
-					}
-					if(nextNode != null){
-						jTree1.setSelectionPath(new TreePath(nextNode));
-						System.out.println(file.getAbsolutePath() + "/" +nextNode.getUserObject().toString());
-					}
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+				DefaultMutableTreeNode nextNode = null;
+				if(node == null){
+					nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)jTree1.getModel().getRoot()).getFirstChild().getChildAt(0);
+				}else if(node.isLeaf()){
+					DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
+					nextNode = parent.getNextSibling();
+				}else if(node.getUserObject().toString().toLowerCase().contains("time")){
+					nextNode = node.getNextSibling();
+				}else if(node.getUserObject().toString().toLowerCase().contains("position")){
+					nextNode = (DefaultMutableTreeNode) node.getFirstChild();
+				}else if (node.isRoot()){
+					nextNode = (DefaultMutableTreeNode) node.getFirstChild().getChildAt(0);
+				}else{
+					return;
+				}
+				if(nextNode != null){
+					TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot(nextNode));
+					jTree1.setSelectionPath(path);
+					jTree1.scrollPathToVisible(path);
+					System.out.println(file.getAbsolutePath() + "/" +nextNode.getUserObject().toString());
 				}
 			}
 		});
@@ -265,10 +304,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(jTree1.getLastSelectedPathComponent() != null){
+				
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-					DefaultMutableTreeNode nextNode;
-					if(node.isLeaf()){
+					DefaultMutableTreeNode nextNode = null;
+					if(node == null){
+						nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)jTree1.getModel().getRoot()).getFirstChild();
+					}else if(node.isLeaf()){
 						DefaultMutableTreeNode positionParent = (DefaultMutableTreeNode) node.getParent().getParent();
 						nextNode = positionParent.getNextSibling();
 					}else if(node.getUserObject().toString().toLowerCase().contains("time")){
@@ -276,14 +317,18 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 						nextNode = positionParent.getNextSibling();
 					}else if(node.getUserObject().toString().toLowerCase().contains("position")){
 						nextNode = node.getNextSibling();
+					}else if(node.isRoot()){
+						nextNode = (DefaultMutableTreeNode) node.getFirstChild();
 					}else{
 						return;
 					}
 					if(nextNode != null){
-						jTree1.setSelectionPath(new TreePath(nextNode));
+						TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot(nextNode));
+						jTree1.setSelectionPath(path);
+						jTree1.scrollPathToVisible(path);
 						System.out.println(file.getAbsolutePath() + "/" +nextNode.getUserObject().toString());
 					}
-				}
+				
 			}
 		});
 	    buttonsPanel.add(nextPositionButton);
@@ -291,7 +336,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 	    add(buttonsPanel, BorderLayout.SOUTH);
 	    
 	    
-		setSize(1000, 700);
+		setSize(1200, 700);
 		setResizable(false);
 		show();
 	}
