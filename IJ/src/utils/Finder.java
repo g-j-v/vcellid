@@ -45,11 +45,17 @@ public class Finder {
             pattern += str;
             pattern += separator;
         }
+        
+        
         pattern = pattern.substring(0, pattern.length()-1);
+        System.out.println("pattern: " + pattern);
         Pattern pat = Pattern.compile(pattern);
-        for(String childs : directory.list()){
-            Matcher matcher = pat.matcher(childs);
+        for(String fileName : directory.list()){
+        	System.out.println("-" + pat.pattern() + "-");
+        	System.out.println("-" + fileName + "-");
+            Matcher matcher = pat.matcher(fileName);
             if(matcher.matches()){
+            	
                 fileNames.add(matcher.group());
             }
 

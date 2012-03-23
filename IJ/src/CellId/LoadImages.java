@@ -7,13 +7,25 @@ package CellId;
 
 import ij.io.OpenDialog;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.MediaTracker;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import panels.PicturePanel;
 
 import utils.Finder;
 import utils.TreeGenerator;
@@ -26,6 +38,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTree jTree1;
+	PicturePanel picturePanel;
+	
 
 	public LoadImages() {
 		super("Load Images");
@@ -81,29 +95,48 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 		List<String> patterns = new ArrayList<String>();
 		// Pattern para los fields
-		patterns.add("BF|CFP|YFP");
+		patterns.add("(BF|CFP|YFP)");
 		// Pattern para la posicion
-		patterns.add("Position\\d{1,}");
+		patterns.add("Position\\d*");
 		// Pattern para el tiempo
-		patterns.add("time_\\d{3}\\.tif");
+		patterns.add("time_\\d*.tif");
 		
 		Finder finder = new Finder(patterns);
 //		Finder finder = new Finder(new File(
 //				"/Volumes/APETIT/2004-11-11-TCY3154-inhibitor-effect/"),
 //				patterns);
+		
+		picturePanel = new PicturePanel(null);
+	    // Preferred height is irrelevant, since using WEST region
+		picturePanel.setPreferredSize(new Dimension(400, 0));
+		picturePanel.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
+		picturePanel.setBackground(Color.white);
+	    add(picturePanel, BorderLayout.EAST);
 
 		TreeGenerator treeGenerator = new TreeGenerator(finder, file);
 		
-		jTree1 = treeGenerator.generateTree();
+		jTree1 = treeGenerator.generateTree(picturePanel);
 		jScrollPane1 = new javax.swing.JScrollPane();
 
 		jTree1.setName("jTree1"); // NOI18N
 		jScrollPane1.setName("jScrollPane1"); // NOI18N
-
+		jScrollPane1.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
 		jScrollPane1.setViewportView(jTree1);
-
+		jScrollPane1.setPreferredSize(new Dimension(300,300));
 		add(jScrollPane1);
-		setSize(1000, 600);
+
+		
+	    
+	    JPanel buttonsPanel = new JPanel();
+	    buttonsPanel.setPreferredSize(new Dimension(800, 100));
+	    buttonsPanel.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
+	    buttonsPanel.setBackground(Color.white);
+	    buttonsPanel.add(new JButton("Previous"));
+	    buttonsPanel.add(new JButton("Next"));
+	    add(buttonsPanel, BorderLayout.SOUTH);
+	    
+	    
+		setSize(800, 500);
 		show();
 	}
 }
