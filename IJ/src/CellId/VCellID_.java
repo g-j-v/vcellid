@@ -51,7 +51,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
 		buttonBox.add(imagesSetupButton);
 		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
-		buttonBox.add(segmentationButton);
+//		buttonBox.add(segmentationButton);
 
 		buttonPanel.add(buttonBox);
 		// Add the buttons and the log to this panel.
