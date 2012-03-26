@@ -5,139 +5,191 @@
 
 package CellId;
 
-import ij.io.OpenDialog;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.JFileChooser;
-
-import utils.Finder;
-import utils.TreeGenerator;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.border.BevelBorder;
 
 /**
  * 
  * @author Gisela
  */
-public class Segmentation extends ij.plugin.frame.PlugInFrame implements ActionListener{
-
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTree jTree1;
-
+public class Segmentation extends javax.swing.JDialog{
+	private static final ButtonGroup frameAlignmentButtonGroup = new ButtonGroup();
+	private static final ButtonGroup cellAlignmentButtonGroup = new ButtonGroup();
+	
+	private static JSpinner maxDistSpinner = new JSpinner();
+	private static JSpinner maxSplitSpinner = new JSpinner();
+	private static JSpinner minPixelsSpinner = new JSpinner();
+	private static JSpinner maxPixelsSpinner = new JSpinner();
+	private static JSpinner backgroundRejectSpinner = new JSpinner();
+	private static JSpinner trackingComparisonSpinner = new JSpinner();
+	
 	public Segmentation() {
-		super("Segmentation");
-
-	}
-
-	public void run(String arg) {
-
-//		JFileChooser fc = new JFileChooser();
-//		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//		int returnVal = fc.showOpenDialog(LoadImages_.this);
-//		if (returnVal != JFileChooser.APPROVE_OPTION) {
-//			return;
-//		}
-//
-//		File file = fc.getSelectedFile();
-//
-//		List<String> patterns = new ArrayList<String>();
-//		// Pattern para los fields
-//		patterns.add("BF|CFP|YFP");
-//		// Pattern para la posicion
-//		patterns.add("Position\\d{1,}");
-//		// Pattern para el tiempo
-//		patterns.add("time_\\d{3}\\.tif");
-//		
-//		Finder finder = new Finder(file, patterns);
-////		Finder finder = new Finder(new File(
-////				"/Volumes/APETIT/2004-11-11-TCY3154-inhibitor-effect/"),
-////				patterns);
-//
-//		jTree1 = finder.generateTree();
-//		jScrollPane1 = new javax.swing.JScrollPane();
-//
-//		jTree1.setName("jTree1"); // NOI18N
-//		jScrollPane1.setName("jScrollPane1"); // NOI18N
-//
-//		jScrollPane1.setViewportView(jTree1);
-//
-//		add(jScrollPane1);
-//		setSize(1000, 600);
-//		show();
-	}
-	/**
-	 * private void createNodes(DefaultMutableTreeNode top) {
-	 * 
-	 * DefaultMutableTreeNode category = null; DefaultMutableTreeNode book =
-	 * null;
-	 * 
-	 * category = new DefaultMutableTreeNode("Books for Java Programmers");
-	 * top.add(category);
-	 * 
-	 * //original Tutorial book = new DefaultMutableTreeNode(
-	 * "The Java Tutorial: A Short Course on the Basics"); category.add(book);
-	 * 
-	 * //Tutorial Continued book = new DefaultMutableTreeNode(
-	 * "The Java Tutorial Continued: The Rest of the JDK"); category.add(book);
-	 * 
-	 * //JFC Swing Tutorial book = new DefaultMutableTreeNode(
-	 * "The JFC Swing Tutorial: A Guide to Constructing GUIs");
-	 * category.add(book);
-	 * 
-	 * //...add more books for programmers...
-	 * 
-	 * category = new DefaultMutableTreeNode("Books for Java Implementers");
-	 * top.add(category);
-	 * 
-	 * //VM book = new
-	 * DefaultMutableTreeNode("The Java Virtual Machine Specification");
-	 * category.add(book);
-	 * 
-	 * //Language Spec book = new
-	 * DefaultMutableTreeNode("The Java Language Specification");
-	 * category.add(book); }
-	 */
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-		JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int returnVal = fc.showOpenDialog(Segmentation.this);
-		if (returnVal != JFileChooser.APPROVE_OPTION) {
-			return;
-		}
-
-		File file = fc.getSelectedFile();
-
-		List<String> patterns = new ArrayList<String>();
-		// Pattern para los fields
-		patterns.add("BF|CFP|YFP");
-		// Pattern para la posicion
-		patterns.add("Position\\d{1,}");
-		// Pattern para el tiempo
-		patterns.add("time_\\d{3}\\.tif");
+		getContentPane().setLayout(null);
 		
-		Finder finder = new Finder(patterns);
-//		Finder finder = new Finder(new File(
-//				"/Volumes/APETIT/2004-11-11-TCY3154-inhibitor-effect/"),
-//				patterns);
-
-		TreeGenerator treeGenerator = new TreeGenerator(finder, file);
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 11, 352, 243);
+		getContentPane().add(panel);
+		panel.setLayout(null);
 		
-		jTree1 = treeGenerator.generateTree(null);
-		jScrollPane1 = new javax.swing.JScrollPane();
-
-		jTree1.setName("jTree1"); // NOI18N
-		jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-		jScrollPane1.setViewportView(jTree1);
-
-		add(jScrollPane1);
-		setSize(1000, 600);
-		show();
+		maxDistSpinner.setBounds(233, 11, 53, 18);
+		panel.add(maxDistSpinner);
+		
+		maxSplitSpinner.setBounds(233, 40, 53, 18);
+		panel.add(maxSplitSpinner);
+		
+		minPixelsSpinner.setBounds(233, 89, 53, 18);
+		panel.add(minPixelsSpinner);
+		
+		maxPixelsSpinner.setBounds(233, 118, 53, 18);
+		panel.add(maxPixelsSpinner);
+		
+		backgroundRejectSpinner.setBounds(233, 174, 53, 18);
+		panel.add(backgroundRejectSpinner);
+		
+		trackingComparisonSpinner.setBounds(233, 203, 53, 18);
+		panel.add(trackingComparisonSpinner);
+		
+		JLabel maxDistLabel = new JLabel("max dist over waist");
+		maxDistLabel.setBounds(30, 13, 157, 14);
+		panel.add(maxDistLabel);
+		
+		JLabel maxSplitLabel = new JLabel("max split over minor axis");
+		maxSplitLabel.setBounds(30, 42, 157, 14);
+		panel.add(maxSplitLabel);
+		
+		JLabel minPixelsLabel = new JLabel("min pixels per cell");
+		minPixelsLabel.setBounds(30, 91, 157, 14);
+		panel.add(minPixelsLabel);
+		
+		JLabel maxPixelsLabel = new JLabel("max pixels per cell");
+		maxPixelsLabel.setBounds(30, 120, 157, 14);
+		panel.add(maxPixelsLabel);
+		
+		JLabel backgroundRejectLabel = new JLabel("background reject factor");
+		backgroundRejectLabel.setBounds(30, 176, 157, 14);
+		panel.add(backgroundRejectLabel);
+		
+		JLabel trackingComparisonLabel = new JLabel("tracking comparison");
+		trackingComparisonLabel.setBounds(30, 205, 157, 14);
+		panel.add(trackingComparisonLabel);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panel_1.setBounds(10, 265, 352, 197);
+		getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel frameAlignmentLabel = new JLabel("Frame alignment");
+		frameAlignmentLabel.setBounds(10, 11, 92, 14);
+		panel_1.add(frameAlignmentLabel);
+		
+		JRadioButton noFrameAlignmentRadioButton = new JRadioButton("no frame alignment");
+		noFrameAlignmentRadioButton.setMnemonic('N');
+		frameAlignmentButtonGroup.add(noFrameAlignmentRadioButton);
+		noFrameAlignmentRadioButton.setBounds(46, 32, 133, 23);
+		panel_1.add(noFrameAlignmentRadioButton);
+		
+		JRadioButton alignToFirstRadioButton = new JRadioButton("align FL to first");
+		alignToFirstRadioButton.setMnemonic('F');
+		frameAlignmentButtonGroup.add(alignToFirstRadioButton);
+		alignToFirstRadioButton.setBounds(46, 58, 109, 23);
+		panel_1.add(alignToFirstRadioButton);
+		
+		JRadioButton alignToBFRadioButton = new JRadioButton("align FL to BF");
+		alignToBFRadioButton.setMnemonic('B');
+		frameAlignmentButtonGroup.add(alignToBFRadioButton);
+		alignToBFRadioButton.setBounds(46, 84, 109, 23);
+		panel_1.add(alignToBFRadioButton);
+		
+		JLabel cellAlignmentLabel = new JLabel("Cell alignment");
+		cellAlignmentLabel.setBounds(10, 114, 81, 14);
+		panel_1.add(cellAlignmentLabel);
+		
+		JRadioButton noCellAlignmentRadioButton = new JRadioButton("no cell alignment");
+		noCellAlignmentRadioButton.setMnemonic('N');
+		cellAlignmentButtonGroup.add(noCellAlignmentRadioButton);
+		noCellAlignmentRadioButton.setBounds(46, 135, 109, 23);
+		panel_1.add(noCellAlignmentRadioButton);
+		
+		JRadioButton alignIndividualRadioButton = new JRadioButton("align individual cells");
+		alignIndividualRadioButton.setMnemonic('I');
+		cellAlignmentButtonGroup.add(alignIndividualRadioButton);
+		alignIndividualRadioButton.setBounds(46, 161, 133, 23);
+		panel_1.add(alignIndividualRadioButton);
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setBounds(10, 478, 91, 23);
+		getContentPane().add(cancelButton);
+		
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		okButton.setBounds(271, 473, 91, 23);
+		getContentPane().add(okButton);
+		
+		JButton applyButton = new JButton("Apply");
+		applyButton.setBounds(170, 473, 91, 23);
+		getContentPane().add(applyButton);
 	}
+	
+	public static double getMaxSplitOverMinor(){
+		return (Double)maxSplitSpinner.getValue();
+	}
+	
+	 public static double maxDistOverWaist(){
+		 return (Double) maxDistSpinner.getValue();
+	 }
+	 
+	 public static int maxPixelsPerCell (){
+		 return (Integer) maxPixelsSpinner.getValue();
+	 }
+	 
+	 
+	 public static int minPixelsPerCell(){
+		 return (Integer) minPixelsSpinner.getValue();
+	 }
+	 
+	 public static double backgroundRejectFactor (){
+		 return (Double) backgroundRejectSpinner.getValue();
+	 }
+	 
+	 public static double trackingComparison (){
+		 return (Double) trackingComparisonSpinner.getValue();
+	 }
+	 
+	 public static String cellAlignment(){
+		 ButtonModel selected = cellAlignmentButtonGroup.getSelection();
+		 int option  = selected.getMnemonic() ; 
+		 if(option == 'N'){
+			 return "no_cell_alignment";
+		 } else if (option == 'I'){
+			 return "align_individual_cells";
+		 }
+		 return null;
+	 }
+	 
+	 public static String frameAlignment(){
+		 ButtonModel selected = cellAlignmentButtonGroup.getSelection();
+		 int option  = selected.getMnemonic() ; 
+		 if(option == 'N'){
+			 return "no_frame_alignment";
+		 } else if (option == 'F'){
+			 return "align_fl_to_first";
+		 } else if (option == 'B'){
+			 return "align_fl_to_bf";
+		 }
+		 return null;
+	 }
+	
 }

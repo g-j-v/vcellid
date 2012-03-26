@@ -37,8 +37,8 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		imagesSetupButton.addActionListener(new ImagesSetup());
 //		imagesSetupButton.setBounds(loadImagesButton.getX(), loadImagesButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
 		
-		segmentationButton = new JButton("Segmentation");
-		segmentationButton.addActionListener(new Segmentation());
+//		segmentationButton = new JButton("Segmentation");
+//		segmentationButton.addActionListener(new Segmentation());
 //		segmentationButton.setBounds(imagesSetupButton.getX(), imagesSetupButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
 
 		// For layout purposes, put the buttons in a separate panel
@@ -56,7 +56,6 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		buttonPanel.add(buttonBox);
 		// Add the buttons and the log to this panel.
 		add(buttonPanel, BorderLayout.PAGE_START);
-//		setSize(buttonPanel.getWidth(), buttonPanel.getHeight());
 		setSize(10+BUTTON_WIDTH, 4*BUTTON_HEIGHT+5*BUTTON_SPACING);
 		show();
 	}
