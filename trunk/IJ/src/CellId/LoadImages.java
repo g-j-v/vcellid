@@ -26,6 +26,7 @@ import javax.swing.tree.TreePath;
 
 import panels.PicturePanel;
 import utils.Finder;
+import utils.Output;
 import utils.TreeGenerator;
 
 
@@ -333,6 +334,22 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 		});
 	    buttonsPanel.add(nextPositionButton);
 	    
+	    //////////////////////////////////////////////////////////////////////
+	    /////////////////////FOR TEST/////////////////////////////////////////
+	    JButton testOutputButton = new JButton("Test Output Generation");
+	    testOutputButton.setPreferredSize(new Dimension(150,20));
+	    testOutputButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Output output = new Output(jTree1, file);
+				output.generate();
+			}
+		});
+	    buttonsPanel.add(testOutputButton);
+	    
+	    /////////////////////////////////////////////////////////////////////
+	    /////////////////////////////////////////////////////////////////////
 	    add(buttonsPanel, BorderLayout.SOUTH);
 	    
 	    
