@@ -1,5 +1,5 @@
-#ImageJ 1.45s Preferences
-#Thu Mar 22 18:05:54 GMT-03:00 2012
+#ImageJ 1.45r Preferences
+#Sat Mar 10 21:43:30 ART 2012
 menu.size=14
 fps=7.0
 new.type=0
@@ -13,7 +13,7 @@ ij.y=0
 roicolor=\#FFFF00
 ij.x=579
 noise.sd=25.0
-prefs.options=541081600
+prefs.options=541085696
 new.slices=1
 raw.width=512
 new.height=400
