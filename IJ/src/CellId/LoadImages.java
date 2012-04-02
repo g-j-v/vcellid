@@ -343,6 +343,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Output output = new Output(jTree1, file);
+				Segmentation seg = new Segmentation();
+				seg.show();
 				output.generate();
 			}
 		});

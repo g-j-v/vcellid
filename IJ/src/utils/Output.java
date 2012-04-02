@@ -10,6 +10,8 @@ import java.util.List;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import CellId.Segmentation;
+
 public class Output {
 	
 	JTree tree;
@@ -20,7 +22,7 @@ public class Output {
 		this.directory = directory;
 	}
 	
-	//TODO: Tomar de Segmentation.valor los valores para la salida de parameters
+	
 	public void generate(){
 
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
@@ -40,6 +42,7 @@ public class Output {
 			for(String image: allPositionImages){
 				appendToFiles(image,(i+1));
 			}
+			loadParameters(i+1);
 		}
 	}
 
@@ -138,4 +141,27 @@ public class Output {
 		return null;
 	}
 
+	public void loadParameters(int position){
+		File bfFile = new File(directory + "\\Position" + position + "\\parameters_vcellid_out.txt");
+		try {
+			FileWriter writer = new FileWriter(bfFile,true);
+			writer.append(" max_split_over_minor " + Segmentation.getMaxSplitOverMinor() + "\r\n");
+			writer.append(" max_dist_over_waist " + Segmentation.maxDistOverWaist() + "\r\n");
+			writer.append(" max_pixels_per_cell " + Segmentation.maxPixelsPerCell() + "\r\n");
+			writer.append(" min_pixels_per_cell " + Segmentation.minPixelsPerCell() + "\r\n");
+			writer.append(" background_reject_factor " + Segmentation.backgroundRejectFactor() + "\r\n");
+			writer.append(" tracking_comparison " + Segmentation.trackingComparison() + "\r\n");
+			writer.append(" " + Segmentation.cellAlignment() + "\r\n");
+			writer.append(" " + Segmentation.frameAlignment() + "\r\n");
+			writer.append(" image_type brightfield\r\n");
+			writer.append(" bf_fl_mapping list\r\n");
+			writer.append(" fret bf_bottom_and_top\r\n");
+			writer.append(" fret nuclear_top\r\n");
+			//TODO: aca van parametros sin valores
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Could not add image to fl_vcellid.txt");
+			return;
+		}
+	}
 }
