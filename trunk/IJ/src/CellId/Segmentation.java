@@ -7,6 +7,7 @@ package CellId;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.NumericShaper;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 
 /**
@@ -33,6 +35,9 @@ public class Segmentation extends javax.swing.JDialog{
 	private static JSpinner trackingComparisonSpinner = new JSpinner();
 	
 	public Segmentation() {
+		
+		setTitle("Segmentation");
+		
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -41,21 +46,27 @@ public class Segmentation extends javax.swing.JDialog{
 		panel.setLayout(null);
 		
 		maxDistSpinner.setBounds(233, 11, 53, 18);
+		maxDistSpinner.setModel(new SpinnerNumberModel(50.0,0.0,100.0,1.0));
 		panel.add(maxDistSpinner);
 		
 		maxSplitSpinner.setBounds(233, 40, 53, 18);
+		maxSplitSpinner.setModel(new SpinnerNumberModel(5.0,0.0,10.0,0.5));
 		panel.add(maxSplitSpinner);
 		
 		minPixelsSpinner.setBounds(233, 89, 53, 18);
+		minPixelsSpinner.setModel(new SpinnerNumberModel(100,0,9999,1));
 		panel.add(minPixelsSpinner);
 		
 		maxPixelsSpinner.setBounds(233, 118, 53, 18);
+		maxPixelsSpinner.setModel(new SpinnerNumberModel(100,0,9999,1));
 		panel.add(maxPixelsSpinner);
 		
 		backgroundRejectSpinner.setBounds(233, 174, 53, 18);
+		backgroundRejectSpinner.setModel(new SpinnerNumberModel(5.0,0.10,10.0,0.1));
 		panel.add(backgroundRejectSpinner);
 		
 		trackingComparisonSpinner.setBounds(233, 203, 53, 18);
+		trackingComparisonSpinner.setModel(new SpinnerNumberModel(5.0, 0.0, 10.0, 0.1));
 		panel.add(trackingComparisonSpinner);
 		
 		JLabel maxDistLabel = new JLabel("max dist over waist");
@@ -126,6 +137,9 @@ public class Segmentation extends javax.swing.JDialog{
 		alignIndividualRadioButton.setBounds(46, 161, 133, 23);
 		panel_1.add(alignIndividualRadioButton);
 		
+		cellAlignmentButtonGroup.setSelected(noCellAlignmentRadioButton.getModel(), true);
+		frameAlignmentButtonGroup.setSelected(noFrameAlignmentRadioButton.getModel(), true);
+		
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setBounds(10, 478, 91, 23);
 		getContentPane().add(cancelButton);
@@ -141,35 +155,39 @@ public class Segmentation extends javax.swing.JDialog{
 		JButton applyButton = new JButton("Apply");
 		applyButton.setBounds(170, 473, 91, 23);
 		getContentPane().add(applyButton);
+		setSize(400, 600);
 	}
 	
 	public static double getMaxSplitOverMinor(){
-		return (Double)maxSplitSpinner.getValue();
+		return ((SpinnerNumberModel)maxSplitSpinner.getModel()).getNumber().doubleValue();
 	}
 	
 	 public static double maxDistOverWaist(){
-		 return (Double) maxDistSpinner.getValue();
+		 return ((SpinnerNumberModel)maxDistSpinner.getModel()).getNumber().doubleValue();
 	 }
 	 
 	 public static int maxPixelsPerCell (){
-		 return (Integer) maxPixelsSpinner.getValue();
+		 return ((SpinnerNumberModel)maxPixelsSpinner.getModel()).getNumber().intValue();
 	 }
 	 
 	 
 	 public static int minPixelsPerCell(){
-		 return (Integer) minPixelsSpinner.getValue();
+		 return ((SpinnerNumberModel)minPixelsSpinner.getModel()).getNumber().intValue();
 	 }
 	 
 	 public static double backgroundRejectFactor (){
-		 return (Double) backgroundRejectSpinner.getValue();
+		 return ((SpinnerNumberModel)backgroundRejectSpinner.getModel()).getNumber().doubleValue();
 	 }
 	 
 	 public static double trackingComparison (){
-		 return (Double) trackingComparisonSpinner.getValue();
+		 return ((SpinnerNumberModel)trackingComparisonSpinner.getModel()).getNumber().doubleValue();
 	 }
 	 
 	 public static String cellAlignment(){
 		 ButtonModel selected = cellAlignmentButtonGroup.getSelection();
+		 if(selected == null){
+			 return "";
+		 }
 		 int option  = selected.getMnemonic() ; 
 		 if(option == 'N'){
 			 return "no_cell_alignment";
@@ -181,6 +199,9 @@ public class Segmentation extends javax.swing.JDialog{
 	 
 	 public static String frameAlignment(){
 		 ButtonModel selected = cellAlignmentButtonGroup.getSelection();
+		 if(selected == null){
+			 return "";
+		 }
 		 int option  = selected.getMnemonic() ; 
 		 if(option == 'N'){
 			 return "no_frame_alignment";
