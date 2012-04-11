@@ -341,11 +341,9 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 	    testOutputButton.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Output output = new Output(jTree1, file);
-				Segmentation seg = new Segmentation();
-				seg.show();
-				output.generate();
+			public void actionPerformed(ActionEvent arg0) {				
+				Segmentation seg = new Segmentation(jTree1, file);
+				seg.setVisible(true);
 			}
 		});
 	    buttonsPanel.add(testOutputButton);
