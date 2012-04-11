@@ -5,10 +5,15 @@
 
 package CellId;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.NumericShaper;
+import java.io.File;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
@@ -16,14 +21,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
+
+import utils.Output;
 
 /**
  * 
  * @author Gisela
  */
-public class Segmentation extends javax.swing.JDialog{
+public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	private static final ButtonGroup frameAlignmentButtonGroup = new ButtonGroup();
 	private static final ButtonGroup cellAlignmentButtonGroup = new ButtonGroup();
 	
@@ -34,15 +42,25 @@ public class Segmentation extends javax.swing.JDialog{
 	private static JSpinner backgroundRejectSpinner = new JSpinner();
 	private static JSpinner trackingComparisonSpinner = new JSpinner();
 	
-	public Segmentation() {
+	private final JTree jtree;
+	private final File directory;
+	
+	public Segmentation(JTree tree, File file) {
+		
+		super("Segmentation");
+		
+		this.jtree = tree;
+		this.directory = file;
 		
 		setTitle("Segmentation");
-		
-		getContentPane().setLayout(null);
+		setBackground(Color.LIGHT_GRAY);
+		setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 352, 243);
-		getContentPane().add(panel);
+		panel.setBounds(10, 40, 352, 243);
+		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panel.setBackground(Color.LIGHT_GRAY);
+		add(panel);
 		panel.setLayout(null);
 		
 		maxDistSpinner.setBounds(233, 11, 53, 18);
@@ -95,8 +113,9 @@ public class Segmentation extends javax.swing.JDialog{
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_1.setBounds(10, 265, 352, 197);
-		getContentPane().add(panel_1);
+		panel_1.setBounds(10, 285, 352, 197);
+		panel_1.setBackground(Color.LIGHT_GRAY);
+		add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel frameAlignmentLabel = new JLabel("Frame alignment");
@@ -106,19 +125,22 @@ public class Segmentation extends javax.swing.JDialog{
 		JRadioButton noFrameAlignmentRadioButton = new JRadioButton("no frame alignment");
 		noFrameAlignmentRadioButton.setMnemonic('N');
 		frameAlignmentButtonGroup.add(noFrameAlignmentRadioButton);
-		noFrameAlignmentRadioButton.setBounds(46, 32, 133, 23);
+		noFrameAlignmentRadioButton.setBounds(46, 32, 160, 23);
+		noFrameAlignmentRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(noFrameAlignmentRadioButton);
 		
 		JRadioButton alignToFirstRadioButton = new JRadioButton("align FL to first");
 		alignToFirstRadioButton.setMnemonic('F');
 		frameAlignmentButtonGroup.add(alignToFirstRadioButton);
 		alignToFirstRadioButton.setBounds(46, 58, 109, 23);
+		alignToFirstRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignToFirstRadioButton);
 		
 		JRadioButton alignToBFRadioButton = new JRadioButton("align FL to BF");
 		alignToBFRadioButton.setMnemonic('B');
 		frameAlignmentButtonGroup.add(alignToBFRadioButton);
 		alignToBFRadioButton.setBounds(46, 84, 109, 23);
+		alignToBFRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignToBFRadioButton);
 		
 		JLabel cellAlignmentLabel = new JLabel("Cell alignment");
@@ -128,33 +150,54 @@ public class Segmentation extends javax.swing.JDialog{
 		JRadioButton noCellAlignmentRadioButton = new JRadioButton("no cell alignment");
 		noCellAlignmentRadioButton.setMnemonic('N');
 		cellAlignmentButtonGroup.add(noCellAlignmentRadioButton);
-		noCellAlignmentRadioButton.setBounds(46, 135, 109, 23);
+		noCellAlignmentRadioButton.setBounds(46, 135, 160, 23);
+		noCellAlignmentRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(noCellAlignmentRadioButton);
 		
 		JRadioButton alignIndividualRadioButton = new JRadioButton("align individual cells");
 		alignIndividualRadioButton.setMnemonic('I');
 		cellAlignmentButtonGroup.add(alignIndividualRadioButton);
-		alignIndividualRadioButton.setBounds(46, 161, 133, 23);
+		alignIndividualRadioButton.setBounds(46, 161, 160, 23);
+		alignIndividualRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignIndividualRadioButton);
 		
 		cellAlignmentButtonGroup.setSelected(noCellAlignmentRadioButton.getModel(), true);
 		frameAlignmentButtonGroup.setSelected(noFrameAlignmentRadioButton.getModel(), true);
 		
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setBounds(10, 478, 91, 23);
-		getContentPane().add(cancelButton);
+		cancelButton.setBounds(10, 498, 91, 23);
+		cancelButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO: Do not save changes. Or restore default values.
+				dispose();
+			}
+		});
+		add(cancelButton);
 		
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//TODO: Aca generar los archivos de salida y correr???
+				Output output = new Output(jtree, directory);
+				output.generate();
+				dispose();
 			}
 		});
-		okButton.setBounds(271, 473, 91, 23);
-		getContentPane().add(okButton);
+		okButton.setBounds(271, 493, 91, 23);
+		add(okButton);
 		
 		JButton applyButton = new JButton("Apply");
-		applyButton.setBounds(170, 473, 91, 23);
-		getContentPane().add(applyButton);
+		applyButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		applyButton.setBounds(170, 493, 91, 23);
+		add(applyButton);
 		setSize(400, 600);
 	}
 	
