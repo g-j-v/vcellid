@@ -52,7 +52,7 @@ public class TreeGenerator {
 				System.out.println(filePath);
 				if (picturePanel != null) {
 					picturePanel.setImage(new ImageCanvas(IJ
-							.openImage(directory.getAbsolutePath() + "/"
+							.openImage(directory.getAbsolutePath() + System.getProperty("file.separator")
 									+ filePath)));
 					picturePanel.getImage().paint(picturePanel.getGraphics());
 				}
