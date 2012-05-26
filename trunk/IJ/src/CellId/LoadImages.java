@@ -25,6 +25,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import panels.PicturePanel;
+import utils.CellIdRunner;
 import utils.Finder;
 import utils.Output;
 import utils.TreeGenerator;
@@ -39,13 +40,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTree jTree1;
+
 	PicturePanel picturePanel;
 	private String BAR = System.getProperty("file.separator");
-	
 
 	public LoadImages() {
 		super("Load Images");
-
 	}
 
 	public void run(String arg) {

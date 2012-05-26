@@ -43,7 +43,9 @@ public class Output {
 				appendToFiles(image,(i+1));
 			}
 			loadParameters(i+1);
+			
 		}
+//		CellIdRunner.getInstance().run();
 	}
 
 	//Va agregando al archivo correspondiente los nombres de las imagenes

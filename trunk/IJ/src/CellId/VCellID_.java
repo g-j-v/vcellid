@@ -6,6 +6,8 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import utils.CellIdRunner;
+
 public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 
 	// Botones del VCellId original
@@ -14,6 +16,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 	JButton loadImagesButton;
 	JButton imagesSetupButton;
 	JButton segmentationButton;
+	
 	
 	private static int BUTTON_WIDTH = 150;
 	private static int BUTTON_HEIGHT = 30;
@@ -25,6 +28,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 
 	public void run(String arg) {
 
+		CellIdRunner.getInstance().setCellIdPath("C:\\VCell-ID\\bin\\cell.exe");
 		cellIdPathButton = new JButton("CellID Path");
 		cellIdPathButton.addActionListener(new CellIdPath());
 //		cellIdPathButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
