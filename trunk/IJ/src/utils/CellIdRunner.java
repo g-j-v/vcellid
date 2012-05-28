@@ -1,8 +1,12 @@
 package utils;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CellIdRunner {
@@ -31,16 +35,22 @@ public class CellIdRunner {
 
 	
 
-	public void run(){
+	public void run(File directory){
 		try
 		{
 //			Runtime rt = Runtime.getRuntime();
 //			Process p = rt.exec(cellIdPath);
+			
+			System.out.println("Running for " + directory.getAbsoluteFile());
+			
 			List<String> command = new ArrayList<String>();
 			command.add(cellIdPath);
 			command.add("--bright");
-			command.add("bf_vcellid.txt");
-			Process p = new ProcessBuilder(cellIdPath).start();
+			command.add(directory.getAbsolutePath() + "\\Position1\\" + "bf_vcellid.txt");
+			command.add("--fluor");
+			command.add(directory.getAbsolutePath() + "\\Position1\\" + "fl_vcellid.txt");
+			command.add("--param=" + directory.getAbsolutePath() + "\\Position1\\" + "parameters_vcellid_out.txt");
+			Process p = new ProcessBuilder(command).start();
 			System.out.println(p);
 			InputStream in = p.getInputStream();
 			OutputStream out = p.getOutputStream ();
@@ -48,6 +58,13 @@ public class CellIdRunner {
 	 
 			//do whatever you want
 			//some more code
+			String line;
+			InputStreamReader isr = new InputStreamReader(in);
+			BufferedReader br = new BufferedReader(isr);
+
+			while ((line = br.readLine()) != null) {
+			  System.out.println(line);
+			}
 	 
 			p.destroy() ;
 		}catch(Exception exc){/*handle exception*/}
