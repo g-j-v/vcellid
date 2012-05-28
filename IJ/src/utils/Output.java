@@ -45,7 +45,7 @@ public class Output {
 			loadParameters(i+1);
 			
 		}
-//		CellIdRunner.getInstance().run();
+		CellIdRunner.getInstance().run(directory);
 	}
 
 	//Va agregando al archivo correspondiente los nombres de las imagenes
