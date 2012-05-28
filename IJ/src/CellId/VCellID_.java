@@ -60,7 +60,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		buttonPanel.add(buttonBox);
 		// Add the buttons and the log to this panel.
 		add(buttonPanel, BorderLayout.PAGE_START);
-		setSize(10+BUTTON_WIDTH, 4*BUTTON_HEIGHT+5*BUTTON_SPACING);
+		setSize(10+BUTTON_WIDTH, 3*BUTTON_HEIGHT+5*BUTTON_SPACING);
 		show();
 	}
 }

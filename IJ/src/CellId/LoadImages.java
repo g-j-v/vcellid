@@ -13,21 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
-import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import panels.PicturePanel;
 import utils.CellIdRunner;
 import utils.Finder;
-import utils.Output;
 import utils.TreeGenerator;
 
 
@@ -136,6 +133,14 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 	    buttonsPanel.setBorder(BorderFactory.createLineBorder (Color.blue, 2));
 	    buttonsPanel.setBackground(Color.white);
 
+		Box buttonsBox = Box.createVerticalBox();
+		
+		Box rootBox = Box.createHorizontalBox();
+		Box channelBox = Box.createHorizontalBox();
+		Box timeBox = Box.createHorizontalBox();
+		Box positionBox = Box.createHorizontalBox();
+
+		buttonsPanel.add(buttonsBox);
 	    JButton previousPositionButton = new JButton("Previous Position");
 	    previousPositionButton.setPreferredSize(new Dimension(150,20));
 	    previousPositionButton.addActionListener(new ActionListener() {
@@ -181,7 +186,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-	    buttonsPanel.add(previousPositionButton);
+//	    buttonsPanel.add(previousPositionButton);
+	    positionBox.add(previousPositionButton);
 	    
 	    JButton previousTimeButton = new JButton("Previous Time");
 	    previousTimeButton.setPreferredSize(new Dimension(150,20));
@@ -221,7 +227,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-	    buttonsPanel.add(previousTimeButton);
+//	    buttonsPanel.add(previousTimeButton);
+	    timeBox.add(previousTimeButton);
 	    
 	    JButton previousButton = new JButton("Previous Channel");
 	    previousButton.setPreferredSize(new Dimension(150,20));
@@ -255,7 +262,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				picturePanel.getImage().paint(picturePanel.getGraphics());
 			}
 		});
-	    buttonsPanel.add(previousButton);
+//	    buttonsPanel.add(previousButton);
+	    channelBox.add(previousButton);
 	    
 	    JButton rootButton = new JButton("Root");
 	    rootButton.setPreferredSize(new Dimension(150,20));
@@ -268,7 +276,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				jTree1.scrollPathToVisible(path);
 			}
 		});
-	    buttonsPanel.add(rootButton);
+//	    buttonsPanel.add(rootButton);
+	    rootBox.add(rootButton);
 	    
 	    JButton nextButton = new JButton("Next Channel");
 	    nextButton.setPreferredSize(new Dimension(150,20));
@@ -303,7 +312,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 			}
 		});
-	    buttonsPanel.add(nextButton);
+//	    buttonsPanel.add(nextButton);
+	    channelBox.add(nextButton);
 
 	    JButton nextTimeButton = new JButton("Next Time");
 	    nextTimeButton.setPreferredSize(new Dimension(150,20));
@@ -343,7 +353,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-	    buttonsPanel.add(nextTimeButton);
+//	    buttonsPanel.add(nextTimeButton);
+	    timeBox.add(nextTimeButton);
 	    
 	    JButton nextPositionButton = new JButton("Next Position");
 	    nextPositionButton.setPreferredSize(new Dimension(150,20));
@@ -392,12 +403,20 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				
 			}
 		});
-	    buttonsPanel.add(nextPositionButton);
+//	    buttonsPanel.add(nextPositionButton);
+	    positionBox.add(nextPositionButton);
+	    
+	    buttonsBox.add(rootBox);
+	    buttonsBox.add(channelBox);
+	    buttonsBox.add(timeBox);
+	    buttonsBox.add(positionBox);
+	    
+	    buttonsPanel.add(buttonsBox);
 	    
 	    //////////////////////////////////////////////////////////////////////
 	    /////////////////////FOR TEST/////////////////////////////////////////
 	    JButton testOutputButton = new JButton("Test Output Generation");
-	    testOutputButton.setPreferredSize(new Dimension(150,20));
+	    testOutputButton.setPreferredSize(new Dimension(180,20));
 	    testOutputButton.addActionListener(new ActionListener() {
 			
 			@Override
