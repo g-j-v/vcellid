@@ -45,7 +45,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	private final JTree jtree;
 	private final File directory;
 	
-	public Segmentation(JTree tree, File file) {
+	public Segmentation(JTree tree, File file, final boolean test) {
 		
 		super("Segmentation");
 		
@@ -181,7 +181,11 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				//TODO: Aca generar los archivos de salida y correr???
 				Output output = new Output(jtree, directory);
-				output.generate();
+				if(test){
+					output.generateTest();
+				}else{
+					output.generateRun();
+				}
 				dispose();
 			}
 		});
