@@ -23,7 +23,7 @@ public class Output {
 	}
 	
 	
-	public void generate(){
+	public void generateRun(){
 
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		int positions = tree.getModel().getChildCount(root);
@@ -48,6 +48,10 @@ public class Output {
 		CellIdRunner.getInstance().run(directory);
 	}
 
+	public void generateTest(){
+		
+	}
+	
 	//Va agregando al archivo correspondiente los nombres de las imagenes
 	private void appendToFiles(String image, int position ) {
 		if(!image.toLowerCase().contains(".out")){

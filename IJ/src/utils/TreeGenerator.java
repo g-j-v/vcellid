@@ -23,6 +23,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import CellId.Segmentation;
+
 import panels.PicturePanel;
 
 public class TreeGenerator {
@@ -41,11 +43,15 @@ public class TreeGenerator {
 		final JTree tree;
 		//For PopUp
 		final JPopupMenu popup = new JPopupMenu();
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
+		createNodes(top, directory);
+		tree = new JTree(top);
 		popup.add(new JMenuItem("Test Cell Id")).addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// LLamar a Segmentation en test
+				Segmentation seg = new Segmentation(tree, directory,true);
+				seg.setVisible(true);
 				
 			}
 		});
@@ -53,14 +59,11 @@ public class TreeGenerator {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// LLamar a Segmentation en run
-				
+				Segmentation seg = new Segmentation(tree, directory,false);
+				seg.setVisible(true);
 			}
 		});
-		
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
-		createNodes(top, directory);
-		tree = new JTree(top);
+	
 		popup.setInvoker(tree);
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 

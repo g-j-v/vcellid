@@ -416,18 +416,18 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 	    
 	    //////////////////////////////////////////////////////////////////////
 	    /////////////////////FOR TEST/////////////////////////////////////////
-	    JButton testOutputButton = new JButton("Test Output Generation");
-	    testOutputButton.setPreferredSize(new Dimension(180,20));
-	    testOutputButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {				
-				Segmentation seg = new Segmentation(jTree1, file);
-				seg.setVisible(true);
-			}
-		});
-	    buttonsPanel.add(testOutputButton);
-	    
+//	    JButton testOutputButton = new JButton("Test Output Generation");
+//	    testOutputButton.setPreferredSize(new Dimension(180,20));
+//	    testOutputButton.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {				
+//				Segmentation seg = new Segmentation(jTree1, file);
+//				seg.setVisible(true);
+//			}
+//		});
+//	    buttonsPanel.add(testOutputButton);
+//	    
 	    /////////////////////////////////////////////////////////////////////
 	    /////////////////////////////////////////////////////////////////////
 	    add(buttonsPanel, BorderLayout.SOUTH);
