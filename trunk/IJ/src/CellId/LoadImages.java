@@ -274,6 +274,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				TreePath path = new TreePath(((DefaultTreeModel)jTree1.getModel()).getPathToRoot((TreeNode)jTree1.getModel().getRoot()));
 				jTree1.setSelectionPath(path);
 				jTree1.scrollPathToVisible(path);
+				jTree1.collapsePath(path);
 			}
 		});
 //	    buttonsPanel.add(rootButton);

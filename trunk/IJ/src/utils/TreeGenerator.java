@@ -4,17 +4,24 @@ import ij.IJ;
 import ij.gui.ImageCanvas;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import panels.PicturePanel;
 
@@ -32,9 +39,29 @@ public class TreeGenerator {
 
 	public JTree generateTree(final PicturePanel picturePanel) {
 		final JTree tree;
+		//For PopUp
+		final JPopupMenu popup = new JPopupMenu();
+		popup.add(new JMenuItem("Test Cell Id")).addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// LLamar a Segmentation en test
+				
+			}
+		});
+		popup.add(new JMenuItem("Run Cell Id")).addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// LLamar a Segmentation en run
+				
+			}
+		});
+		
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
 		createNodes(top, directory);
 		tree = new JTree(top);
+		popup.setInvoker(tree);
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
 			@Override
@@ -60,8 +87,65 @@ public class TreeGenerator {
 
 			}
 		});
+		tree.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent evt) {
+				if(evt.getButton() != MouseEvent.BUTTON3){
+					return;
+				}
+				System.out.println("Largo el boton derecho");	
+				TreePath selPath = tree.getPathForLocation(evt.getX(), evt.getY());
+		        if (selPath == null){
+		            return;
+		        }else{
+		            tree.setSelectionPath(selPath);
+		        }
+		        if (evt.isPopupTrigger()) {
+		            popup.show(evt.getComponent(), evt.getX(), evt.getY());
+		        }
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent evt) {
+				if(evt.getButton() != MouseEvent.BUTTON3){
+					return;
+				}
+				System.out.println("Aprieto el boton derecho");	
+				TreePath selPath = tree.getPathForLocation(evt.getX(), evt.getY());
+		        if (selPath == null){
+		            return;
+		        }else{
+		            tree.setSelectionPath(selPath);
+		        }
+		        if (evt.isPopupTrigger()) {
+		            popup.show(evt.getComponent(), evt.getX(), evt.getY());
+		        }
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		return tree;
 	}
+	
 
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
@@ -76,6 +160,8 @@ public class TreeGenerator {
 					position);
 			top.add(positionNode);
 			int maxTimesForPosition = getMaxTime(position);
+			//TODO: Para generar todo el arbol, reemplazar getMaxTime(position) por getMaxTime()
+			//		de esta forma siempre se generar los nodos de tiempos
 			for (int j = 1; j <= maxTimesForPosition; ++j) {
 				Time time = new Time(position, j);
 				DefaultMutableTreeNode timeNode = new DefaultMutableTreeNode(
@@ -85,6 +171,9 @@ public class TreeGenerator {
 				File[] files = directory.listFiles(new NameFilter(position,
 						time));
 				time.setFiles(files);
+				//TODO:	Para generar todos los nodos de archivos, usar la funcion getAllFiles()
+				//		para verificar todos los archivos que existen y en el siguiente for
+				//		crear los nodos aunque no existan
 				for (File f : files) {
 					timeNode.add(new DefaultMutableTreeNode(f.getName()));
 				}
@@ -149,6 +238,17 @@ public class TreeGenerator {
 			}
 		}
 		// System.out.println("Max time:" + max);
+		return max;
+	}
+	
+	public int getMaxTime(){
+		int max = 0;
+		for(int i = 0; i < getMaxPosition(); ++i){
+			int currentMax = getMaxTime(new Position(i));
+			if(currentMax  > max){
+				max = currentMax;
+			}
+		}
 		return max;
 	}
 
