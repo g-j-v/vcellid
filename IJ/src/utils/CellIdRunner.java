@@ -50,8 +50,13 @@ public class CellIdRunner {
 			command.add("--fluor");
 			command.add(directory.getAbsolutePath() + "\\Position1\\" + "fl_vcellid.txt");
 			command.add("--param=" + directory.getAbsolutePath() + "\\Position1\\" + "parameters_vcellid_out.txt");
-			Process p = new ProcessBuilder(command).start();
-			System.out.println(p);
+//			System.out.println(System.getProperty("user.dir"));
+//			System.setProperty("user.dir", directory.getAbsolutePath());
+//			System.out.println(System.getProperty("user.dir"));
+			ProcessBuilder processBuilder = new ProcessBuilder(command);
+			processBuilder.directory(directory.getAbsoluteFile());
+			System.out.println(processBuilder.directory());
+			Process p = processBuilder.start();
 			InputStream in = p.getInputStream();
 			OutputStream out = p.getOutputStream ();
 			InputStream err = p.getErrorStream();

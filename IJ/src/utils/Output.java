@@ -58,8 +58,8 @@ public class Output {
 
 				try {
 					FileWriter writer = new FileWriter(bfFile,true);
-					writer.append(directory + "\\Position" + position + "\\" + image + "\r\n");
-					writer.append(directory + "\\Position" + position + "\\" + image + "\r\n");
+					writer.append(directory + "\\" + image + "\r\n");
+					writer.append(directory + "\\" + image + "\r\n");
 					writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add image to bf_vcellid.txt");
@@ -72,7 +72,7 @@ public class Output {
 
 				try {
 					FileWriter writer = new FileWriter(bfFile,true);
-					writer.append(directory + "\\Position" + position + "\\" +image + "\r\n");
+					writer.append(directory + "\\" +image + "\r\n");
 					writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add image to fl_vcellid.txt");
@@ -137,10 +137,12 @@ public class Output {
 	//Crea el directorio de la posicion y lo retorna
 	private File createDirectory(int i) {
 		File positionDirectory = new File(directory + "\\Position" + i);
-		if(positionDirectory.mkdir()){
-			return positionDirectory;
+		if(positionDirectory.exists()){
+			for( File f: positionDirectory.listFiles()){
+				f.delete();
+			}
 		}
-		return null;
+		return positionDirectory;
 	}
 
 	public void loadParameters(int position){
