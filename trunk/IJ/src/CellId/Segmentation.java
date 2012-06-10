@@ -186,6 +186,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 				}else{
 					output.generateRun();
 				}
+				output.run();
 				dispose();
 			}
 		});

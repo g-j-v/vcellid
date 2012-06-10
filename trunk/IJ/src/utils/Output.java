@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import CellId.Segmentation;
 
@@ -45,14 +46,94 @@ public class Output {
 			loadParameters(i+1);
 			
 		}
-		CellIdRunner.getInstance().run(directory);
+//		CellIdRunner.getInstance().run(directory);
 	}
 
 	public void generateTest(){
-		
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+		int positions = tree.getModel().getChildCount(root);
+
+		for(int i = 0; i < positions; ++i){
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
+			String fileName = node.getUserObject().toString();
+			
+			File positionDirectory = createDirectory(i + 1);
+			if(positionDirectory == null){
+				System.out.println("Directory could not be created");
+				return;
+			}
+			createFiles(positionDirectory);
+			List<String> allPositionImages;
+			if(tree.getSelectionPath().getParentPath() == null ||
+					((DefaultMutableTreeNode)tree.getSelectionPath().getLastPathComponent()).getUserObject() instanceof Position ){
+				allPositionImages = getAllImages(node);				
+			}else{
+				allPositionImages = getTimeImages((DefaultMutableTreeNode)tree.getSelectionPath().getPathComponent(2));
+			}
+			for(String image: allPositionImages){
+				appendToBF(image,(i+1));
+			}
+			loadParameters(i+1);
+			
+		}
 	}
 	
-	//Va agregando al archivo correspondiente los nombres de las imagenes
+	public void run(){
+		TreePath selected = tree.getSelectionPath();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+		int positions = tree.getModel().getChildCount(root);
+		int position;
+		
+		if(selected.getParentPath() == null){
+			position = 0;
+		}else{
+			position = ((Position)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
+		}
+		if(position > 0){
+			CellIdRunner.getInstance().run(directory,position);			
+		}else{
+			for(int i = 1; i <= positions; ++i){
+				CellIdRunner.getInstance().run(directory,i);
+			}
+		}
+
+	}
+	
+	//Va agregando al archivo correspondiente los nombres de las imagenes BF
+	private void appendToBF(String image, int position ) {
+		if(!image.toLowerCase().contains(".out")){
+
+			if(image.toUpperCase().contains("BF")){
+
+				File bfFile = new File(directory + "\\Position" + position + "\\bf_vcellid.txt");
+
+				try {
+					FileWriter writer = new FileWriter(bfFile,true);
+					writer.append(directory + "\\" + image + "\r\n");
+					writer.close();
+				} catch (IOException e) {
+					System.out.println("Could not add BF image to bf_vcellid.txt");
+					return;
+				}
+
+				File FlFile = new File(directory + "\\Position" + position + "\\fl_vcellid.txt");
+
+				try {
+					FileWriter writer = new FileWriter(FlFile,true);
+					writer.append(directory + "\\" +image + "\r\n");
+					writer.close();
+				} catch (IOException e) {
+					System.out.println("Could not add BF image to fl_vcellid.txt");
+					return;
+				}
+			}else{
+				System.out.println("No image to add");
+			}
+
+		}
+	}
+	
+	//Va agregando al archivo correspondiente los nombres de las imagenes BF y FL
 	private void appendToFiles(String image, int position ) {
 		if(!image.toLowerCase().contains(".out")){
 
@@ -66,20 +147,20 @@ public class Output {
 					writer.append(directory + "\\" + image + "\r\n");
 					writer.close();
 				} catch (IOException e) {
-					System.out.println("Could not add image to bf_vcellid.txt");
+					System.out.println("Could not add BF image to bf_vcellid.txt");
 					return;
 				}
 
 			}else if(image.toUpperCase().contains("YFP") || image.toUpperCase().contains("CFP")){
 
-				File bfFile = new File(directory + "\\Position" + position + "\\fl_vcellid.txt");
+				File FlFile = new File(directory + "\\Position" + position + "\\fl_vcellid.txt");
 
 				try {
-					FileWriter writer = new FileWriter(bfFile,true);
+					FileWriter writer = new FileWriter(FlFile,true);
 					writer.append(directory + "\\" +image + "\r\n");
 					writer.close();
 				} catch (IOException e) {
-					System.out.println("Could not add image to fl_vcellid.txt");
+					System.out.println("Could not add FL image to fl_vcellid.txt");
 					return;
 				}
 			}else{
@@ -102,6 +183,16 @@ public class Output {
 				childNode = childNode.getNextSibling();
 				i = -1;
 			}
+		}
+		return images;
+	}
+	
+	private List<String> getTimeImages(DefaultMutableTreeNode node){
+		List<String> images = new ArrayList<String>();
+		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
+		while(childNode != null){
+			images.add(childNode.getUserObject().toString());
+			childNode = childNode.getNextSibling();
 		}
 		return images;
 	}
