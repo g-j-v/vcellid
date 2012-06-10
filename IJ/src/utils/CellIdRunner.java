@@ -35,7 +35,7 @@ public class CellIdRunner {
 
 	
 
-	public void run(File directory){
+	public void run(File directory, int position){
 		try
 		{
 //			Runtime rt = Runtime.getRuntime();
@@ -46,10 +46,10 @@ public class CellIdRunner {
 			List<String> command = new ArrayList<String>();
 			command.add(cellIdPath);
 			command.add("--bright");
-			command.add(directory.getAbsolutePath() + "\\Position1\\" + "bf_vcellid.txt");
+			command.add(directory.getAbsolutePath() + "\\Position"+ position + "\\bf_vcellid.txt");
 			command.add("--fluor");
-			command.add(directory.getAbsolutePath() + "\\Position1\\" + "fl_vcellid.txt");
-			command.add("--param=" + directory.getAbsolutePath() + "\\Position1\\" + "parameters_vcellid_out.txt");
+			command.add(directory.getAbsolutePath() + "\\Position" + position + "\\fl_vcellid.txt");
+			command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\parameters_vcellid_out.txt");
 //			System.out.println(System.getProperty("user.dir"));
 //			System.setProperty("user.dir", directory.getAbsolutePath());
 //			System.out.println(System.getProperty("user.dir"));
