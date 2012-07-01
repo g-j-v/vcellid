@@ -43,7 +43,9 @@ public class TreeGenerator {
 		final JTree tree;
 		// For PopUp
 		final JPopupMenu RootPosPopup = new JPopupMenu();
-		final JPopupMenu TimeBfPopup = new JPopupMenu();
+		final JPopupMenu TimePopup = new JPopupMenu();
+		final JPopupMenu BfPopup = new JPopupMenu();
+		final JPopupMenu FlImagePopup = new JPopupMenu();
 
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
 		createNodes(top, directory);
@@ -73,7 +75,7 @@ public class TreeGenerator {
 
 		RootPosPopup.setInvoker(tree);
 
-		TimeBfPopup.add(new JMenuItem("Run Position")).addActionListener(
+		TimePopup.add(new JMenuItem("Run Position")).addActionListener(
 				new ActionListener() {
 
 					@Override
@@ -92,7 +94,7 @@ public class TreeGenerator {
 		// seg.setVisible(true);
 		// }
 		// });
-		TimeBfPopup.add(new JMenuItem("Test Time")).addActionListener(
+		TimePopup.add(new JMenuItem("Test Time")).addActionListener(
 				new ActionListener() {
 
 					@Override
@@ -103,7 +105,51 @@ public class TreeGenerator {
 					}
 				});
 
-		TimeBfPopup.setInvoker(tree);
+		TimePopup.setInvoker(tree);
+		
+		BfPopup.add(new JMenuItem("Run Position")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						Segmentation seg = new Segmentation(tree, directory,
+								false);
+						seg.setVisible(true);
+					}
+				});
+
+		BfPopup.add(new JMenuItem("Test Time")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						Segmentation seg = new Segmentation(tree, directory,
+								true);
+						seg.setVisible(true);
+					}
+				});
+
+		BfPopup.add(new JMenuItem("Open in new window")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						//TODO: Gise
+					}
+				});
+
+		BfPopup.setInvoker(tree);
+		
+		FlImagePopup.add(new JMenuItem("Open in new window")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						//TODO: Gise
+					}
+				});
+		FlImagePopup.setInvoker(tree);
+
 
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
@@ -217,13 +263,18 @@ public class TreeGenerator {
 						RootPosPopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else if (((DefaultMutableTreeNode) selPath
-							.getLastPathComponent()).getUserObject() instanceof TimeNode
-							|| ((String) ((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject() instanceof TimeNode){
+						TimePopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					}else if(((String) ((DefaultMutableTreeNode) selPath
 									.getLastPathComponent()).getUserObject())
 									.contains("BF")) {
-						TimeBfPopup.show(evt.getComponent(), evt.getX(),
+						BfPopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
-					} else {
+					} else if(((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("CFP")
+							|| ((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("YFP")) {
+						FlImagePopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					}else{
 						System.out.println("No Popup to show");
 					}
 					// popup.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -247,19 +298,16 @@ public class TreeGenerator {
 				if (evt.isPopupTrigger()) {
 					System.out.println(selPath);
 					System.out.println(selPath);
-					if (selPath.getParentPath() == null
-							|| ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject() instanceof PositionNode) {
-						RootPosPopup.show(evt.getComponent(), evt.getX(),
-								evt.getY());
-					} else if (((DefaultMutableTreeNode) selPath
-							.getLastPathComponent()).getUserObject() instanceof TimeNode
-							|| ((String) ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject())
-									.contains("BF")) {
-						TimeBfPopup.show(evt.getComponent(), evt.getX(),
-								evt.getY());
-					} else {
+					if (selPath.getParentPath() == null	|| ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof PositionNode) {
+						RootPosPopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					}  else if (((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof TimeNode){
+						TimePopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					}else if(((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("BF")) {
+						BfPopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					} else if(((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("CFP")
+							|| ((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("YFP")) {
+						FlImagePopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					}else{
 						System.out.println("No Popup to show");
 					}
 					// popup.show(evt.getComponent(), evt.getX(), evt.getY());
