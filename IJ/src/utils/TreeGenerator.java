@@ -152,7 +152,7 @@ public class TreeGenerator {
 
 
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
-
+			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 
@@ -168,7 +168,9 @@ public class TreeGenerator {
 					System.out.println("hola");
 					return;
 				}
-
+				
+				
+				
 				Integer channel = node.getParent().getIndex(node);
 				DisplayRangeObject dro = displayRanges.get(channel);
 
