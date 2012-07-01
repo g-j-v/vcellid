@@ -5,12 +5,14 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.ImageWindow;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,9 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 import CellId.Segmentation;
 
@@ -31,12 +35,14 @@ public class TreeGenerator {
 	private File directory;
 	private List<String> fileNames;
 	private Map<Integer, DisplayRangeObject> displayRanges;
+	private static ImagePlus emptyImage = new ImagePlus("resources\\EmptyImage.tiff");
 
 	public TreeGenerator(Finder finder, File directory) {
 		this.finder = finder;
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
 		this.displayRanges = new HashMap<Integer, DisplayRangeObject>();
+		
 	}
 
 	public JTree generateTree() {
@@ -262,19 +268,14 @@ public class TreeGenerator {
 					if (selPath.getParentPath() == null
 							|| ((DefaultMutableTreeNode) selPath
 									.getLastPathComponent()).getUserObject() instanceof PositionNode) {
-						RootPosPopup.show(evt.getComponent(), evt.getX(),
-								evt.getY());
+						RootPosPopup.show(evt.getComponent(), evt.getX(),evt.getY());
 					} else if (((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject() instanceof TimeNode){
-						TimePopup.show(evt.getComponent(), evt.getX(),
-								evt.getY());
-					}else if(((String) ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject())
-									.contains("BF")) {
-						BfPopup.show(evt.getComponent(), evt.getX(),
-								evt.getY());
-					} else if(((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("CFP")
-							|| ((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("YFP")) {
+						TimePopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					}else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("BF")) {
+						BfPopup.show(evt.getComponent(), evt.getX(),evt.getY());
+					} else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("CFP")
+							|| ((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("YFP")) {
 						FlImagePopup.show(evt.getComponent(), evt.getX(),evt.getY());
 					}else{
 						System.out.println("No Popup to show");
@@ -304,10 +305,10 @@ public class TreeGenerator {
 						RootPosPopup.show(evt.getComponent(), evt.getX(),evt.getY());
 					}  else if (((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof TimeNode){
 						TimePopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					}else if(((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("BF")) {
+					}else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("BF")) {
 						BfPopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					} else if(((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("CFP")
-							|| ((String) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).contains("YFP")) {
+					} else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("CFP")
+							|| ((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("YFP")) {
 						FlImagePopup.show(evt.getComponent(), evt.getX(),evt.getY());
 					}else{
 						System.out.println("No Popup to show");
@@ -341,7 +342,8 @@ public class TreeGenerator {
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
 		List<String> fileNames = finder.find(directory);
-
+		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+		
 		System.out.println("TAM: " + fileNames.size());
 		int maxPositions = getMaxPosition();
 		int maxTimeAllPosition = getMaxTime();
@@ -353,22 +355,57 @@ public class TreeGenerator {
 			top.add(positionNode);
 			for (int j = 1; j <= maxTimeAllPosition; ++j) {
 				TimeNode time = new TimeNode(position, j);
-				int maxTimesForPosition = getMaxTime(position);
 				DefaultMutableTreeNode timeNode = new DefaultMutableTreeNode(
 						time);
 				// Adding Time node to position
 				positionNode.add(timeNode);
 				File[] files = directory.listFiles(new NameFilter(position,time));
 				time.setFiles(files);
-				// TODO: Para generar todos los nodos de archivos, usar la
-				// funcion getAllFiles()
-				// para verificar todos los archivos que existen y en el
-				// siguiente for
-				// crear los nodos aunque no existan
-				for (File f : files) {
-					timeNode.add(new DefaultMutableTreeNode(f.getName()));
+				
+				String name;
+				name = getBf(files);
+				if(name == null){
+					//nodo que no existe, indicarlo con imagen vacia y nombre en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_BF",true)));
+					renderer.setBackground(Color.RED);
+				}else{
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
 				}
-
+				name = getBfOut(files);
+				if(name == null){
+					//nodo que no existe, indicarlo con imagen vacia y nombre en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_BF_OUT",true)));
+				}else{
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				}
+				name = getYfp(files);
+				if(name == null){
+					//nodo que no existe, indicarlo con imagen vacia y nombre en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_YFP",true)));
+				}else{
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				}
+				name = getYfpOut(files);
+				if(name == null){
+					//nodo que no existe, indicarlo con imagen vacia y nombre en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_YFP_OUT",true)));
+				}else{
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				}
+				name = getCfp(files);
+				if(name == null){
+					//nodo que no existe, indicarlo con imagen vacia y nombre en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_CFP",true)));
+				}else{
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				}
+				name = getCfpOut(files);
+				if(name == null){
+					//nodo que no existe, indicarlo con imagen vacia y nombre en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_CFP_OUT",true)));
+				}else{
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				}
 			}
 
 		}
@@ -464,6 +501,61 @@ public class TreeGenerator {
 			}
 		}
 
+	}
+	
+	private String getBf(File[] files){
+		for(File file: files){
+			if(file.getName().toLowerCase().contains("bf") && 
+					!file.getName().toLowerCase().contains(".out.tif")){
+				return file.getName();
+			}
+		}
+		return null;
+	}
+	private String getBfOut(File[] files){
+		for(File file: files){
+			if(file.getName().toLowerCase().contains("bf") && 
+					file.getName().toLowerCase().contains(".out.tif")){
+				return file.getName();
+			}
+		}
+		return null;
+	}
+	private String getYfp(File[] files){
+		for(File file: files){
+			if(file.getName().toLowerCase().contains("yfp") && 
+					!file.getName().toLowerCase().contains(".out.tif")){
+				return file.getName();
+			}
+		}
+		return null;
+	}
+	private String getYfpOut(File[] files){
+		for(File file: files){
+			if(file.getName().toLowerCase().contains("yfp") && 
+					file.getName().toLowerCase().contains(".out.tif")){
+				return file.getName();
+			}
+		}
+		return null;
+	}
+	private String getCfp(File[] files){
+		for(File file: files){
+			if(file.getName().toLowerCase().contains("cfp") && 
+					!file.getName().toLowerCase().contains(".out.tif")){
+				return file.getName();
+			}
+		}
+		return null;
+	}
+	private String getCfpOut(File[] files){
+		for(File file: files){
+			if(file.getName().toLowerCase().contains("cfp") && 
+					file.getName().toLowerCase().contains(".out.tif")){
+				return file.getName();
+			}
+		}
+		return null;
 	}
 
 	public Map<Integer, DisplayRangeObject> getDisplayRanges() {
