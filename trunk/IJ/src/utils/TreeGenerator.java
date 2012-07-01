@@ -213,11 +213,11 @@ public class TreeGenerator {
 					System.out.println(selPath);
 					if (selPath.getParentPath() == null
 							|| ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject() instanceof Position) {
+									.getLastPathComponent()).getUserObject() instanceof PositionNode) {
 						RootPosPopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else if (((DefaultMutableTreeNode) selPath
-							.getLastPathComponent()).getUserObject() instanceof Time
+							.getLastPathComponent()).getUserObject() instanceof TimeNode
 							|| ((String) ((DefaultMutableTreeNode) selPath
 									.getLastPathComponent()).getUserObject())
 									.contains("BF")) {
@@ -249,11 +249,11 @@ public class TreeGenerator {
 					System.out.println(selPath);
 					if (selPath.getParentPath() == null
 							|| ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject() instanceof Position) {
+									.getLastPathComponent()).getUserObject() instanceof PositionNode) {
 						RootPosPopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else if (((DefaultMutableTreeNode) selPath
-							.getLastPathComponent()).getUserObject() instanceof Time
+							.getLastPathComponent()).getUserObject() instanceof TimeNode
 							|| ((String) ((DefaultMutableTreeNode) selPath
 									.getLastPathComponent()).getUserObject())
 									.contains("BF")) {
@@ -294,24 +294,21 @@ public class TreeGenerator {
 
 		System.out.println("TAM: " + fileNames.size());
 		int maxPositions = getMaxPosition();
+		int maxTimeAllPosition = getMaxTime();
 		for (int i = 1; i <= maxPositions; ++i) {
-			Position position = new Position(i);
+			PositionNode position = new PositionNode(i);
 			// Adding position to root
 			DefaultMutableTreeNode positionNode = new DefaultMutableTreeNode(
 					position);
 			top.add(positionNode);
-			int maxTimesForPosition = getMaxTime(position);
-			// TODO: Para generar todo el arbol, reemplazar getMaxTime(position)
-			// por getMaxTime()
-			// de esta forma siempre se generar los nodos de tiempos
-			for (int j = 1; j <= maxTimesForPosition; ++j) {
-				Time time = new Time(position, j);
+			for (int j = 1; j <= maxTimeAllPosition; ++j) {
+				TimeNode time = new TimeNode(position, j);
+				int maxTimesForPosition = getMaxTime(position);
 				DefaultMutableTreeNode timeNode = new DefaultMutableTreeNode(
 						time);
 				// Adding Time node to position
 				positionNode.add(timeNode);
-				File[] files = directory.listFiles(new NameFilter(position,
-						time));
+				File[] files = directory.listFiles(new NameFilter(position,time));
 				time.setFiles(files);
 				// TODO: Para generar todos los nodos de archivos, usar la
 				// funcion getAllFiles()
@@ -357,7 +354,7 @@ public class TreeGenerator {
 		return max;
 	}
 
-	public int getMaxTime(Position position) {
+	public int getMaxTime(PositionNode position) {
 
 		// TODO: Para generalizar todavia mas podemos recibir un parametro
 		// que identifique el nombre con el que empieza el tiempo, o guardarlo
@@ -389,7 +386,7 @@ public class TreeGenerator {
 	public int getMaxTime() {
 		int max = 0;
 		for (int i = 0; i < getMaxPosition(); ++i) {
-			int currentMax = getMaxTime(new Position(i));
+			int currentMax = getMaxTime(new PositionNode(i));
 			if (currentMax > max) {
 				max = currentMax;
 			}
@@ -399,10 +396,10 @@ public class TreeGenerator {
 
 	private class NameFilter implements FilenameFilter {
 
-		Position position;
-		Time time;
+		PositionNode position;
+		TimeNode time;
 
-		private NameFilter(Position position, Time time) {
+		private NameFilter(PositionNode position, TimeNode time) {
 
 			this.position = position;
 			this.time = time;

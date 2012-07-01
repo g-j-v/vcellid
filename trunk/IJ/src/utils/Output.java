@@ -65,7 +65,7 @@ public class Output {
 			createFiles(positionDirectory);
 			List<String> allPositionImages;
 			if(tree.getSelectionPath().getParentPath() == null ||
-					((DefaultMutableTreeNode)tree.getSelectionPath().getLastPathComponent()).getUserObject() instanceof Position ){
+					((DefaultMutableTreeNode)tree.getSelectionPath().getLastPathComponent()).getUserObject() instanceof PositionNode ){
 				allPositionImages = getAllImages(node);				
 			}else{
 				allPositionImages = getTimeImages((DefaultMutableTreeNode)tree.getSelectionPath().getPathComponent(2));
@@ -87,7 +87,7 @@ public class Output {
 		if(selected.getParentPath() == null){
 			position = 0;
 		}else{
-			position = ((Position)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
+			position = ((PositionNode)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
 		}
 		if(position > 0){
 			CellIdRunner.getInstance().run(directory,position);			
