@@ -13,17 +13,17 @@ import java.util.List;
  *
  * @author apetit
  */
-public class Time {
+public class TimeNode {
 
     List<File> files;
-    Position position;
+    PositionNode position;
     Integer number;
 
-    public Time(Position position, int number){
+    public TimeNode(PositionNode position, int number){
         this(position,number,new ArrayList<File>());
     }
 
-    public Time(Position position, int number, List<File> files){
+    public TimeNode(PositionNode position, int number, List<File> files){
         setPosition(position);
         setNumber(number);
         setFiles(files);
@@ -69,7 +69,7 @@ public class Time {
 
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(PositionNode position) {
         if(position != null){
             this.position = position;
         }else{
@@ -82,7 +82,7 @@ public class Time {
         return number;
     }
 
-    public Position getPosition() {
+    public PositionNode getPosition() {
         return position;
     }
 

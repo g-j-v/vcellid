@@ -11,21 +11,21 @@ import java.util.List;
  *
  * @author apetit
  */
-public class Position {
+public class PositionNode {
 
-    List<Time> times;
+    List<TimeNode> times;
     Integer number;
 
-    public Position(int number){
+    public PositionNode(int number){
         this.number = number;
     }
 
 
-    public List<Time> getTimes() {
+    public List<TimeNode> getTimes() {
         return times;
     }
 
-    public void setTimes(List<Time> times) {
+    public void setTimes(List<TimeNode> times) {
         this.times = times;
     }
 
