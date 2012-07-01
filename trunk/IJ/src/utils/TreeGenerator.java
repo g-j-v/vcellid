@@ -6,6 +6,8 @@ import ij.WindowManager;
 import ij.gui.ImageWindow;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -56,6 +58,7 @@ public class TreeGenerator {
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
 		createNodes(top, directory);
 		tree = new JTree(top);
+		tree.setCellRenderer(new MyRenderer());
 		RootPosPopup.add(new JMenuItem("Run")).addActionListener(
 				new ActionListener() {
 
@@ -339,10 +342,10 @@ public class TreeGenerator {
 		return tree;
 	}
 
+
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
 		List<String> fileNames = finder.find(directory);
-		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 		
 		System.out.println("TAM: " + fileNames.size());
 		int maxPositions = getMaxPosition();
@@ -367,7 +370,6 @@ public class TreeGenerator {
 				if(name == null){
 					//nodo que no existe, indicarlo con imagen vacia y nombre en color
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_BF",true)));
-					renderer.setBackground(Color.RED);
 				}else{
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
 				}
@@ -560,6 +562,41 @@ public class TreeGenerator {
 
 	public Map<Integer, DisplayRangeObject> getDisplayRanges() {
 		return displayRanges;
+	}
+
+	private class MyRenderer extends DefaultTreeCellRenderer{
+	
+		public Component getTreeCellRendererComponent(
+				JTree tree,
+				Object value,
+				boolean sel,
+				boolean expanded,
+				boolean leaf,
+				int row,
+				boolean hasFocus) {
+
+			super.getTreeCellRendererComponent(
+					tree, value, sel,
+					expanded, leaf, row,
+					hasFocus);
+			
+			if (leaf && isFakeImageNode(value)) {
+				setForeground(Color.RED);
+			}
+
+			return this;
+		}
+
+		protected boolean isFakeImageNode(Object value) {
+			DefaultMutableTreeNode node =
+					(DefaultMutableTreeNode)value;
+			ImageNode nodeInfo = (ImageNode)(node.getUserObject());
+			if(nodeInfo.isFake()){
+				return true;
+			}
+			return false;
+			
+		}
 	}
 
 }
