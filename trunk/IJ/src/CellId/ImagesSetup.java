@@ -128,7 +128,7 @@ public class ImagesSetup extends ij.plugin.frame.PlugInFrame implements ActionLi
 
 		TreeGenerator treeGenerator = new TreeGenerator(finder, file);
 		
-		jTree1 = treeGenerator.generateTree(null);
+		jTree1 = treeGenerator.generateTree();
 		jScrollPane1 = new javax.swing.JScrollPane();
 
 		jTree1.setName("jTree1"); // NOI18N
@@ -137,7 +137,7 @@ public class ImagesSetup extends ij.plugin.frame.PlugInFrame implements ActionLi
 		jScrollPane1.setViewportView(jTree1);
 
 		add(jScrollPane1);
-		setSize(1000, 600);
+		setSize(100, 600);
 		show();
 	}
 }
