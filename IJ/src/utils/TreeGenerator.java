@@ -1,21 +1,21 @@
 package utils;
 
 import ij.IJ;
-import ij.gui.ImageCanvas;
+import ij.ImagePlus;
+import ij.WindowManager;
+import ij.gui.ImageWindow;
 
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -25,81 +25,96 @@ import javax.swing.tree.TreePath;
 
 import CellId.Segmentation;
 
-import panels.PicturePanel;
-
 public class TreeGenerator {
 
 	private Finder finder;
 	private File directory;
 	private List<String> fileNames;
+	private Map<Integer, DisplayRangeObject> displayRanges;
 
 	public TreeGenerator(Finder finder, File directory) {
 		this.finder = finder;
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
+		this.displayRanges = new HashMap<Integer, DisplayRangeObject>();
 	}
 
-	public JTree generateTree(final PicturePanel picturePanel) {
+	public JTree generateTree() {
 		final JTree tree;
-		//For PopUp
+		// For PopUp
 		final JPopupMenu RootPosPopup = new JPopupMenu();
 		final JPopupMenu TimeBfPopup = new JPopupMenu();
-		
+
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Images");
 		createNodes(top, directory);
 		tree = new JTree(top);
-		RootPosPopup.add(new JMenuItem("Run")).addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				Segmentation seg = new Segmentation(tree, directory,false);
-				seg.setVisible(true);
-				
-			}
-		});
-		RootPosPopup.add(new JMenuItem("Run BF")).addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Segmentation seg = new Segmentation(tree, directory,true);
-				seg.setVisible(true);
-			}
-		});
-	
-		RootPosPopup.setInvoker(tree);
-		
-		TimeBfPopup.add(new JMenuItem("Run Position")).addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Segmentation seg = new Segmentation(tree, directory,false);
-				seg.setVisible(true);
-			}
-		});
-//		TimeBfPopup.add(new JMenuItem("Run Time")).addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				Segmentation seg = new Segmentation(tree, directory,false);
-//				seg.setVisible(true);
-//			}
-//		});
-		TimeBfPopup.add(new JMenuItem("Test Time")).addActionListener(new ActionListener() {
+		RootPosPopup.add(new JMenuItem("Run")).addActionListener(
+				new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Segmentation seg = new Segmentation(tree, directory,true);
-				seg.setVisible(true);
-			}
-		});
-		
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+
+						Segmentation seg = new Segmentation(tree, directory,
+								false);
+						seg.setVisible(true);
+
+					}
+				});
+		RootPosPopup.add(new JMenuItem("Run BF")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						Segmentation seg = new Segmentation(tree, directory,
+								true);
+						seg.setVisible(true);
+					}
+				});
+
+		RootPosPopup.setInvoker(tree);
+
+		TimeBfPopup.add(new JMenuItem("Run Position")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						Segmentation seg = new Segmentation(tree, directory,
+								false);
+						seg.setVisible(true);
+					}
+				});
+		// TimeBfPopup.add(new JMenuItem("Run Time")).addActionListener(new
+		// ActionListener() {
+		//
+		// @Override
+		// public void actionPerformed(ActionEvent arg0) {
+		// Segmentation seg = new Segmentation(tree, directory,false);
+		// seg.setVisible(true);
+		// }
+		// });
+		TimeBfPopup.add(new JMenuItem("Test Time")).addActionListener(
+				new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						Segmentation seg = new Segmentation(tree, directory,
+								true);
+						seg.setVisible(true);
+					}
+				});
+
 		TimeBfPopup.setInvoker(tree);
-		
+
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
+
+				if (e.getOldLeadSelectionPath() != null) {
+					checkDisplayRange(e.getOldLeadSelectionPath()
+							.getLastPathComponent());
+				}
+
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
 						.getLastSelectedPathComponent();
 				System.out.println("Evento");
@@ -108,95 +123,170 @@ public class TreeGenerator {
 					return;
 				}
 
+				Integer channel = node.getParent().getIndex(node);
+				DisplayRangeObject dro = displayRanges.get(channel);
+
 				String filePath = node.getUserObject().toString();
 				System.out.println(directory.getAbsolutePath());
 				System.out.println(filePath);
-				if (picturePanel != null) {
-					picturePanel.setImage(new ImageCanvas(IJ
-							.openImage(directory.getAbsolutePath() + System.getProperty("file.separator")
-									+ filePath)));
-					picturePanel.getImage().paint(picturePanel.getGraphics());
-				}
-				// IJ.open(directory.getAbsolutePath() + "/" +filePath);
 
+				ImagePlus imp = WindowManager.getCurrentImage();
+				if (imp == null) {
+					IJ.open(directory.getAbsolutePath()
+							+ System.getProperty("file.separator") + filePath);
+					if (dro != null) {
+						imp = WindowManager.getCurrentImage();
+						imp.setDisplayRange(dro.getMin(), dro.getMax(),
+								dro.getChannels());
+						ImageWindow win = imp.getWindow();
+						if (win != null) {
+							win.repaint();
+							win.toFront();
+						}
+					}
+				} else {
+					System.out.println("Hay una abierta!");
+					ImagePlus imp2 = IJ.openImage(directory.getAbsolutePath()
+							+ System.getProperty("file.separator") + filePath);
+					String newTitle = imp2.getTitle();
+
+					if (dro != null) {
+						imp2.setDisplayRange(dro.getMin(), dro.getMax(),
+								dro.getChannels());
+					}
+
+					imp.setStack(newTitle, imp2.getStack());
+					imp.setCalibration(imp2.getCalibration());
+					imp.setFileInfo(imp2.getOriginalFileInfo());
+					imp.setProperty("Info", imp2.getProperty("Info"));
+
+					ImageWindow win = imp.getWindow();
+					if (win != null) {
+						win.repaint();
+						win.toFront();
+					}
+				}
+			}
+
+			private void checkDisplayRange(Object lastPathComponent) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
+				Integer channel = node.getParent().getIndex(node);
+				ImagePlus imp = WindowManager.getCurrentImage();
+				if (imp == null) {
+					return;
+				}
+
+				DisplayRangeObject dro = displayRanges.get(channel);
+				if (dro == null) {
+					dro = new DisplayRangeObject(imp.getDisplayRangeMin(), imp.getDisplayRangeMax(), imp.getNChannels());
+					displayRanges.put(channel, dro);
+				} else {
+					if (imp.getDisplayRangeMax() != dro.getMax()) {
+						dro.setMax(imp.getDisplayRangeMax());
+					}
+					if (imp.getDisplayRangeMin() != dro.getMin()) {
+						dro.setMin(imp.getDisplayRangeMin());
+					}
+					if (imp.getNChannels() != dro.getChannels()) {
+						dro.setChannels(imp.getNChannels());
+					}
+				}
 			}
 		});
+
 		tree.addMouseListener(new MouseListener() {
-			
+
 			@Override
 			public void mouseReleased(MouseEvent evt) {
-				if(evt.getButton() != MouseEvent.BUTTON3){
+				if (evt.getButton() != MouseEvent.BUTTON3) {
 					return;
 				}
-				System.out.println("Largo el boton derecho");	
-				TreePath selPath = tree.getPathForLocation(evt.getX(), evt.getY());
-		        if (selPath == null){
-		            return;
-		        }else{
-		            tree.setSelectionPath(selPath);
-		        }
-		        if (evt.isPopupTrigger()) {
-		        	System.out.println(selPath);
-		        	if(selPath.getParentPath() == null || ((DefaultMutableTreeNode)selPath.getLastPathComponent()).getUserObject() instanceof Position){
-		        		RootPosPopup.show(evt.getComponent(), evt.getX(), evt.getY());
-		        	}else if(((DefaultMutableTreeNode)selPath.getLastPathComponent()).getUserObject() instanceof Time || ((String)((DefaultMutableTreeNode)selPath.getLastPathComponent()).getUserObject()).contains("BF")){
-		        		TimeBfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
-		        	}else{
-		        		System.out.println("No Popup to show");
-		        	}		        		
-//		            popup.show(evt.getComponent(), evt.getX(), evt.getY());
-		        }
-				
+				System.out.println("Largo el boton derecho");
+				TreePath selPath = tree.getPathForLocation(evt.getX(),
+						evt.getY());
+				if (selPath == null) {
+					return;
+				} else {
+					tree.setSelectionPath(selPath);
+				}
+				if (evt.isPopupTrigger()) {
+					System.out.println(selPath);
+					if (selPath.getParentPath() == null
+							|| ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject() instanceof Position) {
+						RootPosPopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else if (((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject() instanceof Time
+							|| ((String) ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject())
+									.contains("BF")) {
+						TimeBfPopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else {
+						System.out.println("No Popup to show");
+					}
+					// popup.show(evt.getComponent(), evt.getX(), evt.getY());
+				}
+
 			}
-			
+
 			@Override
 			public void mousePressed(MouseEvent evt) {
-				if(evt.getButton() != MouseEvent.BUTTON3){
+				if (evt.getButton() != MouseEvent.BUTTON3) {
 					return;
 				}
-				System.out.println("Aprieto el boton derecho");	
-				TreePath selPath = tree.getPathForLocation(evt.getX(), evt.getY());
-		        if (selPath == null){
-		            return;
-		        }else{
-		            tree.setSelectionPath(selPath);
-		        }
-		        if (evt.isPopupTrigger()) {
-		        	System.out.println(selPath);
-		        	System.out.println(selPath);
-		        	if(selPath.getParentPath() == null || ((DefaultMutableTreeNode)selPath.getLastPathComponent()).getUserObject() instanceof Position){
-		        		RootPosPopup.show(evt.getComponent(), evt.getX(), evt.getY());
-		        	}else if(((DefaultMutableTreeNode)selPath.getLastPathComponent()).getUserObject() instanceof Time || ((String)((DefaultMutableTreeNode)selPath.getLastPathComponent()).getUserObject()).contains("BF")){
-		        		TimeBfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
-		        	}else{
-		        		System.out.println("No Popup to show");
-		        	}
-//		            popup.show(evt.getComponent(), evt.getX(), evt.getY());
-		        }
-				
+				System.out.println("Aprieto el boton derecho");
+				TreePath selPath = tree.getPathForLocation(evt.getX(),
+						evt.getY());
+				if (selPath == null) {
+					return;
+				} else {
+					tree.setSelectionPath(selPath);
+				}
+				if (evt.isPopupTrigger()) {
+					System.out.println(selPath);
+					System.out.println(selPath);
+					if (selPath.getParentPath() == null
+							|| ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject() instanceof Position) {
+						RootPosPopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else if (((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject() instanceof Time
+							|| ((String) ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject())
+									.contains("BF")) {
+						TimeBfPopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else {
+						System.out.println("No Popup to show");
+					}
+					// popup.show(evt.getComponent(), evt.getX(), evt.getY());
+				}
+
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		return tree;
 	}
-	
 
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
@@ -211,8 +301,9 @@ public class TreeGenerator {
 					position);
 			top.add(positionNode);
 			int maxTimesForPosition = getMaxTime(position);
-			//TODO: Para generar todo el arbol, reemplazar getMaxTime(position) por getMaxTime()
-			//		de esta forma siempre se generar los nodos de tiempos
+			// TODO: Para generar todo el arbol, reemplazar getMaxTime(position)
+			// por getMaxTime()
+			// de esta forma siempre se generar los nodos de tiempos
 			for (int j = 1; j <= maxTimesForPosition; ++j) {
 				Time time = new Time(position, j);
 				DefaultMutableTreeNode timeNode = new DefaultMutableTreeNode(
@@ -222,9 +313,11 @@ public class TreeGenerator {
 				File[] files = directory.listFiles(new NameFilter(position,
 						time));
 				time.setFiles(files);
-				//TODO:	Para generar todos los nodos de archivos, usar la funcion getAllFiles()
-				//		para verificar todos los archivos que existen y en el siguiente for
-				//		crear los nodos aunque no existan
+				// TODO: Para generar todos los nodos de archivos, usar la
+				// funcion getAllFiles()
+				// para verificar todos los archivos que existen y en el
+				// siguiente for
+				// crear los nodos aunque no existan
 				for (File f : files) {
 					timeNode.add(new DefaultMutableTreeNode(f.getName()));
 				}
@@ -248,7 +341,8 @@ public class TreeGenerator {
 			String position = info[1];
 			int endPos = position.length();
 			int i;
-			for (i = endPos - 1; position.charAt(i) >= '0' && position.charAt(i) <= '9'; i--) {
+			for (i = endPos - 1; position.charAt(i) >= '0'
+					&& position.charAt(i) <= '9'; i--) {
 				;
 			}
 			i++;
@@ -291,12 +385,12 @@ public class TreeGenerator {
 		// System.out.println("Max time:" + max);
 		return max;
 	}
-	
-	public int getMaxTime(){
+
+	public int getMaxTime() {
 		int max = 0;
-		for(int i = 0; i < getMaxPosition(); ++i){
+		for (int i = 0; i < getMaxPosition(); ++i) {
 			int currentMax = getMaxTime(new Position(i));
-			if(currentMax  > max){
+			if (currentMax > max) {
 				max = currentMax;
 			}
 		}
@@ -323,6 +417,10 @@ public class TreeGenerator {
 			}
 		}
 
+	}
+
+	public Map<Integer, DisplayRangeObject> getDisplayRanges() {
+		return displayRanges;
 	}
 
 }
