@@ -10,17 +10,23 @@ import java.awt.Color;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.font.NumericShaper;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
@@ -164,8 +170,42 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		cellAlignmentButtonGroup.setSelected(noCellAlignmentRadioButton.getModel(), true);
 		frameAlignmentButtonGroup.setSelected(noFrameAlignmentRadioButton.getModel(), true);
 		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(10, 500, 350, 100);
+		panel_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panel_2.setBackground(Color.LIGHT_GRAY);
+		add(panel_2);
+		panel_2.setLayout(null);
+		
+		JLabel parametersLabel = new JLabel("Parameters...");
+		parametersLabel.setBounds(20, 10, 150, 14);
+		panel_2.add(parametersLabel);
+		
+		final JTextField parameters = new JTextField();
+		parameters.setEnabled(true);
+		parameters.setBounds(100, 40 , 200, 20);
+		panel_2.add(parameters);
+
+		
+		JCheckBox includeParameters = new JCheckBox("Add");
+		includeParameters.setBackground(Color.lightGray);
+		includeParameters.setBounds(20, 30, 80, 40);
+		includeParameters.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				if(arg0.getStateChange() == ItemEvent.DESELECTED){
+					parameters.setEnabled(false);
+				}else if(arg0.getStateChange() == ItemEvent.SELECTED){
+					parameters.setEnabled(true);
+				}
+			}
+		});
+		panel_2.add(includeParameters);
+				
+		
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setBounds(10, 498, 91, 23);
+		cancelButton.setBounds(10, 650, 91, 23);
 		cancelButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -190,7 +230,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 				dispose();
 			}
 		});
-		okButton.setBounds(271, 493, 91, 23);
+		okButton.setBounds(271, 650, 91, 23);
 		add(okButton);
 		
 		JButton applyButton = new JButton("Apply");
@@ -201,9 +241,10 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 				dispose();
 			}
 		});
-		applyButton.setBounds(170, 493, 91, 23);
+		applyButton.setBounds(170, 650, 91, 23);
 		add(applyButton);
-		setSize(400, 600);
+		setSize(400, 700);
+		setResizable(false);
 	}
 	
 	public static double getMaxSplitOverMinor(){
