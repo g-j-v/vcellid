@@ -83,6 +83,8 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
+		removeAll();
+		
 		JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showOpenDialog(LoadImages.this);
@@ -305,12 +307,17 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				TreePath path = new TreePath(((DefaultTreeModel) jTree1
-						.getModel()).getPathToRoot((TreeNode) jTree1.getModel()
-						.getRoot()));
-				jTree1.setSelectionPath(path);
-				jTree1.scrollPathToVisible(path);
-				jTree1.collapsePath(path);
+//				TreePath path = new TreePath(((DefaultTreeModel) jTree1
+//						.getModel()).getPathToRoot((TreeNode) jTree1.getModel()
+//						.getRoot()));
+//				jTree1.setSelectionPath(path);
+//				jTree1.scrollPathToVisible(path);
+//				jTree1.collapsePath(path);
+				int row = jTree1.getRowCount() - 1;
+			    while (row >= 0) {
+			    	jTree1.collapseRow(row);
+			      row--;
+			      }
 			}
 		});
 		rootBox.add(rootButton);
