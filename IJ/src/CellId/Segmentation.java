@@ -47,6 +47,8 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	private static JSpinner maxPixelsSpinner = new JSpinner();
 	private static JSpinner backgroundRejectSpinner = new JSpinner();
 	private static JSpinner trackingComparisonSpinner = new JSpinner();
+	private static JTextField parameters = new JTextField();
+	private static JCheckBox includeParameters = new JCheckBox("Add");
 	
 	private final JTree jtree;
 	private final File directory;
@@ -181,13 +183,12 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		parametersLabel.setBounds(20, 10, 150, 14);
 		panel_2.add(parametersLabel);
 		
-		final JTextField parameters = new JTextField();
-		parameters.setEnabled(true);
+		//Parameters field for running
+		parameters.setEnabled(false);
 		parameters.setBounds(100, 40 , 200, 20);
 		panel_2.add(parameters);
 
-		
-		JCheckBox includeParameters = new JCheckBox("Add");
+		//checkBox for including parameters
 		includeParameters.setBackground(Color.lightGray);
 		includeParameters.setBounds(20, 30, 80, 40);
 		includeParameters.addItemListener(new ItemListener() {
@@ -219,7 +220,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO: Aca generar los archivos de salida y correr???
+				
 				Output output = new Output(jtree, directory);
 				if(test){
 					output.generateTest();
@@ -270,6 +271,14 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	 
 	 public static double trackingComparison (){
 		 return ((SpinnerNumberModel)trackingComparisonSpinner.getModel()).getNumber().doubleValue();
+	 }
+	 
+	 public static boolean isParameterCheckBoxSelected(){
+		 return includeParameters.isSelected();
+	 }
+	 
+	 public static String getParameters(){
+		 return parameters.getText();
 	 }
 	 
 	 public static String cellAlignment(){

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import CellId.Segmentation;
+
 public class CellIdRunner {
 	
 	String cellIdPath;
@@ -50,6 +52,12 @@ public class CellIdRunner {
 			command.add("--fluor");
 			command.add(directory.getAbsolutePath() + "\\Position" + position + "\\fl_vcellid.txt");
 			command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\parameters_vcellid_out.txt");
+			if(Segmentation.isParameterCheckBoxSelected()){
+				String params[] = Segmentation.getParameters().split(" ");
+				for(String str: params){
+					command.add(str);
+				}
+			}
 //			System.out.println(System.getProperty("user.dir"));
 //			System.setProperty("user.dir", directory.getAbsolutePath());
 //			System.out.println(System.getProperty("user.dir"));
