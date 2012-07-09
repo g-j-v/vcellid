@@ -15,7 +15,7 @@ public class CellIdRunner {
 	
 	String cellIdPath;
 	private static CellIdRunner instance;
-	
+	String systemDirSeparator = System.getProperty("file.separator");	
 	
 	public CellIdRunner(){
 	}
@@ -49,24 +49,24 @@ public class CellIdRunner {
 			command.add(cellIdPath);
 			command.add("--bright");
 			if(keepResults){
-				command.add(directory.getAbsolutePath() + "\\Position"+ position + "\\bf_vcellid.txt");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position"+ position + systemDirSeparator + "bf_vcellid.txt");
 			}else{
-				command.add(directory.getAbsolutePath() + "\\Position"+ position + "\\Test\\bf_vcellid.txt");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position"+ position + systemDirSeparator + "Test" + systemDirSeparator + "bf_vcellid.txt");
 			}
 			command.add("--fluor");
 			if(keepResults){
-				command.add(directory.getAbsolutePath() + "\\Position" + position + "\\fl_vcellid.txt");				
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "fl_vcellid.txt");				
 			}else{
-				command.add(directory.getAbsolutePath() + "\\Position" + position + "\\Test\\fl_vcellid.txt");	
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "fl_vcellid.txt");	
 			}
 			if(keepResults){
-				command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\parameters_vcellid_out.txt");
+				command.add("--param=" + directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");
 			}else{
-				command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\Test\\parameters_vcellid_out.txt");
+				command.add("--param=" + directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "parameters_vcellid_out.txt");
 			}
 			if(keepResults){
 				command.add("--output");
-				command.add(directory.getAbsolutePath() + "\\Position" + position + "\\Test");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test");
 			}
 			if(Segmentation.isParameterCheckBoxSelected()){
 				String params[] = Segmentation.getParameters().split(" ");

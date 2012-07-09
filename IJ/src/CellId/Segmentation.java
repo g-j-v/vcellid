@@ -221,7 +221,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-								
+						
 				Output output = new Output(jtree, directory);
 				if(BfType){
 					output.generateBF(test);
