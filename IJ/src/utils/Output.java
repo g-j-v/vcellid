@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTree;
+import javax.swing.ProgressMonitor;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -17,6 +18,8 @@ public class Output {
 	
 	JTree tree;
 	File directory;
+	boolean keepResults;
+	ProgressMonitor progressMonitor;
 	
 	public Output(JTree tree, File directory){
 		this.tree = tree;
@@ -28,6 +31,7 @@ public class Output {
 
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		int positions = tree.getModel().getChildCount(root);
+		this.keepResults = true;
 
 		for(int i = 0; i < positions; ++i){
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
@@ -49,15 +53,21 @@ public class Output {
 //		CellIdRunner.getInstance().run(directory);
 	}
 
-	public void generateTest(){
+	public void generateBF(boolean keepResults){
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		int positions = tree.getModel().getChildCount(root);
-
+		this.keepResults = keepResults;
+		
 		for(int i = 0; i < positions; ++i){
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
 			String fileName = node.getUserObject().toString();
 			
-			File positionDirectory = createDirectory(i + 1);
+			File positionDirectory;
+			if(keepResults){
+				positionDirectory = createDirectory(i + 1);
+			}else{
+				positionDirectory = createTestDirectory(i + 1);
+			}
 			if(positionDirectory == null){
 				System.out.println("Directory could not be created");
 				return;
@@ -79,6 +89,7 @@ public class Output {
 	}
 	
 	public void run(){
+		
 		TreePath selected = tree.getSelectionPath();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		int positions = tree.getModel().getChildCount(root);
@@ -89,13 +100,30 @@ public class Output {
 		}else{
 			position = ((PositionNode)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
 		}
+		
+		progressMonitor = new ProgressMonitor(null,"Progress", "Some string", 0, position);
+		
+		for(int j = 0; j < 20; ++j){
+			new ProgressUpdate(progressMonitor,j).run();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("lalala");
+		}
+		
 		if(position > 0){
-			CellIdRunner.getInstance().run(directory,position);			
+			CellIdRunner.getInstance().run(directory,position,keepResults);			
 		}else{
 			for(int i = 1; i <= positions; ++i){
-				CellIdRunner.getInstance().run(directory,i);
+				CellIdRunner.getInstance().run(directory,i,keepResults);
+//				new ProgressUpdate(progressMonitor,i).run();
 			}
 		}
+		
+		//TODO: barra de progreso. Borrar archivos en caso de test.
 
 	}
 	
@@ -239,6 +267,17 @@ public class Output {
 		}
 		return positionDirectory;
 	}
+	
+	//Crea el directorio de testeo de la posicion y lo retorna
+		private File createTestDirectory(int i) {
+			File positionDirectory = new File(directory + "\\Position" + i + "\\Test");
+			if(positionDirectory.exists()){
+				for( File f: positionDirectory.listFiles()){
+					f.delete();
+				}
+			}
+			return positionDirectory;
+		}
 
 	public void loadParameters(int position){
 		File bfFile = new File(directory + "\\Position" + position + "\\parameters_vcellid_out.txt");

@@ -65,8 +65,7 @@ public class TreeGenerator {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 
-						Segmentation seg = new Segmentation(tree, directory,
-								false);
+						Segmentation seg = new Segmentation(tree, directory,false,true);
 						seg.setVisible(true);
 
 					}
@@ -76,8 +75,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
-								true);
+						Segmentation seg = new Segmentation(tree, directory,true,true);
 						seg.setVisible(true);
 					}
 				});
@@ -89,8 +87,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
-								false);
+						Segmentation seg = new Segmentation(tree, directory,false,true);
 						seg.setVisible(true);
 					}
 				});
@@ -108,8 +105,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
-								true);
+						Segmentation seg = new Segmentation(tree, directory,true,false);
 						seg.setVisible(true);
 					}
 				});
@@ -121,8 +117,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
-								false);
+						Segmentation seg = new Segmentation(tree, directory,false,true);
 						seg.setVisible(true);
 					}
 				});
@@ -132,9 +127,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
-								true);
-						seg.setVisible(true);
+						Segmentation seg = new Segmentation(tree, directory,true,false);						seg.setVisible(true);
 					}
 				});
 

@@ -28,6 +28,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.ProgressMonitor;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 
@@ -53,7 +54,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	private final JTree jtree;
 	private final File directory;
 	
-	public Segmentation(JTree tree, File file, final boolean test) {
+	public Segmentation(JTree tree, File file, final boolean BfType, final boolean test) {
 		
 		super("Segmentation");
 		
@@ -220,15 +221,16 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+								
 				Output output = new Output(jtree, directory);
-				if(test){
-					output.generateTest();
+				if(BfType){
+					output.generateBF(test);
 				}else{
 					output.generateRun();
 				}
 				output.run();
 				dispose();
+				
 			}
 		});
 		okButton.setBounds(271, 650, 91, 23);

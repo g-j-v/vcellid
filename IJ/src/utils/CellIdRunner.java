@@ -37,7 +37,7 @@ public class CellIdRunner {
 
 	
 
-	public void run(File directory, int position){
+	public void run(File directory, int position, boolean keepResults){
 		try
 		{
 //			Runtime rt = Runtime.getRuntime();
@@ -48,10 +48,26 @@ public class CellIdRunner {
 			List<String> command = new ArrayList<String>();
 			command.add(cellIdPath);
 			command.add("--bright");
-			command.add(directory.getAbsolutePath() + "\\Position"+ position + "\\bf_vcellid.txt");
+			if(keepResults){
+				command.add(directory.getAbsolutePath() + "\\Position"+ position + "\\bf_vcellid.txt");
+			}else{
+				command.add(directory.getAbsolutePath() + "\\Position"+ position + "\\Test\\bf_vcellid.txt");
+			}
 			command.add("--fluor");
-			command.add(directory.getAbsolutePath() + "\\Position" + position + "\\fl_vcellid.txt");
-			command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\parameters_vcellid_out.txt");
+			if(keepResults){
+				command.add(directory.getAbsolutePath() + "\\Position" + position + "\\fl_vcellid.txt");				
+			}else{
+				command.add(directory.getAbsolutePath() + "\\Position" + position + "\\Test\\fl_vcellid.txt");	
+			}
+			if(keepResults){
+				command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\parameters_vcellid_out.txt");
+			}else{
+				command.add("--param=" + directory.getAbsolutePath() + "\\Position" + position + "\\Test\\parameters_vcellid_out.txt");
+			}
+			if(keepResults){
+				command.add("--output");
+				command.add(directory.getAbsolutePath() + "\\Position" + position + "\\Test");
+			}
 			if(Segmentation.isParameterCheckBoxSelected()){
 				String params[] = Segmentation.getParameters().split(" ");
 				for(String str: params){
