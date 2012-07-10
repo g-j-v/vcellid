@@ -37,7 +37,7 @@ public class TreeGenerator {
 	private File directory;
 	private List<String> fileNames;
 	private Map<Integer, DisplayRangeObject> displayRanges;
-	private static ImagePlus emptyImage = new ImagePlus("resources\\EmptyImage.tiff");
+	private static ImagePlus emptyImage = new ImagePlus("/Users/alejandropetit/Documents/Workspace/IJ/resources/EmptyImage.tiff");
 
 	public TreeGenerator(Finder finder, File directory) {
 		this.finder = finder;
@@ -179,11 +179,17 @@ public class TreeGenerator {
 				String filePath = node.getUserObject().toString();
 				System.out.println(directory.getAbsolutePath());
 				System.out.println(filePath);
+				
+				ImageNode imageNode = (ImageNode) node.getUserObject();
 
 				ImagePlus imp = WindowManager.getCurrentImage();
 				if (imp == null) {
-					IJ.open(directory.getAbsolutePath()
-							+ System.getProperty("file.separator") + filePath);
+					if(imageNode.isFake()){
+						//TODO: Mostar la imagen vacia
+						;
+					}else{
+						IJ.open(directory.getAbsolutePath()	+ System.getProperty("file.separator") + filePath);						
+					}
 					if (dro != null) {
 						imp = WindowManager.getCurrentImage();
 						imp.setDisplayRange(dro.getMin(), dro.getMax(),
@@ -196,8 +202,14 @@ public class TreeGenerator {
 					}
 				} else {
 					System.out.println("Hay una abierta!");
-					ImagePlus imp2 = IJ.openImage(directory.getAbsolutePath()
-							+ System.getProperty("file.separator") + filePath);
+					ImagePlus imp2;
+					if(imageNode.isFake()){
+						//TODO mostrat la imagen vacia;
+						imp2 = emptyImage;
+					}else{
+						imp2 = IJ.openImage(directory.getAbsolutePath() + System.getProperty("file.separator") + filePath);
+							
+					}
 					String newTitle = imp2.getTitle();
 
 					if (dro != null) {
