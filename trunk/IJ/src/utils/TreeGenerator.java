@@ -7,14 +7,12 @@ import ij.gui.ImageWindow;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +23,8 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
 
 import CellId.Segmentation;
 
@@ -37,14 +34,16 @@ public class TreeGenerator {
 	private File directory;
 	private List<String> fileNames;
 	private Map<Integer, DisplayRangeObject> displayRanges;
-	private static ImagePlus emptyImage = new ImagePlus("/Users/alejandropetit/Documents/Workspace/IJ/resources/EmptyImage.tiff");
+	private Map<ImageWindow, DefaultMutableTreeNode> windows;
+	private static ImagePlus emptyImage = new ImagePlus(
+			"resources/EmptyImage.tiff");
 
 	public TreeGenerator(Finder finder, File directory) {
 		this.finder = finder;
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
 		this.displayRanges = new HashMap<Integer, DisplayRangeObject>();
-		
+		this.windows = new HashMap<ImageWindow, DefaultMutableTreeNode>();
 	}
 
 	public JTree generateTree() {
@@ -65,7 +64,8 @@ public class TreeGenerator {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 
-						Segmentation seg = new Segmentation(tree, directory,false,true);
+						Segmentation seg = new Segmentation(tree, directory,
+								false, true);
 						seg.setVisible(true);
 
 					}
@@ -75,7 +75,8 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,true,true);
+						Segmentation seg = new Segmentation(tree, directory,
+								true, true);
 						seg.setVisible(true);
 					}
 				});
@@ -87,7 +88,8 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,false,true);
+						Segmentation seg = new Segmentation(tree, directory,
+								false, true);
 						seg.setVisible(true);
 					}
 				});
@@ -105,19 +107,21 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,true,false);
+						Segmentation seg = new Segmentation(tree, directory,
+								true, false);
 						seg.setVisible(true);
 					}
 				});
 
 		TimePopup.setInvoker(tree);
-		
+
 		BfPopup.add(new JMenuItem("Run Position")).addActionListener(
 				new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,false,true);
+						Segmentation seg = new Segmentation(tree, directory,
+								false, true);
 						seg.setVisible(true);
 					}
 				});
@@ -127,7 +131,9 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,true,false);						seg.setVisible(true);
+						Segmentation seg = new Segmentation(tree, directory,
+								true, false);
+						seg.setVisible(true);
 					}
 				});
 
@@ -136,25 +142,40 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						//TODO: Gise
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+								.getLastSelectedPathComponent();
+						System.out.println("Evento Right");
+						if (node == null || node.getChildCount() > 0) {
+							System.out.println("hola");
+							return;
+						}
+
+						openImageInNewWindow(node);
 					}
 				});
 
 		BfPopup.setInvoker(tree);
-		
-		FlImagePopup.add(new JMenuItem("Open in new window")).addActionListener(
-				new ActionListener() {
+
+		FlImagePopup.add(new JMenuItem("Open in new window"))
+				.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						//TODO: Gise
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+								.getLastSelectedPathComponent();
+						System.out.println("Evento Right");
+						if (node == null || node.getChildCount() > 0) {
+							System.out.println("hola");
+							return;
+						}
+
+						openImageInNewWindow(node);
 					}
 				});
 		FlImagePopup.setInvoker(tree);
 
-
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 
@@ -170,11 +191,6 @@ public class TreeGenerator {
 					System.out.println("hola");
 					return;
 				}
-				
-				
-				
-				Integer channel = node.getParent().getIndex(node);
-				DisplayRangeObject dro = displayRanges.get(channel);
 
 				String filePath = node.getUserObject().toString();
 				System.out.println(directory.getAbsolutePath());
@@ -184,76 +200,13 @@ public class TreeGenerator {
 
 				ImagePlus imp = WindowManager.getCurrentImage();
 				if (imp == null) {
-					if(imageNode.isFake()){
-						//TODO: Mostar la imagen vacia
-						;
-					}else{
-						IJ.open(directory.getAbsolutePath()	+ System.getProperty("file.separator") + filePath);						
-					}
-					if (dro != null) {
-						imp = WindowManager.getCurrentImage();
-						imp.setDisplayRange(dro.getMin(), dro.getMax(),
-								dro.getChannels());
-						ImageWindow win = imp.getWindow();
-						if (win != null) {
-							win.repaint();
-							win.toFront();
-						}
-					}
+					openImageInNewWindow(node);
 				} else {
 					System.out.println("Hay una abierta!");
-					ImagePlus imp2;
-					if(imageNode.isFake()){
-						//TODO mostrat la imagen vacia;
-						imp2 = emptyImage;
-					}else{
-						imp2 = IJ.openImage(directory.getAbsolutePath() + System.getProperty("file.separator") + filePath);
-							
-					}
-					String newTitle = imp2.getTitle();
-
-					if (dro != null) {
-						imp2.setDisplayRange(dro.getMin(), dro.getMax(),
-								dro.getChannels());
-					}
-
-					imp.setStack(newTitle, imp2.getStack());
-					imp.setCalibration(imp2.getCalibration());
-					imp.setFileInfo(imp2.getOriginalFileInfo());
-					imp.setProperty("Info", imp2.getProperty("Info"));
-
-					ImageWindow win = imp.getWindow();
-					if (win != null) {
-						win.repaint();
-						win.toFront();
-					}
+					openImageInCurrentWindow(imp, node);
 				}
 			}
 
-			private void checkDisplayRange(Object lastPathComponent) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
-				Integer channel = node.getParent().getIndex(node);
-				ImagePlus imp = WindowManager.getCurrentImage();
-				if (imp == null) {
-					return;
-				}
-
-				DisplayRangeObject dro = displayRanges.get(channel);
-				if (dro == null) {
-					dro = new DisplayRangeObject(imp.getDisplayRangeMin(), imp.getDisplayRangeMax(), imp.getNChannels());
-					displayRanges.put(channel, dro);
-				} else {
-					if (imp.getDisplayRangeMax() != dro.getMax()) {
-						dro.setMax(imp.getDisplayRangeMax());
-					}
-					if (imp.getDisplayRangeMin() != dro.getMin()) {
-						dro.setMin(imp.getDisplayRangeMin());
-					}
-					if (imp.getNChannels() != dro.getChannels()) {
-						dro.setChannels(imp.getNChannels());
-					}
-				}
-			}
 		});
 
 		tree.addMouseListener(new MouseListener() {
@@ -276,16 +229,25 @@ public class TreeGenerator {
 					if (selPath.getParentPath() == null
 							|| ((DefaultMutableTreeNode) selPath
 									.getLastPathComponent()).getUserObject() instanceof PositionNode) {
-						RootPosPopup.show(evt.getComponent(), evt.getX(),evt.getY());
+						RootPosPopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
 					} else if (((DefaultMutableTreeNode) selPath
-							.getLastPathComponent()).getUserObject() instanceof TimeNode){
-						TimePopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					}else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("BF")) {
-						BfPopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					} else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("CFP")
-							|| ((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("YFP")) {
-						FlImagePopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					}else{
+							.getLastPathComponent()).getUserObject() instanceof TimeNode) {
+						TimePopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject())
+							.getImageName().contains("BF")) {
+						BfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
+					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject())
+							.getImageName().contains("CFP")
+							|| ((ImageNode) ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject())
+									.getImageName().contains("YFP")) {
+						FlImagePopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else {
 						System.out.println("No Popup to show");
 					}
 					// popup.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -309,16 +271,28 @@ public class TreeGenerator {
 				if (evt.isPopupTrigger()) {
 					System.out.println(selPath);
 					System.out.println(selPath);
-					if (selPath.getParentPath() == null	|| ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof PositionNode) {
-						RootPosPopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					}  else if (((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof TimeNode){
-						TimePopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					}else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("BF")) {
-						BfPopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					} else if(((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("CFP")
-							|| ((ImageNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject()).getImageName().contains("YFP")) {
-						FlImagePopup.show(evt.getComponent(), evt.getX(),evt.getY());
-					}else{
+					if (selPath.getParentPath() == null
+							|| ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject() instanceof PositionNode) {
+						RootPosPopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else if (((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject() instanceof TimeNode) {
+						TimePopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject())
+							.getImageName().contains("BF")) {
+						BfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
+					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
+							.getLastPathComponent()).getUserObject())
+							.getImageName().contains("CFP")
+							|| ((ImageNode) ((DefaultMutableTreeNode) selPath
+									.getLastPathComponent()).getUserObject())
+									.getImageName().contains("YFP")) {
+						FlImagePopup.show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					} else {
 						System.out.println("No Popup to show");
 					}
 					// popup.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -347,11 +321,10 @@ public class TreeGenerator {
 		return tree;
 	}
 
-
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
 		List<String> fileNames = finder.find(directory);
-		
+
 		System.out.println("TAM: " + fileNames.size());
 		int maxPositions = getMaxPosition();
 		int maxTimeAllPosition = getMaxTime();
@@ -367,51 +340,70 @@ public class TreeGenerator {
 						time);
 				// Adding Time node to position
 				positionNode.add(timeNode);
-				File[] files = directory.listFiles(new NameFilter(position,time));
+				File[] files = directory.listFiles(new NameFilter(position,
+						time));
 				time.setFiles(files);
-				
+
 				String name;
 				name = getBf(files);
-				if(name == null){
-					//nodo que no existe, indicarlo con imagen vacia y nombre en color
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_BF",true)));
-				}else{
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				if (name == null) {
+					// nodo que no existe, indicarlo con imagen vacia y nombre
+					// en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, "Empty_BF", true)));
+				} else {
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, name, false)));
 				}
 				name = getBfOut(files);
-				if(name == null){
-					//nodo que no existe, indicarlo con imagen vacia y nombre en color
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_BF_OUT",true)));
-				}else{
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				if (name == null) {
+					// nodo que no existe, indicarlo con imagen vacia y nombre
+					// en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, "Empty_BF_OUT", true)));
+				} else {
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, name, false)));
 				}
 				name = getYfp(files);
-				if(name == null){
-					//nodo que no existe, indicarlo con imagen vacia y nombre en color
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_YFP",true)));
-				}else{
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				if (name == null) {
+					// nodo que no existe, indicarlo con imagen vacia y nombre
+					// en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, "Empty_YFP", true)));
+				} else {
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, name, false)));
 				}
 				name = getYfpOut(files);
-				if(name == null){
-					//nodo que no existe, indicarlo con imagen vacia y nombre en color
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_YFP_OUT",true)));
-				}else{
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				if (name == null) {
+					// nodo que no existe, indicarlo con imagen vacia y nombre
+					// en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, "Empty_YFP_OUT", true)));
+				} else {
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, name, false)));
 				}
 				name = getCfp(files);
-				if(name == null){
-					//nodo que no existe, indicarlo con imagen vacia y nombre en color
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_CFP",true)));
-				}else{
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				if (name == null) {
+					// nodo que no existe, indicarlo con imagen vacia y nombre
+					// en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, "Empty_CFP", true)));
+				} else {
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, name, false)));
 				}
 				name = getCfpOut(files);
-				if(name == null){
-					//nodo que no existe, indicarlo con imagen vacia y nombre en color
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,"Empty_CFP_OUT",true)));
-				}else{
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(position,time,name,false)));
+				if (name == null) {
+					// nodo que no existe, indicarlo con imagen vacia y nombre
+					// en color
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, "Empty_CFP_OUT", true)));
+				} else {
+					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+							position, time, name, false)));
 				}
 			}
 
@@ -509,56 +501,61 @@ public class TreeGenerator {
 		}
 
 	}
-	
-	private String getBf(File[] files){
-		for(File file: files){
-			if(file.getName().toLowerCase().contains("bf") && 
-					!file.getName().toLowerCase().contains(".out.tif")){
+
+	private String getBf(File[] files) {
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("bf")
+					&& !file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
 		}
 		return null;
 	}
-	private String getBfOut(File[] files){
-		for(File file: files){
-			if(file.getName().toLowerCase().contains("bf") && 
-					file.getName().toLowerCase().contains(".out.tif")){
+
+	private String getBfOut(File[] files) {
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("bf")
+					&& file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
 		}
 		return null;
 	}
-	private String getYfp(File[] files){
-		for(File file: files){
-			if(file.getName().toLowerCase().contains("yfp") && 
-					!file.getName().toLowerCase().contains(".out.tif")){
+
+	private String getYfp(File[] files) {
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("yfp")
+					&& !file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
 		}
 		return null;
 	}
-	private String getYfpOut(File[] files){
-		for(File file: files){
-			if(file.getName().toLowerCase().contains("yfp") && 
-					file.getName().toLowerCase().contains(".out.tif")){
+
+	private String getYfpOut(File[] files) {
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("yfp")
+					&& file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
 		}
 		return null;
 	}
-	private String getCfp(File[] files){
-		for(File file: files){
-			if(file.getName().toLowerCase().contains("cfp") && 
-					!file.getName().toLowerCase().contains(".out.tif")){
+
+	private String getCfp(File[] files) {
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("cfp")
+					&& !file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
 		}
 		return null;
 	}
-	private String getCfpOut(File[] files){
-		for(File file: files){
-			if(file.getName().toLowerCase().contains("cfp") && 
-					file.getName().toLowerCase().contains(".out.tif")){
+
+	private String getCfpOut(File[] files) {
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("cfp")
+					&& file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
 		}
@@ -569,22 +566,15 @@ public class TreeGenerator {
 		return displayRanges;
 	}
 
-	private class MyRenderer extends DefaultTreeCellRenderer{
-	
-		public Component getTreeCellRendererComponent(
-				JTree tree,
-				Object value,
-				boolean sel,
-				boolean expanded,
-				boolean leaf,
-				int row,
+	private class MyRenderer extends DefaultTreeCellRenderer {
+
+		public Component getTreeCellRendererComponent(JTree tree, Object value,
+				boolean sel, boolean expanded, boolean leaf, int row,
 				boolean hasFocus) {
 
-			super.getTreeCellRendererComponent(
-					tree, value, sel,
-					expanded, leaf, row,
-					hasFocus);
-			
+			super.getTreeCellRendererComponent(tree, value, sel, expanded,
+					leaf, row, hasFocus);
+
 			if (leaf && isFakeImageNode(value)) {
 				setForeground(Color.RED);
 			}
@@ -593,15 +583,165 @@ public class TreeGenerator {
 		}
 
 		protected boolean isFakeImageNode(Object value) {
-			DefaultMutableTreeNode node =
-					(DefaultMutableTreeNode)value;
-			ImageNode nodeInfo = (ImageNode)(node.getUserObject());
-			if(nodeInfo.isFake()){
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+			ImageNode nodeInfo = (ImageNode) (node.getUserObject());
+			if (nodeInfo.isFake()) {
 				return true;
 			}
 			return false;
-			
+
 		}
+	}
+
+	public void openImageInCurrentWindow(ImagePlus imp,
+			DefaultMutableTreeNode node) {
+
+		ImageWindow win = imp.getWindow();
+
+		Integer channel = node.getParent().getIndex(node);
+		DisplayRangeObject dro = displayRanges.get(channel);
+		ImagePlus imp2;
+		String newTitle;
+		if (((ImageNode) node.getUserObject()).isFake()) {
+			imp2 = emptyImage;
+			newTitle = "Empty Image";
+		} else {
+			String filePath = node.getUserObject().toString();
+			System.out.println(directory.getAbsolutePath());
+			System.out.println(filePath);
+
+			imp2 = IJ.openImage(directory.getAbsolutePath()
+					+ System.getProperty("file.separator") + filePath);
+			newTitle = imp2.getTitle();
+		}
+
+		if (dro != null) {
+			imp2.setDisplayRange(dro.getMin(), dro.getMax(), dro.getChannels());
+		}
+
+		imp.setStack(newTitle, imp2.getStack());
+		imp.setCalibration(imp2.getCalibration());
+		imp.setFileInfo(imp2.getOriginalFileInfo());
+		imp.setProperty("Info", imp2.getProperty("Info"));
+
+		if (win != null) {
+			win.repaint();
+			win.toFront();
+		}
+		
+		windows.put(win, node);
+	}
+
+	/**
+	 * This method keeps the DisplayRangeObject from the ImagePlus object
+	 * currently displayed in win.
+	 * 
+	 * @param node
+	 * @param win
+	 */
+	public void openImageInWindow(DefaultMutableTreeNode node, ImageWindow win) {
+
+		ImagePlus imp = win.getImagePlus();
+		DisplayRangeObject dro = new DisplayRangeObject(
+				imp.getDisplayRangeMin(), imp.getDisplayRangeMax(),
+				imp.getNChannels());
+		ImagePlus imp2;
+		String newTitle;
+		if (((ImageNode) node.getUserObject()).isFake()) {
+			imp2 = emptyImage;
+			newTitle = "Empty Image";
+		} else {
+			String filePath = node.getUserObject().toString();
+			System.out.println(directory.getAbsolutePath());
+			System.out.println(filePath);
+
+			imp2 = IJ.openImage(directory.getAbsolutePath()
+					+ System.getProperty("file.separator") + filePath);
+			newTitle = imp2.getTitle();
+		}
+
+		if (dro != null) {
+			imp2.setDisplayRange(dro.getMin(), dro.getMax(), dro.getChannels());
+		}
+
+		imp.setStack(newTitle, imp2.getStack());
+		imp.setCalibration(imp2.getCalibration());
+		imp.setFileInfo(imp2.getOriginalFileInfo());
+		imp.setProperty("Info", imp2.getProperty("Info"));
+
+		if (win != null) {
+			win.repaint();
+		}
+
+		windows.put(win, node);
+	}
+
+	public void openImageInNewWindow(DefaultMutableTreeNode node) {
+
+		Integer channel = node.getParent().getIndex(node);
+		DisplayRangeObject dro = displayRanges.get(channel);
+
+		String filePath;
+
+		if (((ImageNode) node.getUserObject()).isFake()) {
+			filePath = "resources\\EmptyImage.tiff";
+		} else {
+			filePath = directory.getAbsolutePath()
+					+ System.getProperty("file.separator")
+					+ node.getUserObject().toString();
+		}
+
+		System.out.println(directory.getAbsolutePath());
+		System.out.println(filePath);
+
+		IJ.open(filePath);
+		if (dro != null) {
+			ImagePlus imp = WindowManager.getCurrentImage();
+			imp.setDisplayRange(dro.getMin(), dro.getMax(), dro.getChannels());
+			ImageWindow win = imp.getWindow();
+			if (win != null) {
+				win.repaint();
+				win.toFront();
+			}
+		}
+		windows.put(WindowManager.getCurrentWindow(), node);
+
+	}
+
+	private void checkDisplayRange(Object lastPathComponent) {
+
+		if (lastPathComponent == null) {
+			return;
+		}
+
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
+		Integer channel = node.getParent().getIndex(node);
+		ImagePlus imp = WindowManager.getCurrentImage();
+		if (imp == null) {
+			return;
+		}
+
+		DisplayRangeObject dro = displayRanges.get(channel);
+		if (dro == null) {
+			dro = new DisplayRangeObject(imp.getDisplayRangeMin(),
+					imp.getDisplayRangeMax(), imp.getNChannels());
+			displayRanges.put(channel, dro);
+		} else {
+			if (imp.getDisplayRangeMax() != dro.getMax()) {
+				dro.setMax(imp.getDisplayRangeMax());
+			}
+			if (imp.getDisplayRangeMin() != dro.getMin()) {
+				dro.setMin(imp.getDisplayRangeMin());
+			}
+			if (imp.getNChannels() != dro.getChannels()) {
+				dro.setChannels(imp.getNChannels());
+			}
+		}
+		windows.put(WindowManager.getCurrentWindow(), node);
+	}
+
+	public Map<ImageWindow, DefaultMutableTreeNode> getWindows() {
+		return windows;
 	}
 
 }
