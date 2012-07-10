@@ -6,6 +6,7 @@ import javax.swing.*;
 
 
 import java.beans.*;
+import java.util.Date;
 import java.util.Random;
 
 public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements PropertyChangeListener {
@@ -57,7 +58,7 @@ public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements Pr
         	System.out.println("Progress modified, to be updated to " + progress);
             progressBar.setValue(progress);
             taskOutput.append(String.format(
-                    "Position %d finished.\n", progress ));
+                    "Position %d finished ", progress ) +  "at " + new Date());
         } 
     }
 }

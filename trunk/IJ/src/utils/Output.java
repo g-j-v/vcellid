@@ -50,7 +50,8 @@ public class Output {
 			for(String image: allPositionImages){
 				appendToFiles(image,(i+1));
 			}
-			loadParameters(i+1);
+			//True is passed because as we are not testing, and results should not go on Test folder
+			loadParameters(i+1,keepResults);
 			
 		}
 //		CellIdRunner.getInstance().run(directory);
@@ -84,9 +85,9 @@ public class Output {
 				allPositionImages = getTimeImages((DefaultMutableTreeNode)tree.getSelectionPath().getPathComponent(2));
 			}
 			for(String image: allPositionImages){
-				appendToBF(image,(i+1));
+				appendToBF(image,(i+1),keepResults);
 			}
-			loadParameters(i+1);
+			loadParameters(i+1, keepResults);
 			
 		}
 	}
@@ -122,12 +123,17 @@ public class Output {
 	}
 	
 	//Va agregando al archivo correspondiente los nombres de las imagenes BF
-	private void appendToBF(String image, int position ) {
+	private void appendToBF(String image, int position, boolean keepResults ) {
 		if(!image.toLowerCase().contains(".out")){
 
 			if(image.toUpperCase().contains("BF")){
 
-				File bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "bf_vcellid.txt");
+				File bfFile;
+				if(keepResults){
+					bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "bf_vcellid.txt");
+				}else{
+					bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "bf_vcellid.txt");
+				}
 
 				try {
 					FileWriter writer = new FileWriter(bfFile,true);
@@ -138,8 +144,12 @@ public class Output {
 					return;
 				}
 
-				File FlFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "fl_vcellid.txt");
-
+				File FlFile;
+				if(keepResults){
+					FlFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "fl_vcellid.txt");
+				}else{
+					FlFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator +  "fl_vcellid.txt");
+				}
 				try {
 					FileWriter writer = new FileWriter(FlFile,true);
 					writer.append(directory + systemDirSeparator + image + "\r\n");
@@ -197,11 +207,22 @@ public class Output {
 		List<String> images = new ArrayList<String>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
 		int i = -1;
+		List<String> imagesFromPosition = new ArrayList<String>();
+		boolean incompleteTime = false;
 		while(childNode != null){
 			DefaultMutableTreeNode leaf = (DefaultMutableTreeNode) childNode.getChildAt(++i);
-			images.add(leaf.getUserObject().toString());
+			String fileName = leaf.getUserObject().toString();
+			imagesFromPosition.add(fileName);
+			if(checkEmpty(fileName)){
+				incompleteTime = true;
+			}
 //			System.out.println(childNode.getChildCount() + " =?= " + (i+1) );
 			if(childNode.getChildCount() == (i + 1)){
+				if(!incompleteTime){
+					images.addAll(imagesFromPosition);
+				}
+				incompleteTime = false;
+				imagesFromPosition.clear();					
 				childNode = childNode.getNextSibling();
 				i = -1;
 			}
@@ -213,11 +234,25 @@ public class Output {
 		List<String> images = new ArrayList<String>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
 		while(childNode != null){
+			String fileName = childNode.getUserObject().toString();
+			if(checkEmpty(fileName)){
+				images.clear();
+				return images;
+			}
 			images.add(childNode.getUserObject().toString());
 			childNode = childNode.getNextSibling();
 		}
 		return images;
 	}
+
+	//Checks if the filename is from a fake image
+	private boolean checkEmpty(String fileName) {
+		if(fileName.equals("Empty_BF") || fileName.equals("Empty_BF_OUT") || fileName.equals("Empty_YFP") || fileName.equals("Empty_YFP_OUT") || fileName.equals("Empty_CFP") || fileName.equals("Empty_CFP_OUT") ){
+			return true;
+		}
+		return false;
+	}
+
 
 	//Crea los arvhivos que contienen las imagenes y el de paramentros
 	private void createFiles(File positionDirectory) {
@@ -278,8 +313,14 @@ public class Output {
 			return positionDirectory;
 		}
 
-	public void loadParameters(int position){
-		File bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");
+	public void loadParameters(int position, boolean keepResults){
+		
+		File bfFile;
+		if(keepResults){
+			bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");
+		}else{
+			bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "parameters_vcellid_out.txt");
+		}
 		try {
 			FileWriter writer = new FileWriter(bfFile,true);
 			writer.append(" max_split_over_minor " + Segmentation.getMaxSplitOverMinor() + "\r\n");
@@ -321,29 +362,30 @@ public class Output {
 		@Override
 		public void run() {
 			
-//			if(position > 0){
-//				CellIdRunner.getInstance().run(directory,position,keepResults);
-//				task.getPosition().getAndIncrement();
-//			}else{
-//				for(int i = 1; i <= maxPositions; ++i){
-//					CellIdRunner.getInstance().run(directory,i,keepResults);
-//					task.getPosition().getAndIncrement();
-//				}
-//			}
+			System.out.println("Running.........");
+			if(position > 0){
+				CellIdRunner.getInstance().run(directory,position,keepResults);
+				task.getPosition().getAndIncrement();
+			}else{
+				for(int i = 1; i <= maxPositions; ++i){
+					CellIdRunner.getInstance().run(directory,i,keepResults);
+					task.getPosition().getAndIncrement();
+				}
+			}
 			
 			//To test how progress bar works
-			for(int i = 0; i < 30; ++i){
-				try {
-					Random r = new Random();
-					int lala = r.nextInt(10000);
-					Thread.sleep(lala);
-					System.out.println("waiting " + lala + " sec");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				task.getPosition().getAndIncrement();
-			}
+//			for(int i = 0; i < 30; ++i){
+//				try {
+//					Random r = new Random();
+//					int lala = r.nextInt(10000);
+//					Thread.sleep(lala);
+//					System.out.println("waiting " + lala + " sec");
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				task.getPosition().getAndIncrement();
+//			}
 		}
 	}
 	

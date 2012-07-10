@@ -64,9 +64,9 @@ public class CellIdRunner {
 			}else{
 				command.add("--param=" + directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "parameters_vcellid_out.txt");
 			}
-			if(keepResults){
+			if(!keepResults){
 				command.add("--output");
-				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator);
 			}
 			if(Segmentation.isParameterCheckBoxSelected()){
 				String params[] = Segmentation.getParameters().split(" ");
