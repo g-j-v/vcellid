@@ -58,7 +58,7 @@ public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements Pr
         	System.out.println("Progress modified, to be updated to " + progress);
             progressBar.setValue(progress);
             taskOutput.append(String.format(
-                    "Position %d finished ", progress ) +  "at " + new Date());
+                    "Position %d finished ", progress ) +  "at " + new Date() + "\r\n");
         } 
     }
 }

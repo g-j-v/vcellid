@@ -11,12 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -25,6 +34,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
+
+import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 
 import CellId.Segmentation;
 
@@ -35,8 +46,6 @@ public class TreeGenerator {
 	private List<String> fileNames;
 	private Map<Integer, DisplayRangeObject> displayRanges;
 	private Map<ImageWindow, DefaultMutableTreeNode> windows;
-	private static ImagePlus emptyImage = new ImagePlus(
-			"resources/EmptyImage.tiff");
 
 	public TreeGenerator(Finder finder, File directory) {
 		this.finder = finder;
@@ -44,6 +53,7 @@ public class TreeGenerator {
 		this.fileNames = finder.find(directory);
 		this.displayRanges = new HashMap<Integer, DisplayRangeObject>();
 		this.windows = new HashMap<ImageWindow, DefaultMutableTreeNode>();
+		generateEmptyTiff();
 	}
 
 	public JTree generateTree() {
@@ -603,7 +613,7 @@ public class TreeGenerator {
 		ImagePlus imp2;
 		String newTitle;
 		if (((ImageNode) node.getUserObject()).isFake()) {
-			imp2 = emptyImage;
+			imp2 = IJ.openImage(directory + System.getProperty("file.separator")+ "EmptyImage.tiff");
 			newTitle = "Empty Image";
 		} else {
 			String filePath = node.getUserObject().toString();
@@ -648,7 +658,7 @@ public class TreeGenerator {
 		ImagePlus imp2;
 		String newTitle;
 		if (((ImageNode) node.getUserObject()).isFake()) {
-			imp2 = emptyImage;
+			imp2 = IJ.openImage(directory + System.getProperty("file.separator")+ "EmptyImage.tiff");
 			newTitle = "Empty Image";
 		} else {
 			String filePath = node.getUserObject().toString();
@@ -684,7 +694,7 @@ public class TreeGenerator {
 		String filePath;
 
 		if (((ImageNode) node.getUserObject()).isFake()) {
-			filePath = "resources\\EmptyImage.tiff";
+			filePath = directory + System.getProperty("file.separator")+ "EmptyImage.tiff";
 		} else {
 			filePath = directory.getAbsolutePath()
 					+ System.getProperty("file.separator")
@@ -742,6 +752,45 @@ public class TreeGenerator {
 
 	public Map<ImageWindow, DefaultMutableTreeNode> getWindows() {
 		return windows;
+	}
+	
+	private boolean generateEmptyTiff(){
+
+		BufferedImage image = new BufferedImage(512,512,BufferedImage.TYPE_BYTE_GRAY);
+		String filename = directory + System.getProperty("file.separator") + "EmptyImage.tiff";
+		File tiffFile = new File(filename);
+		ImageOutputStream ios = null;
+		ImageWriter writer = null;
+
+		try {
+
+			// find an appropriate writer
+			Iterator it = ImageIO.getImageWritersByFormatName("TIF");
+			if (it.hasNext()) {
+				writer = (ImageWriter)it.next();
+			} else {
+				return false;
+			}
+
+			// setup writer
+			ios = ImageIO.createImageOutputStream(tiffFile);
+			writer.setOutput(ios);
+			TIFFImageWriteParam writeParam = new TIFFImageWriteParam(Locale.ENGLISH);
+			writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			// see writeParam.getCompressionTypes() for available compression type strings
+			writeParam.setCompressionType("PackBits");
+
+			// convert to an IIOImage
+			IIOImage iioImage = new IIOImage(image, null, null);
+
+			// write it!
+			writer.write(null, iioImage, writeParam);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 }
