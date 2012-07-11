@@ -67,6 +67,9 @@ public class CellIdRunner {
 			if(!keepResults){
 				command.add("--output");
 				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator);
+			}else{
+				command.add("--output");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator);
 			}
 			if(Segmentation.isParameterCheckBoxSelected()){
 				String params[] = Segmentation.getParameters().split(" ");
