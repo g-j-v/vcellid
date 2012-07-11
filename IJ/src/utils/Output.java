@@ -295,7 +295,7 @@ public class Output {
 				f.delete();
 			}
 		}else{
-			positionDirectory.mkdir();
+			positionDirectory.mkdirs();
 		}
 		return positionDirectory;
 	}
@@ -308,7 +308,7 @@ public class Output {
 					f.delete();
 				}
 			}else{
-				positionDirectory.mkdir();
+				positionDirectory.mkdirs();
 			}
 			return positionDirectory;
 		}
