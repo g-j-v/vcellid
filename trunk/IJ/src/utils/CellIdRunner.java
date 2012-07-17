@@ -2,6 +2,11 @@ package utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -43,7 +48,11 @@ public class CellIdRunner {
 //			Runtime rt = Runtime.getRuntime();
 //			Process p = rt.exec(cellIdPath);
 			
-			System.out.println("Running for " + directory.getAbsoluteFile());
+			if(keepResults){
+				System.out.println("Running for " + directory.getAbsoluteFile());
+			}else{
+				System.out.println("Running for " + directory.getAbsoluteFile() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test");	
+			}
 			
 			List<String> command = new ArrayList<String>();
 			command.add(cellIdPath);
@@ -81,7 +90,11 @@ public class CellIdRunner {
 //			System.setProperty("user.dir", directory.getAbsolutePath());
 //			System.out.println(System.getProperty("user.dir"));
 			ProcessBuilder processBuilder = new ProcessBuilder(command);
-			processBuilder.directory(directory.getAbsoluteFile());
+			if(keepResults){
+				processBuilder.directory(directory.getAbsoluteFile());			
+			}else{
+				processBuilder.directory(new File(directory.getAbsoluteFile() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test"));
+			}
 			System.out.println(processBuilder.directory());
 			Process p = processBuilder.start();
 			InputStream in = p.getInputStream();
