@@ -1,9 +1,16 @@
 package utils;
 
 
+import ij.IJ;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -137,8 +144,12 @@ public class Output {
 
 				try {
 					FileWriter writer = new FileWriter(bfFile,true);
-					writer.append(directory + systemDirSeparator + image + "\r\n");
-					writer.close();
+					if(keepResults){
+						writer.append(directory + systemDirSeparator + image + "\r\n");
+					}else{
+						writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
+					}
+						writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add BF image to bf_vcellid.txt");
 					return;
@@ -152,12 +163,17 @@ public class Output {
 				}
 				try {
 					FileWriter writer = new FileWriter(FlFile,true);
-					writer.append(directory + systemDirSeparator + image + "\r\n");
+					if(keepResults){
+						writer.append(directory + systemDirSeparator + image + "\r\n");
+					}else{
+						writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
+					}
 					writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add BF image to fl_vcellid.txt");
 					return;
 				}
+				copyImagesForTest(directory,position,image);
 			}else{
 				System.out.println("No image to add");
 			}
@@ -342,6 +358,31 @@ public class Output {
 			return;
 		}
 	}
+	
+	private void copyImagesForTest(File directory, int position, String imageName) {
+		File destination = new File(directory.getAbsoluteFile()+ systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName);
+		InputStream inputStream;
+		OutputStream outputStream;
+		try {
+			inputStream = new FileInputStream(directory + systemDirSeparator + imageName );
+			outputStream = new FileOutputStream(destination);
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not copy files for test");
+			return;
+		}
+		int length;
+		byte[] buffer = new byte[1024];
+		try{
+			while ((length = inputStream.read(buffer)) > 0){		 
+				outputStream.write(buffer, 0, length);
+			}			
+			inputStream.close();
+			outputStream.close();
+		}catch(IOException e){
+			System.out.println("Could not copy files for test");
+		}	
+		
+	}
 
 	private class RunAndCleanPosition extends Thread{
 		
@@ -350,7 +391,7 @@ public class Output {
 		int position;
 		int maxPositions;
 		boolean keepResults;
-		
+			
 		public RunAndCleanPosition(Task task,File directory,int position, int maxPositions,boolean keepResults){
 			this.task = task;
 			this.directory = directory;
@@ -373,6 +414,13 @@ public class Output {
 				}
 			}
 			
+			if(keepResults){
+				//TODO: Recargar el arbol
+			}else{
+				//TODO: Mostar la imagen de test
+				IJ.open(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + name );
+			}
+			
 			//To test how progress bar works
 //			for(int i = 0; i < 30; ++i){
 //				try {
@@ -388,5 +436,6 @@ public class Output {
 //			}
 		}
 	}
+	
 	
 }
