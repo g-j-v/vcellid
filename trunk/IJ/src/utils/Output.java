@@ -427,10 +427,13 @@ public class Output {
 			
 			if(keepResults){
 				//TODO: Recargar el arbol
+				
 			}else{
 				//TODO: Mostar la imagen de test
 				String imageName = readOutputfromTest(position);
-				IJ.open(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName );
+				if(imageName != null){
+					IJ.open(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName );
+					}
 			}
 			
 			//To test how progress bar works

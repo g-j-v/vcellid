@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import CellId.Segmentation;
@@ -107,10 +108,23 @@ public class CellIdRunner {
 			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader br = new BufferedReader(isr);
 
-			while ((line = br.readLine()) != null) {
-			  System.out.println(line);
-			}
-	 
+			File file; 
+			try{
+				file= new File(directory.getAbsoluteFile() + systemDirSeparator + "LOG_VCellID_" + (keepResults ? "Run_" : "Test_") + (new Date().toString().replace(" ", "_").replace(":", "-")) + ".txt");
+				if(!file.exists()){
+					System.out.println("Creating log file: " + file);
+					file.createNewFile();
+				}
+				FileWriter writer = new FileWriter(file,true);
+			
+				while ((line = br.readLine()) != null) {
+					writer.append(line + "\r\n");
+					
+				}
+				writer.close();
+			}catch(IOException e){
+				return;
+		}
 			p.destroy() ;
 		}catch(Exception exc){/*handle exception*/}
 	}
