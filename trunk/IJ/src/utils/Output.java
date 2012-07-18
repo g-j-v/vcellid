@@ -260,6 +260,17 @@ public class Output {
 		}
 		return images;
 	}
+	
+	private String readOutputfromTest(int position){
+		File file = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test");
+		String[] filenames = file.list();
+		for(String files: filenames){
+			if(files.toLowerCase().contains(".out") && files.toLowerCase().contains(".tif") ){
+				return files;
+			}
+		}
+		return null;
+	}
 
 	//Checks if the filename is from a fake image
 	private boolean checkEmpty(String fileName) {
@@ -418,7 +429,8 @@ public class Output {
 				//TODO: Recargar el arbol
 			}else{
 				//TODO: Mostar la imagen de test
-				IJ.open(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + name );
+				String imageName = readOutputfromTest(position);
+				IJ.open(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName );
 			}
 			
 			//To test how progress bar works
