@@ -360,8 +360,8 @@ public class Output {
 			writer.append(" " + Segmentation.frameAlignment() + "\r\n");
 			writer.append(" image_type brightfield\r\n");
 			writer.append(" bf_fl_mapping list\r\n");
-			writer.append(" fret bf_bottom_and_top\r\n");
-			writer.append(" fret nuclear_top\r\n");
+//			writer.append(" fret bf_bottom_and_top\r\n");
+//			writer.append(" fret nuclear_top\r\n");
 			//TODO: aca van parametros sin valores
 			writer.close();
 		} catch (IOException e) {
