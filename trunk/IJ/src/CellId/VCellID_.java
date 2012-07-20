@@ -28,7 +28,14 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 
 	public void run(String arg) {
 
-		CellIdRunner.getInstance().setCellIdPath("C:\\VCell-ID\\bin\\cell.exe");
+		if(isWindows()){
+			CellIdRunner.getInstance().setCellIdPath("C:\\VCell-ID\\bin\\cell.exe");			
+		}else if(isMac()){
+			CellIdRunner.getInstance().setCellIdPath("/opt/local/bin/cell");
+		}else if(isUnix()){
+			CellIdRunner.getInstance().setCellIdPath("");
+		}
+
 		cellIdPathButton = new JButton("CellID Path");
 		cellIdPathButton.addActionListener(new CellIdPath());
 //		cellIdPathButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -63,5 +70,28 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		setSize(20+BUTTON_WIDTH, 3*BUTTON_HEIGHT+5*BUTTON_SPACING);
 		setResizable(false);
 		show();
+	}
+	
+	private static boolean isWindows() {
+		 
+		String os = System.getProperty("os.name").toLowerCase();
+		// windows
+		return (os.indexOf("win") >= 0);
+ 
+	}
+	private static boolean isMac() {
+		 
+		String os = System.getProperty("os.name").toLowerCase();
+		// Mac
+		return (os.indexOf("mac") >= 0);
+ 
+	}
+ 
+	private static boolean isUnix() {
+ 
+		String os = System.getProperty("os.name").toLowerCase();
+		// linux or unix
+		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+ 
 	}
 }
