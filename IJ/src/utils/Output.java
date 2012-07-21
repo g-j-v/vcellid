@@ -145,9 +145,17 @@ public class Output {
 				try {
 					FileWriter writer = new FileWriter(bfFile,true);
 					if(keepResults){
-						writer.append(directory + systemDirSeparator + image + "\r\n");
+						if(image.toLowerCase().contains("empty")){
+							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+						}else{
+							writer.append(directory + systemDirSeparator + image + "\r\n");
+						}
 					}else{
-						writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
+						if(image.toLowerCase().contains("empty")){
+							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");		
+						}else{
+							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
+						}
 					}
 						writer.close();
 				} catch (IOException e) {
@@ -164,9 +172,17 @@ public class Output {
 				try {
 					FileWriter writer = new FileWriter(FlFile,true);
 					if(keepResults){
-						writer.append(directory + systemDirSeparator + image + "\r\n");
+						if(image.toLowerCase().contains("empty")){
+							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+						}else{
+							writer.append(directory + systemDirSeparator + image + "\r\n");
+						}
 					}else{
-						writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
+						if(image.toLowerCase().contains("empty")){
+							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");
+						}else{
+							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
+						}
 					}
 					writer.close();
 				} catch (IOException e) {
@@ -183,16 +199,23 @@ public class Output {
 	
 	//Va agregando al archivo correspondiente los nombres de las imagenes BF y FL
 	private void appendToFiles(String image, int position ) {
-		if(!image.toLowerCase().contains(".out")){
+		if(!image.toLowerCase().contains(".out") && !image.toLowerCase().contains("_out") ){
 
 			if(image.toUpperCase().contains("BF")){
 
 				File bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "bf_vcellid.txt");
 
 				try {
+					
 					FileWriter writer = new FileWriter(bfFile,true);
-					writer.append(directory + systemDirSeparator + image + "\r\n");
-					writer.append(directory + systemDirSeparator + image + "\r\n");
+					
+					if(image.toLowerCase().contains("empty")){
+						writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+						writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+					}else{
+						writer.append(directory + systemDirSeparator + image + "\r\n");
+						writer.append(directory + systemDirSeparator + image + "\r\n");						
+					}
 					writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add BF image to bf_vcellid.txt");
@@ -205,7 +228,11 @@ public class Output {
 
 				try {
 					FileWriter writer = new FileWriter(FlFile,true);
-					writer.append(directory + systemDirSeparator +image + "\r\n");
+					if(image.toLowerCase().contains("empty")){
+						writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+					}else{
+						writer.append(directory + systemDirSeparator +image + "\r\n");
+					}
 					writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add FL image to fl_vcellid.txt");
@@ -223,22 +250,23 @@ public class Output {
 		List<String> images = new ArrayList<String>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
 		int i = -1;
-		List<String> imagesFromPosition = new ArrayList<String>();
-		boolean incompleteTime = false;
+//		List<String> imagesFromPosition = new ArrayList<String>();
+//		boolean incompleteTime = false;
 		while(childNode != null){
 			DefaultMutableTreeNode leaf = (DefaultMutableTreeNode) childNode.getChildAt(++i);
 			String fileName = leaf.getUserObject().toString();
-			imagesFromPosition.add(fileName);
-			if(checkEmpty(fileName)){
-				incompleteTime = true;
-			}
+			images.add(fileName);
+//			imagesFromPosition.add(fileName);
+//			if(checkEmpty(fileName)){
+//				incompleteTime = true;
+//			}
 //			System.out.println(childNode.getChildCount() + " =?= " + (i+1) );
 			if(childNode.getChildCount() == (i + 1)){
-				if(!incompleteTime){
-					images.addAll(imagesFromPosition);
-				}
-				incompleteTime = false;
-				imagesFromPosition.clear();					
+//				if(!incompleteTime){
+//					images.addAll(imagesFromPosition);
+//				}
+//				incompleteTime = false;
+//				imagesFromPosition.clear();					
 				childNode = childNode.getNextSibling();
 				i = -1;
 			}
