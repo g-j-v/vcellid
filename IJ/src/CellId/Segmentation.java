@@ -1,23 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package CellId;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.font.NumericShaper;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
@@ -28,7 +18,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.ProgressMonitor;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 
@@ -40,6 +29,10 @@ import utils.SegmentationValues;
  * @author Gisela
  */
 public class Segmentation extends ij.plugin.frame.PlugInFrame{
+	
+	/**
+	 * Variables
+	 */
 	private static final ButtonGroup frameAlignmentButtonGroup = new ButtonGroup();
 	private static final ButtonGroup cellAlignmentButtonGroup = new ButtonGroup();
 	
@@ -62,6 +55,13 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	private final JTree jtree;
 	private final File directory;
 	
+	/**
+	 * Constructor
+	 * @param tree where to run, depending on selected node.
+	 * @param file directory where the images can be found.
+	 * @param BfType indicates if its a normal run or a BF run.
+	 * @param test indicates if it is a test.
+	 */
 	public Segmentation(JTree tree, File file, final boolean BfType, final boolean test) {
 				
 		super("Segmentation");
@@ -69,6 +69,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		this.jtree = tree;
 		this.directory = file;
 		
+		//Singleton to store the segmentation values
 		SegmentationValues segmentationValues = SegmentationValues.getInstance();
 		
 		setTitle("Segmentation");
@@ -355,6 +356,9 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		 return null;
 	 }
 	 
+	 /**
+	  * Saves the new values in the singleton
+	  */
 	 private void saveValues(){
 		 SegmentationValues segmentationValues = SegmentationValues.getInstance();
 		 segmentationValues.setAdvancedParameters(parameters.getText());

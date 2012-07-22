@@ -1,3 +1,7 @@
+/**
+ * Class which creates the tree and its behaviour
+ */
+
 package utils;
 
 import ij.IJ;
@@ -41,12 +45,20 @@ import CellId.Segmentation;
 
 public class TreeGenerator {
 
+	/**
+	 * Variables
+	 */
 	private Finder finder;
 	private File directory;
 	private List<String> fileNames;
 	private Map<Integer, DisplayRangeObject> displayRanges;
 	private Map<ImageWindow, DefaultMutableTreeNode> windows;
 
+	/**
+	 * Constructor
+	 * @param finder to know which images to get
+	 * @param directory where to find the images
+	 */
 	public TreeGenerator(Finder finder, File directory) {
 		this.finder = finder;
 		this.directory = directory;
@@ -56,6 +68,10 @@ public class TreeGenerator {
 		generateEmptyTiff();
 	}
 
+	/**
+	 * Generates the tree
+	 * @return a tree with the images
+	 */
 	public JTree generateTree() {
 		final JTree tree;
 		// For PopUp
@@ -103,15 +119,7 @@ public class TreeGenerator {
 						seg.setVisible(true);
 					}
 				});
-		// TimeBfPopup.add(new JMenuItem("Run Time")).addActionListener(new
-		// ActionListener() {
-		//
-		// @Override
-		// public void actionPerformed(ActionEvent arg0) {
-		// Segmentation seg = new Segmentation(tree, directory,false);
-		// seg.setVisible(true);
-		// }
-		// });
+		
 		TimePopup.add(new JMenuItem("Test Time")).addActionListener(
 				new ActionListener() {
 
@@ -331,6 +339,11 @@ public class TreeGenerator {
 		return tree;
 	}
 
+	/**
+	 * Adds nodes to the tree.
+	 * @param top the node where to add new nodes, usually the root
+	 * @param directory where to get the images
+	 */
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
 		List<String> fileNames = finder.find(directory);
@@ -357,8 +370,6 @@ public class TreeGenerator {
 				String name;
 				name = getBf(files);
 				if (name == null) {
-					// nodo que no existe, indicarlo con imagen vacia y nombre
-					// en color
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, "Empty_BF", true)));
 				} else {
@@ -367,8 +378,7 @@ public class TreeGenerator {
 				}
 				name = getBfOut(files);
 				if (name == null) {
-					// nodo que no existe, indicarlo con imagen vacia y nombre
-					// en color
+					
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, "Empty_BF_OUT", true)));
 				} else {
@@ -377,8 +387,7 @@ public class TreeGenerator {
 				}
 				name = getYfp(files);
 				if (name == null) {
-					// nodo que no existe, indicarlo con imagen vacia y nombre
-					// en color
+					
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, "Empty_YFP", true)));
 				} else {
@@ -387,8 +396,7 @@ public class TreeGenerator {
 				}
 				name = getYfpOut(files);
 				if (name == null) {
-					// nodo que no existe, indicarlo con imagen vacia y nombre
-					// en color
+					
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, "Empty_YFP_OUT", true)));
 				} else {
@@ -397,8 +405,7 @@ public class TreeGenerator {
 				}
 				name = getCfp(files);
 				if (name == null) {
-					// nodo que no existe, indicarlo con imagen vacia y nombre
-					// en color
+					
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, "Empty_CFP", true)));
 				} else {
@@ -407,8 +414,7 @@ public class TreeGenerator {
 				}
 				name = getCfpOut(files);
 				if (name == null) {
-					// nodo que no existe, indicarlo con imagen vacia y nombre
-					// en color
+					
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, "Empty_CFP_OUT", true)));
 				} else {
@@ -420,6 +426,10 @@ public class TreeGenerator {
 		}
 	}
 
+	/**
+	 * Looks for the biggest position.
+	 * @return the maximum position
+	 */
 	public int getMaxPosition() {
 
 		// TODO: Para generalizar todavia mas podemos recibir un parametro
@@ -428,8 +438,7 @@ public class TreeGenerator {
 		int max = 0;
 		for (String name : fileNames) {
 			int aux;
-			// Busco el segundo separador para ver el identificador de la
-			// posicion
+
 			String[] info = name.split(finder.separator);
 			String position = info[1];
 			int endPos = position.length();
@@ -450,6 +459,11 @@ public class TreeGenerator {
 		return max;
 	}
 
+	/**
+	 * Looks for the biggest time in a given position
+	 * @param position
+	 * @return the maximum time
+	 */
 	public int getMaxTime(PositionNode position) {
 
 		// TODO: Para generalizar todavia mas podemos recibir un parametro
@@ -479,6 +493,10 @@ public class TreeGenerator {
 		return max;
 	}
 
+	/**
+	 * Looks for the biggest time for all the positions
+	 * @return the maximum time
+	 */
 	public int getMaxTime() {
 		int max = 0;
 		for (int i = 0; i < getMaxPosition(); ++i) {
@@ -490,6 +508,11 @@ public class TreeGenerator {
 		return max;
 	}
 
+	/**
+	 * 
+	 * @author alejandropetit
+	 *
+	 */
 	private class NameFilter implements FilenameFilter {
 
 		PositionNode position;
@@ -572,10 +595,16 @@ public class TreeGenerator {
 		return null;
 	}
 
+	
 	public Map<Integer, DisplayRangeObject> getDisplayRanges() {
 		return displayRanges;
 	}
-
+	
+	/**
+	 * Used to show the fake images in red
+	 * @author alejandropetit
+	 *
+	 */
 	private class MyRenderer extends DefaultTreeCellRenderer {
 
 		public Component getTreeCellRendererComponent(JTree tree, Object value,
@@ -603,6 +632,11 @@ public class TreeGenerator {
 		}
 	}
 
+	/**
+	 * 
+	 * @param imp
+	 * @param node
+	 */
 	public void openImageInCurrentWindow(ImagePlus imp,
 			DefaultMutableTreeNode node) {
 
@@ -686,6 +720,10 @@ public class TreeGenerator {
 		windows.put(win, node);
 	}
 
+	/**
+	 * 
+	 * @param node
+	 */
 	public void openImageInNewWindow(DefaultMutableTreeNode node) {
 
 		Integer channel = node.getParent().getIndex(node);
@@ -718,6 +756,10 @@ public class TreeGenerator {
 
 	}
 
+	/**
+	 * 
+	 * @param lastPathComponent
+	 */
 	private void checkDisplayRange(Object lastPathComponent) {
 
 		if (lastPathComponent == null) {
@@ -754,6 +796,10 @@ public class TreeGenerator {
 		return windows;
 	}
 	
+	/**
+	 * Generates a Black .tiff image to use as Empty Image.
+	 * @return
+	 */
 	private boolean generateEmptyTiff(){
 
 		BufferedImage image = new BufferedImage(512,512,BufferedImage.TYPE_BYTE_GRAY);

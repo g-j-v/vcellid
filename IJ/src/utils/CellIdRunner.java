@@ -1,17 +1,18 @@
+/**
+ * Singleton class that runs cellid
+ * @author Alejandro Petit
+ */
+
 package utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -19,13 +20,23 @@ import CellId.Segmentation;
 
 public class CellIdRunner {
 	
+	/**
+	 * Variables
+	 */
 	String cellIdPath;
 	private static CellIdRunner instance;
 	String systemDirSeparator = System.getProperty("file.separator");	
 	
+	/**
+	 * Default constructor
+	 */
 	public CellIdRunner(){
 	}
 	
+	/**
+	 * Returns the instance of CellIdRunner, of a new one if it does not exist-
+	 * @return Instance of CellIdRunner
+	 */
 	public static CellIdRunner getInstance(){
 		if(instance == null){
 			instance = new CellIdRunner();
@@ -42,7 +53,12 @@ public class CellIdRunner {
 	}
 
 	
-
+	/**
+	 * Creates the process to run cellid and logs its output on a file
+	 * @param directory where the images can be found
+	 * @param position to run
+	 * @param keepResults if the execution is a test or not. If keepResutls is false, execution is done in Test directory inside position
+	 */
 	public void run(File directory, int position, boolean keepResults){
 		try
 		{
@@ -87,9 +103,7 @@ public class CellIdRunner {
 					command.add(str);
 				}
 			}
-//			System.out.println(System.getProperty("user.dir"));
-//			System.setProperty("user.dir", directory.getAbsolutePath());
-//			System.out.println(System.getProperty("user.dir"));
+
 			ProcessBuilder processBuilder = new ProcessBuilder(command);
 			if(keepResults){
 				processBuilder.directory(directory.getAbsoluteFile());			
@@ -102,8 +116,7 @@ public class CellIdRunner {
 			OutputStream out = p.getOutputStream ();
 			InputStream err = p.getErrorStream();
 	 
-			//do whatever you want
-			//some more code
+
 			String line;
 			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader br = new BufferedReader(isr);

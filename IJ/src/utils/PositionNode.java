@@ -1,25 +1,23 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package utils;
 
 import java.util.List;
 
 /**
- *
- * @author apetit
+ * Class to represent a Position node of thre tree
+ * @author Alejandro Petit
  */
 public class PositionNode {
 
     List<TimeNode> times;
     Integer number;
 
+    /**
+     * Constructor
+     * @param number to identify the position
+     */
     public PositionNode(int number){
         this.number = number;
     }
-
 
     public List<TimeNode> getTimes() {
         return times;

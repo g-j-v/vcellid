@@ -1,3 +1,8 @@
+/**
+ * Class to represent an ImageNode of the tree
+ */
+
+
 package utils;
 
 public class ImageNode {
@@ -8,7 +13,13 @@ public class ImageNode {
 	String imageName;
 	boolean fake;
 	
-	
+	/**
+	 * Constructor
+	 * @param position to which this image belongs
+	 * @param time to which this image belongs
+	 * @param name of the image
+	 * @param fake if there is no real image
+	 */
 	public ImageNode(PositionNode position,TimeNode time,String name,boolean fake){
 		this.position = position;
 		this.time = time;

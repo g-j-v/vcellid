@@ -1,8 +1,11 @@
+/**
+ * Class to generate output files to run cellid
+ * @author Alejandro Petit
+ */
+
 package utils;
 
-
 import ij.IJ;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,7 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -31,12 +33,19 @@ public class Output {
 	String systemDirSeparator = System.getProperty("file.separator");
 	String systemNewLineSeparator = System.getProperty("line.separator");
 	
+	/**
+	 * Constructor
+	 * @param tree with images
+	 * @param directory where to find the images
+	 */
 	public Output(JTree tree, File directory){
 		this.tree = tree;
 		this.directory = directory;
 	}
 	
-	
+	/**
+	 * Generates the files considering a run with BF and FL images
+	 */
 	public void generateRun(){
 
 		TreePath selected = tree.getSelectionPath();
@@ -75,9 +84,12 @@ public class Output {
 			loadParameters(i+1,keepResults);
 			
 		}
-//		CellIdRunner.getInstance().run(directory);
 	}
 
+	/**
+	 * Generates files considering only BF files. bf_file.txt = fl_file.txt both with BF images 
+	 * @param keepResults to diferenciate if its a run or a test. If keepResults is false, files are created in Test directory
+	 */
 	public void generateBF(boolean keepResults){
 		
 		TreePath selected = tree.getSelectionPath();
@@ -130,6 +142,9 @@ public class Output {
 		}
 	}
 	
+	/**
+	 * Creates the progress bar, and the thread to run cellid
+	 */
 	public void run(){
 		
 		TreePath selected = tree.getSelectionPath();
@@ -160,7 +175,12 @@ public class Output {
 
 	}
 	
-	//Va agregando al archivo correspondiente los nombres de las imagenes BF
+	/**
+	 * Adds to the corresponding file the name of the image
+	 * @param image to add to the file
+	 * @param position where to add the image
+	 * @param keepResults indicated if its a test. If keepResults is true, image is added to files in Test directory
+	 */
 	private void appendToBF(String image, int position, boolean keepResults ) {
 		if(!image.toLowerCase().contains(".out")){
 
@@ -229,6 +249,11 @@ public class Output {
 	}
 	
 	//Va agregando al archivo correspondiente los nombres de las imagenes BF y FL
+	/**
+	 * Adds to the corresponding file the name of the image
+	 * @param image to add to the files
+	 * @param position where to add the image
+	 */
 	private void appendToFiles(String image, int position ) {
 		if(!image.toLowerCase().contains(".out") && !image.toLowerCase().contains("_out") ){
 
@@ -276,7 +301,11 @@ public class Output {
 		}
 	}
 
-	//Obtiene el path de todas las imagenes de la posicion
+	/**
+	 * Gets the name of all the images under that node
+	 * @param node where to look for the images.
+	 * @return list of all the images under the node
+	 */
 	private List<String> getAllImages(DefaultMutableTreeNode node) {
 		List<String> images = new ArrayList<String>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
@@ -305,21 +334,31 @@ public class Output {
 		return images;
 	}
 	
+	/**
+	 * Obtains the time images corresponding to a node
+	 * @param node where to look for the images
+	 * @return the images found
+	 */
 	private List<String> getTimeImages(DefaultMutableTreeNode node){
 		List<String> images = new ArrayList<String>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
 		while(childNode != null){
-			String fileName = childNode.getUserObject().toString();
-			if(checkEmpty(fileName)){
-				images.clear();
-				return images;
-			}
+//			String fileName = childNode.getUserObject().toString();
+//			if(checkEmpty(fileName)){
+//				images.clear();
+//				return images;
+//			}
 			images.add(childNode.getUserObject().toString());
 			childNode = childNode.getNextSibling();
 		}
 		return images;
 	}
 	
+	/**
+	 * Reads output image in test directory
+	 * @param position where to look for the image
+	 * @return the file name of the image.
+	 */
 	private String readOutputfromTest(int position){
 		File file = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test");
 		String[] filenames = file.list();
@@ -331,7 +370,11 @@ public class Output {
 		return null;
 	}
 
-	//Checks if the filename is from a fake image
+	/**
+	 * Checks if the file name is from a fake image.
+	 * @param fileName
+	 * @return true if it is fake.
+	 */
 	private boolean checkEmpty(String fileName) {
 		if(fileName.equals("Empty_BF") || fileName.equals("Empty_BF_OUT") || fileName.equals("Empty_YFP") || fileName.equals("Empty_YFP_OUT") || fileName.equals("Empty_CFP") || fileName.equals("Empty_CFP_OUT") ){
 			return true;
@@ -340,7 +383,10 @@ public class Output {
 	}
 
 
-	//Crea los arvhivos que contienen las imagenes y el de paramentros
+	/**
+	 * Creates the files for BF images, FL images and parameters
+	 * @param positionDirectory where to create the file
+	 */
 	private void createFiles(File positionDirectory) {
 		File bf_file = new File(positionDirectory.getAbsoluteFile() + systemDirSeparator + "bf_vcellid.txt");
 		File fl_file = new File(positionDirectory.getAbsoluteFile() + systemDirSeparator + "fl_vcellid.txt");
@@ -373,7 +419,11 @@ public class Output {
 		System.out.println("All files were successfully created");
 	}
 
-	//Crea el directorio de la posicion y lo retorna
+	/**
+	 * Creates the position for a given directory 
+	 * @param i is the number of the position
+	 * @return
+	 */
 	private File createDirectory(int i) {
 		File positionDirectory = new File(directory + systemDirSeparator + "Position" + i);
 		if(positionDirectory.exists()){
@@ -399,6 +449,11 @@ public class Output {
 			return positionDirectory;
 		}
 
+	/**
+	 * Adds the parameters values to the corresponding file
+	 * @param position where to find the file to be filled
+	 * @param keepResults indicated which file to use. If its false, Test directory is used.
+	 */
 	public void loadParameters(int position, boolean keepResults){
 		
 		File bfFile;
@@ -429,6 +484,12 @@ public class Output {
 		}
 	}
 	
+	/**
+	 * Makes a copy of the BF to the Test directory to run cellid in test mode
+	 * @param directory where to find the images
+	 * @param position in which image should be copied
+	 * @param imageName to copy
+	 */
 	private void copyImagesForTest(File directory, int position, String imageName) {
 		File destination = new File(directory.getAbsoluteFile()+ systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName);
 		InputStream inputStream;
@@ -454,6 +515,11 @@ public class Output {
 		
 	}
 
+	/**
+	 * Thread to run cellid.
+	 * @author alejandropetit
+	 *
+	 */
 	private class RunAndCleanPosition extends Thread{
 		
 		Task task;
@@ -462,6 +528,14 @@ public class Output {
 		int maxPositions;
 		boolean keepResults;
 			
+		/**
+		 * Constructor
+		 * @param task which controls changes.
+		 * @param directory where images are found
+		 * @param position to run or, 0 for all positions
+		 * @param maxPositions in the tree
+		 * @param keepResults to indentify a test
+		 */
 		public RunAndCleanPosition(Task task,File directory,int position, int maxPositions,boolean keepResults){
 			this.task = task;
 			this.directory = directory;
@@ -488,26 +562,11 @@ public class Output {
 				//TODO: Recargar el arbol
 				
 			}else{
-				//TODO: Mostar la imagen de test
 				String imageName = readOutputfromTest(position);
 				if(imageName != null){
 					IJ.open(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName );
-					}
+				}
 			}
-			
-			//To test how progress bar works
-//			for(int i = 0; i < 30; ++i){
-//				try {
-//					Random r = new Random();
-//					int lala = r.nextInt(10000);
-//					Thread.sleep(lala);
-//					System.out.println("waiting " + lala + " sec");
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				task.getPosition().getAndIncrement();
-//			}
 		}
 	}
 	
