@@ -39,11 +39,25 @@ public class Output {
 	
 	public void generateRun(){
 
+		TreePath selected = tree.getSelectionPath();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-		int positions = tree.getModel().getChildCount(root);
+		int positions;
 		this.keepResults = true;
+		
+		boolean singlePosition;
+		if(selected.getParentPath() == null){
+			positions = tree.getModel().getChildCount(root);;
+			singlePosition = false;
+		}else{
+			positions = ((PositionNode)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
+			singlePosition = true;
+		}
 
+		
 		for(int i = 0; i < positions; ++i){
+			if(singlePosition){
+				i = positions -1; 
+			}
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
 			String fileName = node.getUserObject().toString();
 			
@@ -65,11 +79,28 @@ public class Output {
 	}
 
 	public void generateBF(boolean keepResults){
+		
+		TreePath selected = tree.getSelectionPath();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		int positions = tree.getModel().getChildCount(root);
 		this.keepResults = keepResults;
 		
+		boolean singlePosition;
+		if(selected.getParentPath() == null){
+			positions = tree.getModel().getChildCount(root);;
+			singlePosition = false;
+		}else{
+			positions = ((PositionNode)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
+			singlePosition = true;
+		}
+
+		
 		for(int i = 0; i < positions; ++i){
+			
+			if(singlePosition){
+				i = positions -1; 
+			}
+			
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
 			String fileName = node.getUserObject().toString();
 			
