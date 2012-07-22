@@ -33,6 +33,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 
 import utils.Output;
+import utils.SegmentationValues;
 
 /**
  * 
@@ -50,16 +51,25 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	private static JSpinner trackingComparisonSpinner = new JSpinner();
 	private static JTextField parameters = new JTextField();
 	private static JCheckBox includeParameters = new JCheckBox("Add");
+
+	private JRadioButton noFrameAlignmentRadioButton;
+	private JRadioButton alignToFirstRadioButton;
+	private JRadioButton alignToBFRadioButton;
+	private	JRadioButton noCellAlignmentRadioButton;
+	private JRadioButton alignIndividualRadioButton;
+
 	
 	private final JTree jtree;
 	private final File directory;
 	
 	public Segmentation(JTree tree, File file, final boolean BfType, final boolean test) {
-		
+				
 		super("Segmentation");
 		
 		this.jtree = tree;
 		this.directory = file;
+		
+		SegmentationValues segmentationValues = SegmentationValues.getInstance();
 		
 		setTitle("Segmentation");
 		setBackground(Color.LIGHT_GRAY);
@@ -74,26 +84,32 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		
 		maxDistSpinner.setBounds(233, 11, 53, 18);
 		maxDistSpinner.setModel(new SpinnerNumberModel(50.0,0.0,100.0,1.0));
+		maxDistSpinner.setValue(segmentationValues.getMaxDistValue());
 		panel.add(maxDistSpinner);
 		
 		maxSplitSpinner.setBounds(233, 40, 53, 18);
 		maxSplitSpinner.setModel(new SpinnerNumberModel(5.0,0.0,10.0,0.5));
+		maxSplitSpinner.setValue(segmentationValues.getMaxSplitValue());
 		panel.add(maxSplitSpinner);
 		
 		minPixelsSpinner.setBounds(233, 89, 53, 18);
-		minPixelsSpinner.setModel(new SpinnerNumberModel(100,0,9999,1));
+		minPixelsSpinner.setModel(new SpinnerNumberModel(100.0,0,9999,1));
+		minPixelsSpinner.setValue(segmentationValues.getMinPixelsValue());
 		panel.add(minPixelsSpinner);
 		
 		maxPixelsSpinner.setBounds(233, 118, 53, 18);
-		maxPixelsSpinner.setModel(new SpinnerNumberModel(100,0,9999,1));
+		maxPixelsSpinner.setModel(new SpinnerNumberModel(100.0,0,9999,1));
+		maxPixelsSpinner.setValue(segmentationValues.getMaxPixelsValue());
 		panel.add(maxPixelsSpinner);
 		
 		backgroundRejectSpinner.setBounds(233, 174, 53, 18);
 		backgroundRejectSpinner.setModel(new SpinnerNumberModel(5.0,0.10,10.0,0.1));
+		backgroundRejectSpinner.setValue(segmentationValues.getBackgroundRejectValue());
 		panel.add(backgroundRejectSpinner);
 		
 		trackingComparisonSpinner.setBounds(233, 203, 53, 18);
 		trackingComparisonSpinner.setModel(new SpinnerNumberModel(5.0, 0.0, 10.0, 0.1));
+		trackingComparisonSpinner.setValue(segmentationValues.getTrackingComparisonValue());
 		panel.add(trackingComparisonSpinner);
 		
 		JLabel maxDistLabel = new JLabel("max dist over waist");
@@ -130,22 +146,22 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		JLabel frameAlignmentLabel = new JLabel("Frame alignment");
 		frameAlignmentLabel.setBounds(10, 11, 92, 14);
 		panel_1.add(frameAlignmentLabel);
-		
-		JRadioButton noFrameAlignmentRadioButton = new JRadioButton("no frame alignment");
+				
+		noFrameAlignmentRadioButton = new JRadioButton("no frame alignment");
 		noFrameAlignmentRadioButton.setMnemonic('N');
 		frameAlignmentButtonGroup.add(noFrameAlignmentRadioButton);
 		noFrameAlignmentRadioButton.setBounds(46, 32, 160, 23);
 		noFrameAlignmentRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(noFrameAlignmentRadioButton);
 		
-		JRadioButton alignToFirstRadioButton = new JRadioButton("align FL to first");
+		alignToFirstRadioButton = new JRadioButton("align FL to first");
 		alignToFirstRadioButton.setMnemonic('F');
 		frameAlignmentButtonGroup.add(alignToFirstRadioButton);
 		alignToFirstRadioButton.setBounds(46, 58, 109, 23);
 		alignToFirstRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignToFirstRadioButton);
 		
-		JRadioButton alignToBFRadioButton = new JRadioButton("align FL to BF");
+		alignToBFRadioButton = new JRadioButton("align FL to BF");
 		alignToBFRadioButton.setMnemonic('B');
 		frameAlignmentButtonGroup.add(alignToBFRadioButton);
 		alignToBFRadioButton.setBounds(46, 84, 109, 23);
@@ -156,22 +172,46 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		cellAlignmentLabel.setBounds(10, 114, 81, 14);
 		panel_1.add(cellAlignmentLabel);
 		
-		JRadioButton noCellAlignmentRadioButton = new JRadioButton("no cell alignment");
+		noCellAlignmentRadioButton = new JRadioButton("no cell alignment");
 		noCellAlignmentRadioButton.setMnemonic('N');
 		cellAlignmentButtonGroup.add(noCellAlignmentRadioButton);
 		noCellAlignmentRadioButton.setBounds(46, 135, 160, 23);
 		noCellAlignmentRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(noCellAlignmentRadioButton);
 		
-		JRadioButton alignIndividualRadioButton = new JRadioButton("align individual cells");
+		alignIndividualRadioButton = new JRadioButton("align individual cells");
 		alignIndividualRadioButton.setMnemonic('I');
 		cellAlignmentButtonGroup.add(alignIndividualRadioButton);
 		alignIndividualRadioButton.setBounds(46, 161, 160, 23);
 		alignIndividualRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignIndividualRadioButton);
 		
-		cellAlignmentButtonGroup.setSelected(noCellAlignmentRadioButton.getModel(), true);
-		frameAlignmentButtonGroup.setSelected(noFrameAlignmentRadioButton.getModel(), true);
+		switch(segmentationValues.getCellAlignmentButtonSelected()){
+		case 1:
+			frameAlignmentButtonGroup.setSelected(noFrameAlignmentRadioButton.getModel(), true);
+			break;
+		case 2:
+			frameAlignmentButtonGroup.setSelected(alignToFirstRadioButton.getModel(), true);
+			break;
+		case 3:
+			frameAlignmentButtonGroup.setSelected(alignToBFRadioButton.getModel(), true);
+			break;
+		default:
+			frameAlignmentButtonGroup.setSelected(noFrameAlignmentRadioButton.getModel(), true);
+		}
+		
+		switch(segmentationValues.getFrameAlignmentButtonSelected()){
+		case 1:
+			cellAlignmentButtonGroup.setSelected(noCellAlignmentRadioButton.getModel(), true);
+			break;
+		case 2:
+			cellAlignmentButtonGroup.setSelected(alignIndividualRadioButton.getModel(), true);			
+			break;
+		default:
+			cellAlignmentButtonGroup.setSelected(noCellAlignmentRadioButton.getModel(), true);			
+		}
+
+
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(10, 500, 350, 100);
@@ -185,8 +225,9 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		panel_2.add(parametersLabel);
 		
 		//Parameters field for running
-		parameters.setEnabled(false);
+		parameters.setEnabled(segmentationValues.isAdvancedParametersEnabled());
 		parameters.setBounds(100, 40 , 200, 20);
+		parameters.setText(segmentationValues.getAdvancedParameters());
 		panel_2.add(parameters);
 
 		//checkBox for including parameters
@@ -212,7 +253,6 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Do not save changes. Or restore default values.
 				dispose();
 			}
 		});
@@ -241,6 +281,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				saveValues();
 				dispose();
 			}
 		});
@@ -311,6 +352,32 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 			 return "align_fl_to_bf";
 		 }
 		 return null;
+	 }
+	 
+	 private void saveValues(){
+		 SegmentationValues segmentationValues = SegmentationValues.getInstance();
+		 segmentationValues.setAdvancedParameters(parameters.getText());
+		 segmentationValues.setAdvancedParametersEnabled(includeParameters.isSelected());
+		 
+		 if(frameAlignmentButtonGroup.getSelection().equals(noFrameAlignmentRadioButton.getModel())){
+				segmentationValues.setFrameAlignmentButtonSelected(1);
+		 }else if(frameAlignmentButtonGroup.getSelection().equals(alignToFirstRadioButton.getModel())){
+				segmentationValues.setFrameAlignmentButtonSelected(2);
+		 }else if(frameAlignmentButtonGroup.getSelection().equals(alignToBFRadioButton.getModel())){
+				segmentationValues.setFrameAlignmentButtonSelected(3);
+		 }
+		 if(cellAlignmentButtonGroup.getSelection().equals(noCellAlignmentRadioButton.getModel())){
+			segmentationValues.setCellAlignmentButtonSelected(1);
+		 }else if(cellAlignmentButtonGroup.getSelection().equals(alignIndividualRadioButton.getModel())){
+				segmentationValues.setCellAlignmentButtonSelected(2);
+		 }
+			
+		 segmentationValues.setMaxDistValue((Double)maxDistSpinner.getValue());
+		 segmentationValues.setMaxSplitValue((Double)maxSplitSpinner.getValue());
+		 segmentationValues.setMinPixelsValue((Double)minPixelsSpinner.getValue());
+		 segmentationValues.setMaxPixelsValue((Double)maxPixelsSpinner.getValue());
+		 segmentationValues.setTrackingComparisonValue((Double)trackingComparisonSpinner.getValue());
+		 segmentationValues.setBackgroundRejectValue((Double)backgroundRejectSpinner.getValue());
 	 }
 	
 }
