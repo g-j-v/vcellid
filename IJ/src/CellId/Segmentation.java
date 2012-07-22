@@ -83,32 +83,32 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		add(panel);
 		panel.setLayout(null);
 		
-		maxDistSpinner.setBounds(233, 11, 53, 18);
+		maxDistSpinner.setBounds(233, 11, 80, 18);
 		maxDistSpinner.setModel(new SpinnerNumberModel(50.0,0.0,100.0,1.0));
 		maxDistSpinner.setValue(segmentationValues.getMaxDistValue());
 		panel.add(maxDistSpinner);
 		
-		maxSplitSpinner.setBounds(233, 40, 53, 18);
+		maxSplitSpinner.setBounds(233, 40, 80, 18);
 		maxSplitSpinner.setModel(new SpinnerNumberModel(5.0,0.0,10.0,0.5));
 		maxSplitSpinner.setValue(segmentationValues.getMaxSplitValue());
 		panel.add(maxSplitSpinner);
 		
-		minPixelsSpinner.setBounds(233, 89, 53, 18);
+		minPixelsSpinner.setBounds(233, 89, 80, 18);
 		minPixelsSpinner.setModel(new SpinnerNumberModel(100.0,0,9999,1));
 		minPixelsSpinner.setValue(segmentationValues.getMinPixelsValue());
 		panel.add(minPixelsSpinner);
 		
-		maxPixelsSpinner.setBounds(233, 118, 53, 18);
+		maxPixelsSpinner.setBounds(233, 118, 80, 18);
 		maxPixelsSpinner.setModel(new SpinnerNumberModel(100.0,0,9999,1));
 		maxPixelsSpinner.setValue(segmentationValues.getMaxPixelsValue());
 		panel.add(maxPixelsSpinner);
 		
-		backgroundRejectSpinner.setBounds(233, 174, 53, 18);
+		backgroundRejectSpinner.setBounds(233, 174, 80, 18);
 		backgroundRejectSpinner.setModel(new SpinnerNumberModel(5.0,0.10,10.0,0.1));
 		backgroundRejectSpinner.setValue(segmentationValues.getBackgroundRejectValue());
 		panel.add(backgroundRejectSpinner);
 		
-		trackingComparisonSpinner.setBounds(233, 203, 53, 18);
+		trackingComparisonSpinner.setBounds(233, 203, 80, 18);
 		trackingComparisonSpinner.setModel(new SpinnerNumberModel(5.0, 0.0, 10.0, 0.1));
 		trackingComparisonSpinner.setValue(segmentationValues.getTrackingComparisonValue());
 		panel.add(trackingComparisonSpinner);
