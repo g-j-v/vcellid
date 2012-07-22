@@ -1,13 +1,14 @@
+/**
+ * Class to keep the user informed of the execution
+ */
+
 package utils;
+
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
-
 import java.beans.*;
 import java.util.Date;
-import java.util.Random;
 
 public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements PropertyChangeListener {
 
@@ -15,6 +16,10 @@ public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements Pr
     private JTextArea taskOutput;
     private JButton closeButton;
 
+    /**
+     * Constructor
+     * @param task used to modify the progress bar.
+     */
     public CellIdProgressBar(Task task) {
         super("Progress");
 
@@ -51,6 +56,7 @@ public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements Pr
 
     /**
      * Invoked when task's progress property changes.
+     * @param the event
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if ("progress" == evt.getPropertyName()) {

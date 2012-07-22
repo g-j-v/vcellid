@@ -1,11 +1,12 @@
+/**
+ * Singleton class to store segmentation values.
+ * @author Alejandro Petit
+ */
 package utils;
-
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 public class SegmentationValues {
 
-	private static SegmentationValues segmentationValues;
+	private static SegmentationValues instance;
 	
 	private double maxDistValue;
 	private double maxSplitValue;
@@ -21,14 +22,20 @@ public class SegmentationValues {
 	private boolean advancedParametersEnabled;
 	private String advancedParameters;
 
-	
+	/**
+	 * 
+	 * @return instance of SegmentationValues
+	 */
 	public static SegmentationValues getInstance(){
-		if(segmentationValues == null){
-			segmentationValues = new SegmentationValues();
+		if(instance == null){
+			instance = new SegmentationValues();
 		}
-		return segmentationValues;
+		return instance;
 	}
 	
+	/**
+	 * Constructor
+	 */
 	public SegmentationValues(){
 		
 		maxDistValue = 50.0;

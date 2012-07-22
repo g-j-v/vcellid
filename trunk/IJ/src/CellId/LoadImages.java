@@ -1,6 +1,5 @@
 package CellId;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.ImageWindow;
@@ -23,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -32,64 +33,37 @@ import utils.Finder;
 import utils.TreeGenerator;
 
 /**
- * 
- * @author alejandropetit
+ * Class for tree presentation and navigation buttons
+ * @author 
  */
-public class LoadImages extends ij.plugin.frame.PlugInFrame implements
-		ActionListener {
+public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionListener {
 
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTree jTree1;
+	/**
+	 * Class Variables
+	 */
+	private JScrollPane jScrollPane1;
+	private JTree jTree1;
 	private TreeGenerator treeGenerator;
 	private JCheckBox synchronize;
 
 	private String BAR = System.getProperty("file.separator");
 
+	/**
+	 * Default constructor
+	 */
 	public LoadImages() {
 		super("Load Images");
 	}
 
-	public void run(String arg) {
-	}
-
 	/**
-	 * private void createNodes(DefaultMutableTreeNode top) {
-	 * 
-	 * DefaultMutableTreeNode category = null; DefaultMutableTreeNode book =
-	 * null;
-	 * 
-	 * category = new DefaultMutableTreeNode("Books for Java Programmers");
-	 * top.add(category);
-	 * 
-	 * //original Tutorial book = new DefaultMutableTreeNode(
-	 * "The Java Tutorial: A Short Course on the Basics"); category.add(book);
-	 * 
-	 * //Tutorial Continued book = new DefaultMutableTreeNode(
-	 * "The Java Tutorial Continued: The Rest of the JDK"); category.add(book);
-	 * 
-	 * //JFC Swing Tutorial book = new DefaultMutableTreeNode(
-	 * "The JFC Swing Tutorial: A Guide to Constructing GUIs");
-	 * category.add(book);
-	 * 
-	 * //...add more books for programmers...
-	 * 
-	 * category = new DefaultMutableTreeNode("Books for Java Implementers");
-	 * top.add(category);
-	 * 
-	 * //VM book = new
-	 * DefaultMutableTreeNode("The Java Virtual Machine Specification");
-	 * category.add(book);
-	 * 
-	 * //Language Spec book = new
-	 * DefaultMutableTreeNode("The Java Language Specification");
-	 * category.add(book); }
+	 * Call when called, performs the frame generation.
 	 */
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		removeAll();
 
+		//Select directory where images are located
 		JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showOpenDialog(LoadImages.this);
@@ -109,6 +83,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 
 		Finder finder = new Finder(patterns);
 
+		//TreeGenerator contains the information to generate the tree. based on the Finder and the directory
 		treeGenerator = new TreeGenerator(finder, file);
 
 		jTree1 = treeGenerator.generateTree();
@@ -437,29 +412,17 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 
 		buttonsPanel.add(buttonsBox);
 
-		// ////////////////////////////////////////////////////////////////////
-		// ///////////////////FOR TEST/////////////////////////////////////////
-		// JButton testOutputButton = new JButton("Test Output Generation");
-		// testOutputButton.setPreferredSize(new Dimension(180,20));
-		// testOutputButton.addActionListener(new ActionListener() {
-		//
-		// @Override
-		// public void actionPerformed(ActionEvent arg0) {
-		// Segmentation seg = new Segmentation(jTree1, file);
-		// seg.setVisible(true);
-		// }
-		// });
-		// buttonsPanel.add(testOutputButton);
-		//
-		// ///////////////////////////////////////////////////////////////////
-		// ///////////////////////////////////////////////////////////////////
 		add(buttonsPanel, BorderLayout.SOUTH);
 
 		setSize(300, 700);
 		setResizable(true);
-		show();
+		setVisible(true);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private Box createBox() {
 		Dimension hboxSize = new Dimension(280, 20);
 		Box rootBox;
@@ -468,6 +431,10 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		return rootBox;
 	}
 
+	/**
+	 * 
+	 * @param node
+	 */
 	private void updateDisplayRanges(DefaultMutableTreeNode node) {
 		ImagePlus imp = WindowManager.getCurrentImage();
 		DisplayRangeObject dro = new DisplayRangeObject(
@@ -477,8 +444,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		treeGenerator.getDisplayRanges().put(position, dro);
 	}
 
-	private void updatePath(DefaultMutableTreeNode node,
-			DefaultMutableTreeNode previousNode) {
+	/**
+	 * 
+	 * @param node
+	 * @param previousNode
+	 */
+	private void updatePath(DefaultMutableTreeNode node, DefaultMutableTreeNode previousNode) {
 		TreePath path = new TreePath(
 				((DefaultTreeModel) jTree1.getModel())
 						.getPathToRoot(previousNode));
@@ -487,6 +458,11 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		jTree1.scrollPathToVisible(path);
 	}
 
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
 	private DefaultMutableTreeNode getNextTimeNode(DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode nextNode = null;
 		if (node == null) {
@@ -519,8 +495,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		return nextNode;
 	}
 
-	private DefaultMutableTreeNode getPreviousPositionNode(
-			DefaultMutableTreeNode node) {
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private DefaultMutableTreeNode getPreviousPositionNode(DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode previousNode = null;
 
 		if (node == null) {
@@ -564,8 +544,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		return previousNode;
 	}
 
-	private DefaultMutableTreeNode getPreviousTimeNode(
-			DefaultMutableTreeNode node) {
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private DefaultMutableTreeNode getPreviousTimeNode(	DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode previousNode = null;
 		if (node == null) {
 			previousNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) ((DefaultMutableTreeNode) jTree1
@@ -598,8 +582,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		return previousNode;
 	}
 
-	private DefaultMutableTreeNode getPreviousChannelNode(
-			DefaultMutableTreeNode node) {
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private DefaultMutableTreeNode getPreviousChannelNode(DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode previousNode = null;
 		if (node == null) {
 			previousNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) ((DefaultMutableTreeNode) ((DefaultMutableTreeNode) jTree1
@@ -626,8 +614,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		return previousNode;
 	}
 
-	private DefaultMutableTreeNode getNextChannelNode(
-			DefaultMutableTreeNode node) {
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private DefaultMutableTreeNode getNextChannelNode(DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode nextNode = null;
 		if (node == null) {
 			nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) jTree1
@@ -653,8 +645,12 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements
 		return nextNode;
 	}
 
-	private DefaultMutableTreeNode getNextPositionNode(
-			DefaultMutableTreeNode node) {
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private DefaultMutableTreeNode getNextPositionNode( DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode nextNode = null;
 		if (node == null) {
 			nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) jTree1

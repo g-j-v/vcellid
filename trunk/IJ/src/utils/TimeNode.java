@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package utils;
 
 import java.io.File;
@@ -10,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Class that represents a TimeNode of the tree
  * @author apetit
  */
 public class TimeNode {
@@ -19,17 +14,26 @@ public class TimeNode {
     PositionNode position;
     Integer number;
 
+    /**
+     * Constructor with empty images
+     * @param position to which this time belongs
+     * @param number to identify the time
+     */
     public TimeNode(PositionNode position, int number){
         this(position,number,new ArrayList<File>());
     }
 
+    /**
+     * Constructor with given images
+     * @param position to which this time belongs
+     * @param number to identify the time
+     * @param files which belong to this time
+     */
     public TimeNode(PositionNode position, int number, List<File> files){
         setPosition(position);
         setNumber(number);
         setFiles(files);
     }
-
-
 
     public List<File> getFiles() {
         return files;

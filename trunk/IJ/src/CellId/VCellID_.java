@@ -1,3 +1,11 @@
+/**
+ * Main class for VCellId plugin for ImageJ
+ */
+
+/**
+ * @author Alejandro Petit - Gisela De La Villa
+ */
+
 package CellId;
 
 import java.awt.BorderLayout;
@@ -10,24 +18,29 @@ import utils.CellIdRunner;
 
 public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 
-	// Botones del VCellId original
-
+	/**
+	 * VCellID buttons
+	 */
 	JButton cellIdPathButton;
 	JButton loadImagesButton;
 	JButton imagesSetupButton;
-	JButton segmentationButton;
+//	JButton segmentationButton;
 	
 	
 	private static int BUTTON_WIDTH = 150;
 	private static int BUTTON_HEIGHT = 30;
 	private static int BUTTON_SPACING = 10;
 
+	/**
+	 * Default constructor
+	 */
 	public VCellID_() {
 		super("VCellId");
 	}
 
 	public void run(String arg) {
 
+		//Verificamos el tipo de sistema operativo
 		if(isWindows()){
 			CellIdRunner.getInstance().setCellIdPath("C:\\VCell-ID\\bin\\cell.exe");			
 		}else if(isMac()){
@@ -72,6 +85,10 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		show();
 	}
 	
+	/**
+	 * 
+	 * @return TRUE if the Operating System in which ImageJ is running is Windows.
+	 */
 	private static boolean isWindows() {
 		 
 		String os = System.getProperty("os.name").toLowerCase();
@@ -79,6 +96,11 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		return (os.indexOf("win") >= 0);
  
 	}
+	
+	/**
+	 * 
+	 * @return TRUE if the Operating System in which ImageJ is running is Mac OS.
+	 */
 	private static boolean isMac() {
 		 
 		String os = System.getProperty("os.name").toLowerCase();
@@ -87,6 +109,10 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
  
 	}
  
+	/**
+	 * 
+	 * @return TRUE if the Operating System in which ImageJ is running is Unix or linux.
+	 */
 	private static boolean isUnix() {
  
 		String os = System.getProperty("os.name").toLowerCase();

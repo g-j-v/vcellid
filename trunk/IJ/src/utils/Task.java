@@ -1,14 +1,18 @@
+/**
+ * Main task. Executed in background thread.
+ */
+
 package utils;
 
 import java.awt.Toolkit;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.SwingWorker;
 
 public class Task extends SwingWorker<Void, Void> {
-    /*
-     * Main task. Executed in background thread.
+    
+	/**
+     *	Variables. position is used to know which position has run.  
      */
 	private int maxPositions;
 	private AtomicInteger position;
