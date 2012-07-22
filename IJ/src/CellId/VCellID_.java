@@ -24,6 +24,8 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 	JButton cellIdPathButton;
 	JButton loadImagesButton;
 	JButton imagesSetupButton;
+	JButton imagesNameButton;
+	JButton helpButton;
 //	JButton segmentationButton;
 	
 	
@@ -61,6 +63,12 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		imagesSetupButton.addActionListener(new ImagesSetup());
 //		imagesSetupButton.setBounds(loadImagesButton.getX(), loadImagesButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
 		
+		imagesNameButton = new JButton("Images Name");
+//		imagesNameButton.addActionListener();
+
+		helpButton = new JButton("Help");
+//		imagesNameButton.addActionListener();
+		
 //		segmentationButton = new JButton("Segmentation");
 //		segmentationButton.addActionListener(new Segmentation());
 //		segmentationButton.setBounds(imagesSetupButton.getX(), imagesSetupButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -75,14 +83,18 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
 		buttonBox.add(imagesSetupButton);
 		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
+		buttonBox.add(imagesNameButton);
+		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
+		buttonBox.add(helpButton);
+		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
 //		buttonBox.add(segmentationButton);
 
 		buttonPanel.add(buttonBox);
 		// Add the buttons and the log to this panel.
 		add(buttonPanel, BorderLayout.PAGE_START);
-		setSize(20+BUTTON_WIDTH, 3*BUTTON_HEIGHT+5*BUTTON_SPACING);
+		setSize(20+BUTTON_WIDTH, 6*BUTTON_HEIGHT+5*BUTTON_SPACING);
 		setResizable(false);
-		show();
+		setVisible(true);
 	}
 	
 	/**
