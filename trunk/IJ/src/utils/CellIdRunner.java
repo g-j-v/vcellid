@@ -85,10 +85,11 @@ public class CellIdRunner {
 			}else{
 				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "fl_vcellid.txt");	
 			}
+			command.add("--param");
 			if(keepResults){
-				command.add("--param=" + directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");
 			}else{
-				command.add("--param=" + directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "parameters_vcellid_out.txt");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "parameters_vcellid_out.txt");
 			}
 			if(!keepResults){
 				command.add("--output");
@@ -111,6 +112,7 @@ public class CellIdRunner {
 				processBuilder.directory(new File(directory.getAbsoluteFile() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test"));
 			}
 			System.out.println(processBuilder.directory());
+			System.out.println(command);
 			Process p = processBuilder.start();
 			InputStream in = p.getInputStream();
 			OutputStream out = p.getOutputStream ();
