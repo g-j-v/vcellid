@@ -113,11 +113,11 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		panel.add(trackingComparisonSpinner);
 		
 		JLabel maxDistLabel = new JLabel("max dist over waist");
-		maxDistLabel.setBounds(30, 13, 157, 14);
+		maxDistLabel.setBounds(30, 13, 180, 14);
 		panel.add(maxDistLabel);
 		
 		JLabel maxSplitLabel = new JLabel("max split over minor axis");
-		maxSplitLabel.setBounds(30, 42, 157, 14);
+		maxSplitLabel.setBounds(30, 42, 180, 14);
 		panel.add(maxSplitLabel);
 		
 		JLabel minPixelsLabel = new JLabel("min pixels per cell");
@@ -157,14 +157,14 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		alignToFirstRadioButton = new JRadioButton("align FL to first");
 		alignToFirstRadioButton.setMnemonic('F');
 		frameAlignmentButtonGroup.add(alignToFirstRadioButton);
-		alignToFirstRadioButton.setBounds(46, 58, 109, 23);
+		alignToFirstRadioButton.setBounds(46, 58,160, 23);
 		alignToFirstRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignToFirstRadioButton);
 		
 		alignToBFRadioButton = new JRadioButton("align FL to BF");
 		alignToBFRadioButton.setMnemonic('B');
 		frameAlignmentButtonGroup.add(alignToBFRadioButton);
-		alignToBFRadioButton.setBounds(46, 84, 109, 23);
+		alignToBFRadioButton.setBounds(46, 84, 160, 23);
 		alignToBFRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignToBFRadioButton);
 		
@@ -182,7 +182,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		alignIndividualRadioButton = new JRadioButton("align individual cells");
 		alignIndividualRadioButton.setMnemonic('I');
 		cellAlignmentButtonGroup.add(alignIndividualRadioButton);
-		alignIndividualRadioButton.setBounds(46, 161, 160, 23);
+		alignIndividualRadioButton.setBounds(46, 161, 180, 23);
 		alignIndividualRadioButton.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(alignIndividualRadioButton);
 		
@@ -220,7 +220,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		add(panel_2);
 		panel_2.setLayout(null);
 		
-		JLabel parametersLabel = new JLabel("Parameters...");
+		JLabel parametersLabel = new JLabel("Advanced Parameters...");
 		parametersLabel.setBounds(20, 10, 150, 14);
 		panel_2.add(parametersLabel);
 		
@@ -228,6 +228,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		parameters.setEnabled(segmentationValues.isAdvancedParametersEnabled());
 		parameters.setBounds(100, 40 , 200, 20);
 		parameters.setText(segmentationValues.getAdvancedParameters());
+		parameters.setToolTipText("Do not use, unless you know what you are doing");
 		panel_2.add(parameters);
 
 		//checkBox for including parameters
