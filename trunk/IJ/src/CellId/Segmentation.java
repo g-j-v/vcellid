@@ -25,7 +25,7 @@ import utils.Output;
 import utils.SegmentationValues;
 
 /**
- * 
+ * Class to define the parameters for running CellID
  * @author Gisela
  */
 public class Segmentation extends ij.plugin.frame.PlugInFrame{

@@ -56,7 +56,7 @@ public class CellIdProgressBar extends ij.plugin.frame.PlugInFrame implements Pr
 
     /**
      * Invoked when task's progress property changes.
-     * @param the event
+     * @param evt the event
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if ("progress" == evt.getPropertyName()) {
