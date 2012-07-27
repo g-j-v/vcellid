@@ -38,12 +38,12 @@ public class SegmentationValues {
 	 */
 	public SegmentationValues(){
 		
-		maxDistValue = 50.0;
-		maxSplitValue = 5.0;
-		minPixelsValue = 100.0;
-		maxPixelsValue = 100.0;
-		backgroundRejectValue = 5.0;
-		trackingComparisonValue = 5.0;
+		maxDistValue = 8.0;
+		maxSplitValue = 0.5;
+		minPixelsValue = 75.0;
+		maxPixelsValue = 1500.0;
+		backgroundRejectValue = 1.0;
+		trackingComparisonValue = 0.2;
 		
 		cellAlignmentButtonSelected = 1;
 		frameAlignmentButtonSelected = 1;
