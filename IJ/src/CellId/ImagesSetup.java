@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 
 import utils.Finder;
 import utils.TreeGenerator;
@@ -102,40 +103,8 @@ public class ImagesSetup extends ij.plugin.frame.PlugInFrame implements ActionLi
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int returnVal = fc.showOpenDialog(ImagesSetup.this);
-		if (returnVal != JFileChooser.APPROVE_OPTION) {
-			return;
-		}
-
-		File file = fc.getSelectedFile();
-
-		List<String> patterns = new ArrayList<String>();
-		// Pattern para los fields
-		patterns.add("BF|CFP|YFP");
-		// Pattern para la posicion
-		patterns.add("Position\\d{1,}");
-		// Pattern para el tiempo
-		patterns.add("time_\\d{3}\\.tif");
-		
-		Finder finder = new Finder(patterns);
-//		Finder finder = new Finder(new File(
-//				"/Volumes/APETIT/2004-11-11-TCY3154-inhibitor-effect/"),
-//				patterns);
-
-		TreeGenerator treeGenerator = new TreeGenerator(finder, file);
-		
-		jTree1 = treeGenerator.generateTree();
-		jScrollPane1 = new javax.swing.JScrollPane();
-
-		jTree1.setName("jTree1"); // NOI18N
-		jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-		jScrollPane1.setViewportView(jTree1);
-
-		add(jScrollPane1);
-		setSize(100, 600);
+		add(new JLabel("Not ready yet"));
+		setSize(100, 100);
 		show();
 	}
 }
