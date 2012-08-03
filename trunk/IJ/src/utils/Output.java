@@ -240,7 +240,11 @@ public class Output {
 					System.out.println("Could not add BF image to fl_vcellid.txt");
 					return;
 				}
-				copyImagesForTest(directory,position,image);
+				if(image.toLowerCase().contains("empty")){
+					copyImagesForTest(directory, position, "EmptyImage.tiff");
+				}else{						
+					copyImagesForTest(directory,position,image);
+				}
 			}else{
 				System.out.println("No image to add");
 			}

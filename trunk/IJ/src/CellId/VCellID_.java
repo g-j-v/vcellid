@@ -64,9 +64,11 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 //		imagesSetupButton.setBounds(loadImagesButton.getX(), loadImagesButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
 		
 		imagesNameButton = new JButton("Images Name");
+		imagesNameButton.addActionListener(new ImagesSetup());
 //		imagesNameButton.addActionListener();
 
 		helpButton = new JButton("Help");
+		helpButton.addActionListener(new ImagesSetup());
 //		imagesNameButton.addActionListener();
 		
 //		segmentationButton = new JButton("Segmentation");
