@@ -5,6 +5,8 @@
 
 package CellId;
 
+import ij.plugin.frame.PlugInFrame;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -21,7 +23,7 @@ import utils.TreeGenerator;
  * 
  * @author alejandropetit
  */
-public class ImagesSetup extends ij.plugin.frame.PlugInFrame implements ActionListener{
+public class ImagesSetup extends PlugInFrame implements ActionListener{
 
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTree jTree1;
