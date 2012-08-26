@@ -29,7 +29,7 @@ import javax.swing.event.ChangeListener;
  * 
  * @author alejandropetit
  */
-public class ImagesSetup extends PlugInFrame implements ActionListener {
+public class Help extends PlugInFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JTextField nucleusFromChannelTextbox;
@@ -38,7 +38,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 	private JCheckBox chckbxNucleusFromChannel;
 	private JCheckBox chckbxSplittedFretImage;
 
-	public ImagesSetup() {
+	public Help() {
 		super("Images Setup");
 
 	}
@@ -128,7 +128,6 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Agregar acciones de persistido de datos
 				dispose();
 			}
 		});
@@ -140,7 +139,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Agregar acciones de persistido de datos
+				dispose();
 			}
 		});
 		contentPane.add(btnAplicar);
