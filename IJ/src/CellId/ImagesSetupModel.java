@@ -16,12 +16,13 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class ImagesSetupModel extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
-	private JTextField textField_1;
 
 	/**
 	 * Launch the application.
@@ -82,10 +83,10 @@ public class ImagesSetupModel extends JFrame {
 		lblNucleus.setBounds(42, 35, 40, 14);
 		panel.add(lblNucleus);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(92, 32, 86, 20);
-		panel.add(textField_1);
-		textField_1.setColumns(10);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"top", "bottom"}));
+		comboBox.setBounds(109, 31, 123, 22);
+		panel.add(comboBox);
 		
 		JButton btnAceptar = new JButton("Aceptar");
 		btnAceptar.setBounds(278, 269, 91, 23);
