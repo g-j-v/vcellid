@@ -27,7 +27,7 @@ import javax.swing.event.ChangeListener;
 
 /**
  * 
- * @author alejandropetit
+ * @author gvilla
  */
 public class ImagesSetup extends PlugInFrame implements ActionListener {
 
