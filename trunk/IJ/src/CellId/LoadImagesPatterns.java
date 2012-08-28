@@ -8,6 +8,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,6 +22,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 
+import utils.ImageNamePattern;
+
 public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 	private final JPanel contentPanel = new JPanel();
@@ -28,7 +32,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField txtBf;
-	private JTextField txtFL;
+	private JTextField txtFl;
 
 
 
@@ -41,6 +45,9 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {		
+		
+		ImageNamePattern imageNamePattern = ImageNamePattern.getInstance();
+		
 		setBounds(100, 100, 500, 500);
 		setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -58,14 +65,35 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		contentPanel.add(chckbxTimeToken);
 
 		txtPosition = new JTextField();
-		txtPosition.setText("position");
+		txtPosition.setText(imageNamePattern.getPositionPattern());
 		txtPosition.setBounds(150, 10, 100, 20);
+		txtPosition.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusGained(FocusEvent e) {}
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				ImageNamePattern.getInstance().setPositionPattern(txtPosition.getText());
+				textField_1.setText(prepareName());			}
+		});
 		contentPanel.add(txtPosition);
 		txtPosition.setColumns(10);
 
 		txtTime = new JTextField();
-		txtTime.setText("time");
+		txtTime.setText(imageNamePattern.getTimePattern());
 		txtTime.setBounds(150, 35, 100, 20);
+		txtTime.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusGained(FocusEvent e) {}
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				ImageNamePattern.getInstance().setTimePattern(txtTime.getText());
+				textField_1.setText(prepareName());
+			}
+		});
 		contentPanel.add(txtTime);
 		txtTime.setColumns(10);
 
@@ -74,8 +102,20 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		contentPanel.add(chckbxSepCharacter);
 
 		textField = new JTextField();
-		textField.setText("_");
+		textField.setText(imageNamePattern.getSeparator());
 		textField.setBounds(220, 75, 30, 20);
+		textField.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusGained(FocusEvent arg0) {}
+			
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				ImageNamePattern.getInstance().setSeparator(textField.getText());
+				textField_1.setText(prepareName());
+			}
+		});
+			
 		contentPanel.add(textField);
 		textField.setColumns(10);
 
@@ -86,7 +126,8 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		contentPanel.add(lblExampleFluorescenceFile);
 
 		textField_1 = new JTextField();
-		textField_1.setBounds(260, 35, 130, 20);
+		textField_1.setBounds(260, 35, 200, 20);
+		textField_1.setText(prepareName());
 		contentPanel.add(textField_1);
 		textField_1.setColumns(10);
 
@@ -107,16 +148,37 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		contentPanel.add(lblFluorescent);
 
 		txtBf = new JTextField();
-		txtBf.setText("BF");
+		txtBf.setText(imageNamePattern.getBrightfieldChannelPattern());
 		txtBf.setBounds(220, 140, 45, 20);
+		txtBf.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusGained(FocusEvent e) {}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				ImageNamePattern.getInstance().setBrightfieldChannelPattern(txtBf.getText());
+				textField_1.setText(prepareName());			}
+		});
 		contentPanel.add(txtBf);
 		txtBf.setColumns(10);
 
-		txtFL = new JTextField();
-		txtFL.setText("FL");
-		txtFL.setColumns(10);
-		txtFL.setBounds(220, 170, 45, 20);
-		contentPanel.add(txtFL);
+		txtFl = new JTextField();
+		txtFl.setText(imageNamePattern.getFluorChannelPattern());
+		txtFl.setColumns(10);
+		txtFl.setBounds(220, 170, 45, 20);
+		txtFl.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusGained(FocusEvent e) {};
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				ImageNamePattern.getInstance().setFluorChannelPattern(txtFl.getText());
+				textField_1.setText(prepareName());
+			}
+		});
+		contentPanel.add(txtFl);
 		
 		JComboBox bfPath = new JComboBox();
 		bfPath.setBounds(270, 140, 100, 25);
@@ -145,7 +207,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				TODO:Guardar
+				//ya quedan actualizados
 				dispose();
 			}
 		});
@@ -156,6 +218,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				ImageNamePattern.getInstance().restoreDefault();
 				dispose();	
 			}
 		});
@@ -163,5 +226,12 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 		setResizable(false);
 		setVisible(true);
+	}
+	
+	private String prepareName(){
+		ImageNamePattern pattern = ImageNamePattern.getInstance();
+		return "X"+ pattern.getFluorChannelPattern() + pattern.getSeparator()
+				+ pattern.getPositionPattern() + "(d*)" + pattern.getSeparator()
+				+ pattern.getTimePattern() + "(d*).tif";
 	}
 }
