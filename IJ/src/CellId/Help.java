@@ -79,6 +79,6 @@ public class Help extends PlugInFrame implements ActionListener {
 			e1.printStackTrace();
 		}
 
-		show();
+		setVisible(true);
 	}
 }

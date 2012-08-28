@@ -156,6 +156,6 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 		});
 		contentPane.add(btnCancelar);
 
-		show();
+		setVisible(true);
 	}
 }

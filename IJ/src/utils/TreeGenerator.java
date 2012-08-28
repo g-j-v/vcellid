@@ -59,8 +59,9 @@ public class TreeGenerator {
 	 * @param finder to know which images to get
 	 * @param directory where to find the images
 	 */
-	public TreeGenerator(Finder finder, File directory) {
-		this.finder = finder;
+	public TreeGenerator( File directory) {
+		ImageNamePattern pattern = ImageNamePattern.getInstance();
+		this.finder = new Finder(pattern.getSeparator(), pattern.generatePatternList());
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
 		this.displayRanges = new HashMap<Integer, DisplayRangeObject>();

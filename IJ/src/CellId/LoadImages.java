@@ -73,18 +73,18 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 		final File file = fc.getSelectedFile();
 
-		List<String> patterns = new ArrayList<String>();
-		// Pattern para los fields
-		patterns.add("(BF|CFP|YFP)");
-		// Pattern para la posicion
-		patterns.add("Position\\d*");
-		// Pattern para el tiempo
-		patterns.add("time_\\d*.tif");
-
-		Finder finder = new Finder(patterns);
+//		List<String> patterns = new ArrayList<String>();
+//		// Pattern para los fields
+//		patterns.add("(BF|CFP|YFP)");
+//		// Pattern para la posicion
+//		patterns.add("Position\\d*");
+//		// Pattern para el tiempo
+//		patterns.add("time_\\d*.tif");
+//
+//		Finder finder = new Finder(patterns);
 
 		//TreeGenerator contains the information to generate the tree. based on the Finder and the directory
-		treeGenerator = new TreeGenerator(finder, file);
+		treeGenerator = new TreeGenerator(file);
 
 		jTree1 = treeGenerator.generateTree();
 		jTree1.setExpandsSelectedPaths(true);
