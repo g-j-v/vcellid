@@ -2,7 +2,7 @@
  * Class to keep the user informed of the execution
  */
 
-package utils;
+package utils.run;
 
 import java.awt.*;
 import java.awt.event.*;

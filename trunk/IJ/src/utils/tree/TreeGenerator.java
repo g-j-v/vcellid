@@ -2,8 +2,9 @@
  * Class which creates the tree and its behaviour
  */
 
-package utils;
+package utils.tree;
 
+import frame.Segmentation;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -39,9 +40,16 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+import utils.DisplayRangeObject;
+import utils.ImageNamePattern;
+import utils.node.ImageNode;
+import utils.node.PositionNode;
+import utils.node.TimeNode;
+
+
+
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 
-import CellId.Segmentation;
 
 public class TreeGenerator {
 

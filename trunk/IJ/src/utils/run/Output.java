@@ -3,8 +3,9 @@
  * @author Alejandro Petit
  */
 
-package utils;
+package utils.run;
 
+import frame.Segmentation;
 import ij.IJ;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +22,11 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import utils.node.PositionNode;
 
-import CellId.Segmentation;
+
+
+
 
 public class Output {
 	

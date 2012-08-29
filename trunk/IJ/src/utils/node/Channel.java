@@ -1,7 +1,7 @@
 /**
  * Possible channels
  */
-package utils;
+package utils.node;
 
 public enum Channel {
 	BF,CFP,YFP

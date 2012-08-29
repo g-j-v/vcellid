@@ -3,7 +3,8 @@
  */
 
 
-package utils;
+package utils.node;
+
 
 public class ImageNode {
 
