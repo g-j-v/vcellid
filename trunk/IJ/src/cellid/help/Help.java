@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package frame.help;
+package cellid.help;
 
 import ij.plugin.frame.PlugInFrame;
 

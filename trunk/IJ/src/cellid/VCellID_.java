@@ -6,7 +6,7 @@
  * @author Alejandro Petit - Gisela De La Villa
  */
 
-package frame;
+package cellid;
 
 import java.awt.BorderLayout;
 
@@ -14,11 +14,12 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import frame.help.Help;
-import frame.image.ImagesSetup;
-import frame.image.LoadImages;
-import frame.image.LoadImagesPatterns;
-import frame.path.CellIdPath;
+import cellid.help.Help;
+import cellid.image.ImagesSetup;
+import cellid.image.LoadImages;
+import cellid.image.LoadImagesPatterns;
+import cellid.path.CellIdPath;
+
 
 import utils.run.CellIdRunner;
 

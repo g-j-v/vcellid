@@ -1,4 +1,4 @@
-package frame.image;
+package cellid.image;
 
 import ij.plugin.frame.PlugInFrame;
 

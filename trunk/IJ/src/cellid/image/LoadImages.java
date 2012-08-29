@@ -1,4 +1,4 @@
-package frame.image;
+package cellid.image;
 
 import ij.ImagePlus;
 import ij.WindowManager;

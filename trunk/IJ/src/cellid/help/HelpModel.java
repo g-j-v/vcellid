@@ -1,4 +1,4 @@
-package frame.help;
+package cellid.help;
 
 import ij.plugin.frame.PlugInFrame;
 

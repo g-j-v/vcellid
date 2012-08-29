@@ -4,7 +4,6 @@
 
 package utils.tree;
 
-import frame.Segmentation;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -47,6 +46,8 @@ import utils.node.PositionNode;
 import utils.node.TimeNode;
 
 
+
+import cellid.Segmentation;
 
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 
