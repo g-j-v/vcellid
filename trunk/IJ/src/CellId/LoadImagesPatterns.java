@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -67,15 +68,13 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtPosition = new JTextField();
 		txtPosition.setText(imageNamePattern.getPositionPattern());
 		txtPosition.setBounds(150, 10, 100, 20);
-		txtPosition.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusGained(FocusEvent e) {}
+		txtPosition.addFocusListener(new FocusAdapter() {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
 				ImageNamePattern.getInstance().setPositionPattern(txtPosition.getText());
-				textField_1.setText(prepareName());			}
+				textField_1.setText(prepareName());
+			}
 		});
 		contentPanel.add(txtPosition);
 		txtPosition.setColumns(10);
@@ -83,10 +82,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtTime = new JTextField();
 		txtTime.setText(imageNamePattern.getTimePattern());
 		txtTime.setBounds(150, 35, 100, 20);
-		txtTime.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusGained(FocusEvent e) {}
+		txtTime.addFocusListener(new FocusAdapter() {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -104,10 +100,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		textField = new JTextField();
 		textField.setText(imageNamePattern.getSeparator());
 		textField.setBounds(220, 75, 30, 20);
-		textField.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusGained(FocusEvent arg0) {}
+		textField.addFocusListener(new FocusAdapter() {
 			
 			@Override
 			public void focusLost(FocusEvent arg0) {
@@ -150,11 +143,8 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtBf = new JTextField();
 		txtBf.setText(imageNamePattern.getBrightfieldChannelPattern());
 		txtBf.setBounds(220, 140, 45, 20);
-		txtBf.addFocusListener(new FocusListener() {
+		txtBf.addFocusListener(new FocusAdapter() {
 			
-			@Override
-			public void focusGained(FocusEvent e) {}
-
 			@Override
 			public void focusLost(FocusEvent e) {
 				ImageNamePattern.getInstance().setBrightfieldChannelPattern(txtBf.getText());
@@ -167,10 +157,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtFl.setText(imageNamePattern.getFluorChannelPattern());
 		txtFl.setColumns(10);
 		txtFl.setBounds(220, 170, 45, 20);
-		txtFl.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusGained(FocusEvent e) {};
+		txtFl.addFocusListener(new FocusAdapter() {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
