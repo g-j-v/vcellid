@@ -199,8 +199,9 @@ public class TreeGenerator {
 			public void valueChanged(TreeSelectionEvent e) {
 
 				if (e.getOldLeadSelectionPath() != null) {
-					checkDisplayRange(e.getOldLeadSelectionPath()
-							.getLastPathComponent());
+					checkDisplayRange(windows.get(WindowManager.getCurrentWindow()));
+//					checkDisplayRange(e.getOldLeadSelectionPath()
+//							.getLastPathComponent());
 				}
 
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
