@@ -3,7 +3,7 @@
  * @author Alejandro Petit
  */
 
-package utils;
+package utils.run;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import CellId.Segmentation;
+import frame.Segmentation;
+
+
+
 
 public class CellIdRunner {
 	

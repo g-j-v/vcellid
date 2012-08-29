@@ -2,7 +2,7 @@
  * Main task. Executed in background thread.
  */
 
-package utils;
+package utils.run;
 
 import java.awt.Toolkit;
 import java.util.concurrent.atomic.AtomicInteger;
