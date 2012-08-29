@@ -1,5 +1,7 @@
 package CellId;
 
+import ij.plugin.frame.PlugInFrame;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -19,7 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class ImagesSetupModel extends JFrame {
+public class ImagesSetupModel extends PlugInFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -44,12 +46,13 @@ public class ImagesSetupModel extends JFrame {
 	 * Create the frame.
 	 */
 	public ImagesSetupModel() {
+		super("ImagesSetup");
 		setTitle("Image Setup");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 387, 330);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+//		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblImageTypeBrightfield = new JLabel("Image type: brightfield");
