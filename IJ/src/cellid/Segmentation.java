@@ -1,5 +1,5 @@
 
-package frame;
+package cellid;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

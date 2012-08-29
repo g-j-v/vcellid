@@ -5,7 +5,6 @@
 
 package utils.run;
 
-import frame.Segmentation;
 import ij.IJ;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +20,8 @@ import java.util.List;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import cellid.Segmentation;
 
 import utils.node.PositionNode;
 
