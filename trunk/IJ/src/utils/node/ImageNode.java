@@ -5,12 +5,14 @@
 
 package utils.node;
 
+import java.util.List;
+
 
 public class ImageNode {
 
 	PositionNode position;
 	TimeNode time;
-	Channel channel;
+	String channel;
 	String imageName;
 	boolean fake;
 	
@@ -25,7 +27,7 @@ public class ImageNode {
 		this.position = position;
 		this.time = time;
 		this.imageName = name;
-		this.channel = channel();
+		this.channel = name.substring(0,2).toUpperCase();
 		this.fake = fake;
 	}
 
@@ -48,25 +50,13 @@ public class ImageNode {
 	public void setTime(TimeNode time) {
 		this.time = time;
 	}
-
-	private Channel channel(){
-		if(imageName.substring(0,2).toLowerCase().equals("BF")){
-			return Channel.BF;
-		}else if(imageName.substring(0,3).toLowerCase().equals("YFP")){
-			return Channel.YFP;
-		}else if(imageName.substring(0,3).toLowerCase().equals("CFP")){
-			return Channel.CFP;
-		}else{
-			return null;
-		}
-	}
 	
-	public Channel getChannel() {
+	public String getChannel() {
 		return channel;
 	}
 
 
-	public void setChannel(Channel channel) {
+	public void setChannel(String channel) {
 		this.channel = channel;
 	}
 

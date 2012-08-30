@@ -60,6 +60,7 @@ public class TreeGenerator {
 	private Finder finder;
 	private File directory;
 	private List<String> fileNames;
+	private List<String> fluorChannels;
 	private Map<Integer, DisplayRangeObject> displayRanges;
 	private Map<ImageWindow, DefaultMutableTreeNode> windows;
 
@@ -73,6 +74,7 @@ public class TreeGenerator {
 		this.finder = new Finder(pattern.getSeparator(), pattern.generatePatternList());
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
+		this.fluorChannels = finder.getFluorChannels(fileNames);
 		this.displayRanges = new HashMap<Integer, DisplayRangeObject>();
 		this.windows = new HashMap<ImageWindow, DefaultMutableTreeNode>();
 		generateEmptyTiff();
@@ -100,7 +102,7 @@ public class TreeGenerator {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 
-						Segmentation seg = new Segmentation(tree, directory,
+						Segmentation seg = new Segmentation(tree, directory, fluorChannels,
 								false, true);
 						seg.setVisible(true);
 
@@ -111,7 +113,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
+						Segmentation seg = new Segmentation(tree, directory, fluorChannels,
 								true, true);
 						seg.setVisible(true);
 					}
@@ -124,7 +126,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
+						Segmentation seg = new Segmentation(tree, directory, fluorChannels,
 								false, true);
 						seg.setVisible(true);
 					}
@@ -135,7 +137,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
+						Segmentation seg = new Segmentation(tree, directory, fluorChannels,
 								true, false);
 						seg.setVisible(true);
 					}
@@ -148,7 +150,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
+						Segmentation seg = new Segmentation(tree, directory, fluorChannels,
 								false, true);
 						seg.setVisible(true);
 					}
@@ -159,7 +161,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						Segmentation seg = new Segmentation(tree, directory,
+						Segmentation seg = new Segmentation(tree, directory, fluorChannels,
 								true, false);
 						seg.setVisible(true);
 					}
@@ -266,14 +268,11 @@ public class TreeGenerator {
 								evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().contains("BF")) {
+							.getImageName().substring(0, 2).equals("BF")) {
 						BfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().contains("CFP")
-							|| ((ImageNode) ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject())
-									.getImageName().contains("YFP")) {
+							.getImageName().substring(1,3).equals("FP")) {
 						FlImagePopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else {
@@ -311,14 +310,11 @@ public class TreeGenerator {
 								evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().contains("BF")) {
+							.getImageName().substring(0,2).equals("BF")) {
 						BfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().contains("CFP")
-							|| ((ImageNode) ((DefaultMutableTreeNode) selPath
-									.getLastPathComponent()).getUserObject())
-									.getImageName().contains("YFP")) {
+							.getImageName().substring(1,3).equals("FP")) {
 						FlImagePopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else {
@@ -396,41 +392,25 @@ public class TreeGenerator {
 					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
 							position, time, name, false)));
 				}
-				name = getYfp(files);
-				if (name == null) {
-					
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, "Empty_YFP", true)));
-				} else {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, name, false)));
-				}
-				name = getYfpOut(files);
-				if (name == null) {
-					
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, "Empty_YFP_OUT", true)));
-				} else {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, name, false)));
-				}
-				name = getCfp(files);
-				if (name == null) {
-					
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, "Empty_CFP", true)));
-				} else {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, name, false)));
-				}
-				name = getCfpOut(files);
-				if (name == null) {
-					
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, "Empty_CFP_OUT", true)));
-				} else {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, name, false)));
+				for(String channel: fluorChannels){
+					name = getFp(files,channel);
+					if (name == null) {
+						
+						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+								position, time, "Empty_" + channel, true)));
+					} else {
+						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+								position, time, name, false)));
+					}
+					name = getFpOut(files,channel);
+					if (name == null) {
+						
+						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+								position, time, "Empty_"+ channel +"_OUT", true)));
+					} else {
+						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
+								position, time, name, false)));
+					}
 				}
 			}
 
@@ -566,9 +546,9 @@ public class TreeGenerator {
 		return null;
 	}
 
-	private String getYfp(File[] files) {
+	private String getFp(File[] files, String channel) {
 		for (File file : files) {
-			if (file.getName().toLowerCase().contains("yfp")
+			if (file.getName().toLowerCase().contains(channel.toLowerCase())
 					&& !file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
@@ -576,9 +556,9 @@ public class TreeGenerator {
 		return null;
 	}
 
-	private String getYfpOut(File[] files) {
+	private String getFpOut(File[] files, String channel) {
 		for (File file : files) {
-			if (file.getName().toLowerCase().contains("yfp")
+			if (file.getName().toLowerCase().contains(channel.toLowerCase())
 					&& file.getName().toLowerCase().contains(".out.tif")) {
 				return file.getName();
 			}
@@ -586,25 +566,6 @@ public class TreeGenerator {
 		return null;
 	}
 
-	private String getCfp(File[] files) {
-		for (File file : files) {
-			if (file.getName().toLowerCase().contains("cfp")
-					&& !file.getName().toLowerCase().contains(".out.tif")) {
-				return file.getName();
-			}
-		}
-		return null;
-	}
-
-	private String getCfpOut(File[] files) {
-		for (File file : files) {
-			if (file.getName().toLowerCase().contains("cfp")
-					&& file.getName().toLowerCase().contains(".out.tif")) {
-				return file.getName();
-			}
-		}
-		return null;
-	}
 
 	
 	public Map<Integer, DisplayRangeObject> getDisplayRanges() {
@@ -848,6 +809,14 @@ public class TreeGenerator {
 			return false;
 		}
 		return true;
+	}
+
+	public List<String> getFluorChannels() {
+		return fluorChannels;
+	}
+
+	public void setFluorChannels(List<String> fluorChannels) {
+		this.fluorChannels = fluorChannels;
 	}
 
 }

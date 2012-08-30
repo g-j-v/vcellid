@@ -61,7 +61,6 @@ public class Finder {
         	System.out.println("-" + fileName + "-");
             Matcher matcher = pat.matcher(fileName);
             if(matcher.matches()){
-            	
                 fileNames.add(matcher.group());
             }
 
@@ -70,4 +69,15 @@ public class Finder {
         return fileNames;
     }
 
+    public List<String> getFluorChannels(List<String> filenames){
+    	
+    	List<String> channels = new ArrayList<String>();
+    	
+    	for(String name: filenames){
+    		if(name.substring(1,3).toUpperCase().equals("FP") && !channels.contains(name.substring(0,3).toUpperCase())){
+    			channels.add(name.substring(0,3).toUpperCase());
+    		}
+    	}
+    	return channels;
+    }
 }

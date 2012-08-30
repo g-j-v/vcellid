@@ -80,7 +80,7 @@ public class ImageNamePattern {
 		//TODO: Ver como validar los tipos de canales de fluor
 		List<String> patterns = new ArrayList<String>();
 		// Pattern para los fields
-		patterns.add("("+ BrightfieldChannelPattern +"|CFP|GFP|YFP)");
+		patterns.add("("+ BrightfieldChannelPattern +"|([A-Z])FP)");
 		// Pattern para la posicion
 		patterns.add(PositionPattern + "\\d*");
 		// Pattern para el tiempo

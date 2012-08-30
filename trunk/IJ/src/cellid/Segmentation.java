@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
@@ -62,7 +63,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 	 * @param BfType indicates if its a normal run or a BF run.
 	 * @param test indicates if it is a test.
 	 */
-	public Segmentation(JTree tree, File file, final boolean BfType, final boolean test) {
+	public Segmentation(JTree tree, File file, final List<String> fluorChannels , final boolean BfType, final boolean test) {
 				
 		super("Segmentation");
 		
@@ -264,7 +265,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 						
-				Output output = new Output(jtree, directory);
+				Output output = new Output(jtree, directory, fluorChannels);
 				if(BfType){
 					output.generateBF(test);
 				}else{

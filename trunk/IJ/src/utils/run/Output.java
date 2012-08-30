@@ -33,6 +33,7 @@ public class Output {
 	
 	JTree tree;
 	File directory;
+	List<String> flourChannels;
 	boolean keepResults;
 	CellIdProgressBar progressBar;
 	String systemDirSeparator = System.getProperty("file.separator");
@@ -43,9 +44,10 @@ public class Output {
 	 * @param tree with images
 	 * @param directory where to find the images
 	 */
-	public Output(JTree tree, File directory){
+	public Output(JTree tree, File directory, List<String> fluorChannels){
 		this.tree = tree;
 		this.directory = directory;
+		this.flourChannels = fluorChannels;
 	}
 	
 	/**
@@ -273,21 +275,21 @@ public class Output {
 				try {
 					
 					FileWriter writer = new FileWriter(bfFile,true);
-					
-					if(image.toLowerCase().contains("empty")){
-						writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
-						writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
-					}else{
-						writer.append(directory + systemDirSeparator + image + "\r\n");
-						writer.append(directory + systemDirSeparator + image + "\r\n");						
+					for(String fluorChannel : flourChannels){
+						if(image.toLowerCase().contains("empty")){
+							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+						}else{
+							writer.append(directory + systemDirSeparator + image + "\r\n");						
+						}	
 					}
+					
 					writer.close();
 				} catch (IOException e) {
 					System.out.println("Could not add BF image to bf_vcellid.txt");
 					return;
 				}
 
-			}else if(image.toUpperCase().contains("YFP") || image.toUpperCase().contains("CFP")){
+			}else if(image.toUpperCase().substring(1, 3).equals("FP") || image.toUpperCase().subSequence(7, 9).equals("FP")){
 
 				File FlFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "fl_vcellid.txt");
 
@@ -377,18 +379,6 @@ public class Output {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Checks if the file name is from a fake image.
-	 * @param fileName
-	 * @return true if it is fake.
-	 */
-	private boolean checkEmpty(String fileName) {
-		if(fileName.equals("Empty_BF") || fileName.equals("Empty_BF_OUT") || fileName.equals("Empty_YFP") || fileName.equals("Empty_YFP_OUT") || fileName.equals("Empty_CFP") || fileName.equals("Empty_CFP_OUT") ){
-			return true;
-		}
-		return false;
 	}
 
 
