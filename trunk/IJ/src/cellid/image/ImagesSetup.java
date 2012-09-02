@@ -58,7 +58,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 		contentPane.setLayout(null);
 
 		JLabel lblImageTypeBrightfield = new JLabel("Image type: brightfield");
-		lblImageTypeBrightfield.setBounds(10, 30, 125, 14);
+		lblImageTypeBrightfield.setBounds(10, 30, 150, 14);
 		contentPane.add(lblImageTypeBrightfield);
 
 		chckbxBfAsFl = new JCheckBox("bf as fl");
@@ -67,7 +67,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 
 		chckbxNucleusFromChannel = new JCheckBox(
 				"nucleus from channel");
-		chckbxNucleusFromChannel.setBounds(57, 85, 150, 23);
+		chckbxNucleusFromChannel.setBounds(57, 85, 180, 23);
 		chckbxNucleusFromChannel.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -84,7 +84,8 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 		contentPane.add(chckbxNucleusFromChannel);
 
 		nucleusFromChannelTextbox = new JTextField();
-		nucleusFromChannelTextbox.setBounds(213, 86, 86, 20);
+		nucleusFromChannelTextbox.setBounds(240, 86, 86, 20);
+		nucleusFromChannelTextbox.setEnabled(false);
 		contentPane.add(nucleusFromChannelTextbox);
 		nucleusFromChannelTextbox.setColumns(10);
 
@@ -96,7 +97,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 		panel.setLayout(null);
 
 		chckbxSplittedFretImage = new JCheckBox("splitted fret image");
-		chckbxSplittedFretImage.setBounds(42, 5, 130, 23);
+		chckbxSplittedFretImage.setBounds(42, 5, 150, 23);
 		chckbxSplittedFretImage.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -107,19 +108,19 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 
 				boolean selected = buttonModel.isSelected();
 
-				comboBox.setVisible(selected);
+				comboBox.setEnabled(selected);
 			}
 		});
 		panel.add(chckbxSplittedFretImage);
 
 		JLabel lblNucleus = new JLabel("nucleus:");
-		lblNucleus.setBounds(42, 35, 50, 14);
+		lblNucleus.setBounds(42, 35, 80, 14);
 		panel.add(lblNucleus);
 
 		comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] { "top", "bottom" }));
 		comboBox.setBounds(109, 31, 123, 22);
-		comboBox.setVisible(chckbxSplittedFretImage.isSelected());
+		comboBox.setEnabled(chckbxSplittedFretImage.isSelected());
 		panel.add(comboBox);
 
 		JButton btnAceptar = new JButton("Aceptar");

@@ -15,6 +15,10 @@ public class SegmentationValues {
 	private double backgroundRejectValue;
 	private double trackingComparisonValue;
 	
+	//ImageSetup Parameters
+	private boolean BFasFLflag;
+	
+	
 	//To store the last selected button.
 	private int cellAlignmentButtonSelected;
 	private int frameAlignmentButtonSelected;
