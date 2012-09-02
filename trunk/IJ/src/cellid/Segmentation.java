@@ -146,7 +146,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		panel_1.setLayout(null);
 		
 		JLabel frameAlignmentLabel = new JLabel("Frame alignment");
-		frameAlignmentLabel.setBounds(10, 11, 92, 14);
+		frameAlignmentLabel.setBounds(10, 11, 110, 14);
 		panel_1.add(frameAlignmentLabel);
 				
 		noFrameAlignmentRadioButton = new JRadioButton("no frame alignment");
@@ -171,7 +171,7 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame{
 		panel_1.add(alignToBFRadioButton);
 		
 		JLabel cellAlignmentLabel = new JLabel("Cell alignment");
-		cellAlignmentLabel.setBounds(10, 114, 81, 14);
+		cellAlignmentLabel.setBounds(10, 114, 110, 14);
 		panel_1.add(cellAlignmentLabel);
 		
 		noCellAlignmentRadioButton = new JRadioButton("no cell alignment");

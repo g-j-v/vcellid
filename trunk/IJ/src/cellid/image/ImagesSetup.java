@@ -25,6 +25,8 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import utils.SegmentationValues;
+
 /**
  * 
  * @author gvilla
@@ -49,6 +51,10 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		removeAll();
+		
+		SegmentationValues segmentation = SegmentationValues.getInstance();
 		setTitle("Image Setup");
 		setBounds(100, 100, 387, 330);
 
@@ -63,11 +69,13 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 
 		chckbxBfAsFl = new JCheckBox("bf as fl");
 		chckbxBfAsFl.setBounds(57, 51, 97, 23);
+		chckbxBfAsFl.setSelected(segmentation.isBFasFLflag());
 		contentPane.add(chckbxBfAsFl);
 
 		chckbxNucleusFromChannel = new JCheckBox(
 				"nucleus from channel");
 		chckbxNucleusFromChannel.setBounds(57, 85, 180, 23);
+		chckbxNucleusFromChannel.setSelected(segmentation.isNucleusFromChannel());
 		chckbxNucleusFromChannel.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -98,6 +106,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 
 		chckbxSplittedFretImage = new JCheckBox("splitted fret image");
 		chckbxSplittedFretImage.setBounds(42, 5, 150, 23);
+		chckbxSplittedFretImage.setSelected(segmentation.isFretImage());			
 		chckbxSplittedFretImage.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -119,6 +128,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 
 		comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] { "top", "bottom" }));
+		comboBox.setSelectedIndex(segmentation.getFretImageValue().equals("top") ? 0 : 1);
 		comboBox.setBounds(109, 31, 123, 22);
 		comboBox.setEnabled(chckbxSplittedFretImage.isSelected());
 		panel.add(comboBox);
@@ -129,7 +139,6 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Agregar acciones de persistido de datos
 				dispose();
 			}
 		});
@@ -141,7 +150,10 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Agregar acciones de persistido de datos
+				SegmentationValues.getInstance().setBFasFLflag(chckbxBfAsFl.isSelected());
+				SegmentationValues.getInstance().setNucleusFromChannel(chckbxNucleusFromChannel.isSelected());
+				SegmentationValues.getInstance().setFretImage(chckbxSplittedFretImage.isSelected());
+				SegmentationValues.getInstance().setFretImageValue(comboBox.getSelectedIndex() == 0 ? "top" : "bottom");
 			}
 		});
 		contentPane.add(btnAplicar);

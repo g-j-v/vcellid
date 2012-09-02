@@ -16,8 +16,10 @@ public class SegmentationValues {
 	private double trackingComparisonValue;
 	
 	//ImageSetup Parameters
-	private boolean BFasFLflag;
-	
+	private boolean BFasFLflag = false;
+	private boolean nucleusFromChannel = false;
+	private boolean fretImage = false;
+	private String fretImageValue = "top";
 	
 	//To store the last selected button.
 	private int cellAlignmentButtonSelected;
@@ -134,6 +136,38 @@ public class SegmentationValues {
 
 	public void setAdvancedParameters(String advancedParameters) {
 		this.advancedParameters = advancedParameters;
+	}
+
+	public boolean isBFasFLflag() {
+		return BFasFLflag;
+	}
+
+	public void setBFasFLflag(boolean bFasFLflag) {
+		BFasFLflag = bFasFLflag;
+	}
+
+	public boolean isFretImage() {
+		return fretImage;
+	}
+
+	public void setFretImage(boolean fretImage) {
+		this.fretImage = fretImage;
+	}
+
+	public boolean isNucleusFromChannel() {
+		return nucleusFromChannel;
+	}
+
+	public void setNucleusFromChannel(boolean nucleusFromChannel) {
+		this.nucleusFromChannel = nucleusFromChannel;
+	}
+
+	public String getFretImageValue() {
+		return fretImageValue;
+	}
+
+	public void setFretImageValue(String fretImageValue) {
+		this.fretImageValue = fretImageValue;
 	}
 
 	
