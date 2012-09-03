@@ -23,6 +23,7 @@ import javax.swing.tree.TreePath;
 
 import cellid.Segmentation;
 
+import utils.SegmentationValues;
 import utils.node.PositionNode;
 
 
@@ -455,6 +456,8 @@ public class Output {
 	 */
 	public void loadParameters(int position, boolean keepResults){
 		
+		SegmentationValues segmentationValues = SegmentationValues.getInstance();
+		
 		File bfFile;
 		if(keepResults){
 			bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");
@@ -473,6 +476,17 @@ public class Output {
 			writer.append(" " + Segmentation.frameAlignment() + "\r\n");
 			writer.append(" image_type brightfield\r\n");
 			writer.append(" bf_fl_mapping list\r\n");
+			if(segmentationValues.isBFasFLflag()){
+				writer.append("treat_brightfield_as_fluorescence_also\r\n");
+			}
+			if(segmentationValues.isNucleusFromChannel()){
+				//Not sure yet what to do.
+				;
+			}
+			if(segmentationValues.isFretImage()){
+				writer.append("fret bf_bottom_and_top\r\n");
+				writer.append("fret nuclear_"+segmentationValues.getFretImageValue()+"\r\n");
+			}
 //			writer.append(" fret bf_bottom_and_top\r\n");
 //			writer.append(" fret nuclear_top\r\n");
 			//TODO: aca van parametros sin valores

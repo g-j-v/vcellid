@@ -139,6 +139,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				saveValues();
 				dispose();
 			}
 		});
@@ -150,10 +151,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SegmentationValues.getInstance().setBFasFLflag(chckbxBfAsFl.isSelected());
-				SegmentationValues.getInstance().setNucleusFromChannel(chckbxNucleusFromChannel.isSelected());
-				SegmentationValues.getInstance().setFretImage(chckbxSplittedFretImage.isSelected());
-				SegmentationValues.getInstance().setFretImageValue(comboBox.getSelectedIndex() == 0 ? "top" : "bottom");
+				saveValues();
 			}
 		});
 		contentPane.add(btnAplicar);
@@ -170,5 +168,13 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 		contentPane.add(btnCancelar);
 
 		setVisible(true);
+	}
+	
+	private void saveValues(){
+		SegmentationValues.getInstance().setBFasFLflag(chckbxBfAsFl.isSelected());
+		SegmentationValues.getInstance().setNucleusFromChannel(chckbxNucleusFromChannel.isSelected());
+		SegmentationValues.getInstance().setFretImage(chckbxSplittedFretImage.isSelected());
+		SegmentationValues.getInstance().setFretImageValue(comboBox.getSelectedIndex() == 0 ? "top" : "bottom");
+
 	}
 }
