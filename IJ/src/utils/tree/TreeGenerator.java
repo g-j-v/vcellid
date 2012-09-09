@@ -71,7 +71,7 @@ public class TreeGenerator {
 	 */
 	public TreeGenerator( File directory) {
 		ImageNamePattern pattern = ImageNamePattern.getInstance();
-		this.finder = new Finder(pattern.getSeparator(), pattern.generatePatternList());
+		this.finder = new Finder(pattern.isSeparatorFlag() == true ? pattern.getSeparator() : "", pattern.generatePatternList());
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
 		this.fluorChannels = finder.getFluorChannels(fileNames);
@@ -227,8 +227,6 @@ public class TreeGenerator {
 				System.out.println(directory.getAbsolutePath());
 				System.out.println(filePath);
 				
-				ImageNode imageNode = (ImageNode) node.getUserObject();
-
 				ImagePlus imp = WindowManager.getCurrentImage();
 				if (imp == null) {
 					openImageInNewWindow(node);
@@ -595,9 +593,14 @@ public class TreeGenerator {
 
 		protected boolean isFakeImageNode(Object value) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-			ImageNode nodeInfo = (ImageNode) (node.getUserObject());
-			if (nodeInfo.isFake()) {
-				return true;
+			ImageNode nodeInfo;
+			try{
+				nodeInfo = (ImageNode) (node.getUserObject());
+				if (nodeInfo.isFake()) {
+					return true;
+				}
+			}catch(Exception e){
+				return false;
 			}
 			return false;
 

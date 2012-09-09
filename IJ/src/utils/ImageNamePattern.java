@@ -9,15 +9,21 @@ public class ImageNamePattern {
 	
 	private String BrightfieldChannelPattern;
 	private String FluorChannelPattern;
+	private boolean positionFlag;
 	private String PositionPattern;
+	private boolean timeFlag;
 	private String TimePattern;
+	private boolean separatorFlag;
 	private String separator;
 
 	public ImageNamePattern(){
 		BrightfieldChannelPattern = "BF";
 		FluorChannelPattern = "FP";
+		positionFlag = true;
 		PositionPattern = "Position";
+		timeFlag = true;
 		TimePattern = "time_";
+		separatorFlag = true;
 		separator = "_";
 	}
 	
@@ -71,8 +77,11 @@ public class ImageNamePattern {
 	public void restoreDefault(){
 		BrightfieldChannelPattern = "BF";
 		FluorChannelPattern = "FP";
+		positionFlag = true;
 		PositionPattern = "Position";
+		timeFlag = true;
 		TimePattern = "time_";
+		separatorFlag = true;
 		separator = "_";
 	}
 	
@@ -82,11 +91,38 @@ public class ImageNamePattern {
 		// Pattern para los fields
 		patterns.add("("+ BrightfieldChannelPattern +"|([A-Z])FP)");
 		// Pattern para la posicion
-		patterns.add(PositionPattern + "\\d*");
+		if(positionFlag){
+			patterns.add(PositionPattern + "\\d*");
+		}
 		// Pattern para el tiempo
-		patterns.add( TimePattern + "\\d*.tif");
-
+		if(timeFlag){
+			patterns.add( TimePattern + "\\d*.tif");			
+		}
 		return patterns;
+	}
+
+	public boolean isPositionFlag() {
+		return positionFlag;
+	}
+
+	public void setPositionFlag(boolean positionFlag) {
+		this.positionFlag = positionFlag;
+	}
+
+	public boolean isTimeFlag() {
+		return timeFlag;
+	}
+
+	public void setTimeFlag(boolean timeFlag) {
+		this.timeFlag = timeFlag;
+	}
+
+	public boolean isSeparatorFlag() {
+		return separatorFlag;
+	}
+
+	public void setSeparatorFlag(boolean separatorFlag) {
+		this.separatorFlag = separatorFlag;
 	}
 	
 }
