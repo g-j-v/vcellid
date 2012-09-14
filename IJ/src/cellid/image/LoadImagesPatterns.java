@@ -28,30 +28,32 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import utils.ImageLoadingPaths;
 import utils.ImageNamePattern;
 
 public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 	private JPanel contentPanel;
-	private JCheckBox chckbxPositionToken;
 	private JTextField txtPosition;
 	private JCheckBox chckbxTimeToken;
 	private JTextField txtTime;
-	private JCheckBox chckbxSepCharacter;
 	private JTextField txtSeparator;
 	private JTextField txtPattern;
 	private JTextField txtBf;
 	private JTextField txtFl;
 	private JTextField txtUnevenIllumination;
 	private JTextField txtCameraBackground;
+	private JTextField bfPath;
+	private File bfDir;
 	private JTextField fpPath;
 	private File fpDir;
 	private JTextField uiPath;
 	private File uiDir;
 	private JTextField cbPath;
 	private File cbDir;
-
-
+	private JCheckBox chckbxForceSamePath;
+	private JCheckBox chckbxUnevenIlluminationCorrection;
+	private JCheckBox chckbxCameraBackgroundCorrection;
 
 	/**
 	 * Create the dialog.
@@ -61,12 +63,12 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {
 
 		removeAll();
-		
+
 		/**
-		 * Initialization 
+		 * Initialization
 		 */
 		txtPosition = new JTextField();
 		txtTime = new JTextField();
@@ -74,13 +76,13 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtPattern = new JTextField();
 		txtBf = new JTextField();
 		txtFl = new JTextField();
-		txtUnevenIllumination= new JTextField();
+		txtUnevenIllumination = new JTextField();
 		txtCameraBackground = new JTextField();
-		
+
 		ImageNamePattern imageNamePattern = ImageNamePattern.getInstance();
 		setBounds(100, 100, 500, 500);
 		setLayout(new BorderLayout());
-		
+
 		contentPanel = new JPanel();
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		add(contentPanel, BorderLayout.CENTER);
@@ -88,35 +90,21 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 		contentPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
 
-		chckbxPositionToken = new JCheckBox("Position token");
-		chckbxPositionToken.setBounds(5, 10, 130, 30);
-		chckbxPositionToken.setSelected(imageNamePattern.isPositionFlag());
-		chckbxPositionToken.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				if(arg0.getStateChange() == ItemEvent.DESELECTED){
-					txtPosition.setEnabled(false);
-					txtPattern.setText(prepareName());
-				}else if(arg0.getStateChange() == ItemEvent.SELECTED){
-					txtPosition.setEnabled(true);
-					txtPattern.setText(prepareName());
-				}
-			}
-		});
-		contentPanel.add(chckbxPositionToken);
+		JLabel labelPositionToken = new JLabel("Position token");
+		labelPositionToken.setBounds(25, 10, 130, 30);
+		contentPanel.add(labelPositionToken);
 
 		chckbxTimeToken = new JCheckBox("Time token");
 		chckbxTimeToken.setBounds(5, 35, 130, 30);
 		chckbxTimeToken.setSelected(imageNamePattern.isTimeFlag());
 		chckbxTimeToken.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				if(arg0.getStateChange() == ItemEvent.DESELECTED){
+				if (arg0.getStateChange() == ItemEvent.DESELECTED) {
 					txtTime.setEnabled(false);
 					txtPattern.setText(prepareName());
-				}else if(arg0.getStateChange() == ItemEvent.SELECTED){
+				} else if (arg0.getStateChange() == ItemEvent.SELECTED) {
 					txtTime.setEnabled(true);
 					txtPattern.setText(prepareName());
 				}
@@ -126,15 +114,15 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 		txtPosition.setText(imageNamePattern.getPositionPattern());
 		txtPosition.setBounds(150, 10, 100, 20);
-		txtPosition.setEnabled(chckbxPositionToken.isSelected());
+		txtPosition.setEnabled(true);
 		txtPosition.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				System.out.println("Entro en position");
-				txtPattern.setText(prepareName());				
+				txtPattern.setText(prepareName());
 			};
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				System.out.println("Salio de position");
@@ -143,35 +131,18 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		});
 		contentPanel.add(txtPosition);
 		txtPosition.setColumns(10);
-		
-		final JCheckBox chckbxPositionToken = new JCheckBox("Position token");
-		chckbxPositionToken.setBounds(25, 10, 110, 30);
-		chckbxPositionToken.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				AbstractButton abstractButton = (AbstractButton) arg0
-						.getSource();
-				ButtonModel buttonModel = abstractButton.getModel();
-
-				boolean selected = buttonModel.isSelected();
-
-				txtPosition.setEnabled(selected);
-			}
-		});
-		contentPanel.add(chckbxPositionToken);
 
 		txtTime.setText(imageNamePattern.getTimePattern());
 		txtTime.setBounds(150, 35, 100, 20);
-		txtPosition.setEnabled(chckbxTimeToken.isSelected());
+		txtTime.setEnabled(chckbxTimeToken.isSelected());
 		txtTime.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				System.out.println("Entro en time");
 				txtPattern.setText(prepareName());
 			};
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				System.out.println("Salio de time");
@@ -181,7 +152,6 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		contentPanel.add(txtTime);
 		txtTime.setColumns(10);
 
-		chckbxSepCharacter = new JCheckBox("Character separator");
 		final JCheckBox chckbxTimeToken = new JCheckBox("Time token");
 		chckbxTimeToken.setBounds(25, 35, 110, 30);
 		chckbxTimeToken.addChangeListener(new ChangeListener() {
@@ -199,62 +169,47 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		});
 		contentPanel.add(chckbxTimeToken);
 
-		final JCheckBox chckbxSepCharacter = new JCheckBox("Character separator");
-		chckbxSepCharacter.setBounds(25, 75, 180, 25);
-		chckbxSepCharacter.setEnabled(false);
-		chckbxSepCharacter.setSelected(imageNamePattern.isSeparatorFlag());
-		chckbxSepCharacter.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				if(arg0.getStateChange() == ItemEvent.DESELECTED){
-					txtSeparator.setEnabled(false);
-					txtPattern.setText(prepareName());
-				}else if(arg0.getStateChange() == ItemEvent.SELECTED){
-					txtSeparator.setEnabled(true);
-					txtPattern.setText(prepareName());
-				}
-			}
-		});
-		contentPanel.add(chckbxSepCharacter);
+		final JLabel labelSepCharacter = new JLabel("Character separator");
+		labelSepCharacter.setBounds(25, 75, 180, 25);
+		contentPanel.add(labelSepCharacter);
 
 		txtSeparator.setText(imageNamePattern.getSeparator());
 		txtSeparator.setBounds(220, 75, 30, 20);
-		txtSeparator.setEnabled(chckbxSepCharacter.isSelected());
+		txtSeparator.setEditable(true);
 		txtSeparator.addFocusListener(new FocusListener() {
-			
+
 			@Override
-			public void focusGained(FocusEvent arg0){
+			public void focusGained(FocusEvent arg0) {
 				System.out.println("Entro en separador");
-				txtPattern.setText(prepareName());				
+				txtPattern.setText(prepareName());
 			}
-			
+
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				System.out.println("Salio de separador");
 				txtPattern.setText(prepareName());
-				ImageNamePattern.getInstance().setSeparator(txtSeparator.getText());
+				ImageNamePattern.getInstance().setSeparator(
+						txtSeparator.getText());
 				txtPattern.setText(prepareName());
 			}
 		});
-			
+
 		contentPanel.add(txtSeparator);
 		txtSeparator.setColumns(10);
 
 		contentPanel.add(new JSeparator(SwingConstants.VERTICAL));
 
-		JLabel lblExampleFluorescenceFile = new JLabel("example: fluorescence file");
+		JLabel lblExampleFluorescenceFile = new JLabel(
+				"example: fluorescence file");
 		lblExampleFluorescenceFile.setBounds(260, 10, 300, 15);
 		contentPanel.add(lblExampleFluorescenceFile);
 
-		txtPattern.setBounds(260, 35, 200, 20);
-		contentPanel.add(txtPattern);
-		txtPattern.setColumns(10);
 		txtPattern = new JTextField();
 		txtPattern.setBounds(260, 35, 200, 20);
 		txtPattern.setText(prepareName());
-		contentPanel.add(txtPattern);
+		txtPattern.setEditable(false);
 		txtPattern.setColumns(10);
+		contentPanel.add(txtPattern);
 
 		JLabel lblToken = new JLabel("token");
 		lblToken.setBounds(175, 115, 50, 15);
@@ -275,20 +230,18 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtBf.setText(imageNamePattern.getBrightfieldChannelPattern());
 		txtBf.setBounds(170, 140, 45, 20);
 		txtBf.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				System.out.println("Entro en BF");
 				txtPattern.setText(prepareName());
 			}
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				System.out.println("Salio de BF");
-				txtPattern.setText(prepareName());	
+				txtPattern.setText(prepareName());
 			}
-//				ImageNamePattern.getInstance().setBrightfieldChannelPattern(txtBf.getText());
-//				txtPattern.setText(prepareName());			}
 		});
 		contentPanel.add(txtBf);
 		txtBf.setColumns(10);
@@ -297,13 +250,13 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		txtFl.setColumns(10);
 		txtFl.setBounds(170, 170, 45, 20);
 		txtFl.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				System.out.println("Entro en FL");
 				txtPattern.setText(prepareName());
 			}
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				System.out.println("Salio de FL");
@@ -311,127 +264,172 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 			}
 		});
 		contentPanel.add(txtFl);
-		
+
 		txtPattern.setText(prepareName());
-		
-		JComboBox bfPath = new JComboBox();
+
+		bfPath = new JTextField();
+		bfPath.setText(ImageLoadingPaths.getInstance().getBfPath());
 		bfPath.setBounds(250, 140, 120, 20);
 		contentPanel.add(bfPath);
+		final JButton bfSelect = new JButton("Open...");
+		bfSelect.setBounds(380, 140, 75, 20);
+		bfSelect.addActionListener(new ActionListener() {
 
-		fpPath = new JTextField();
-		fpPath.setBounds(250, 170, 120, 20);
-		contentPanel.add(fpPath);
-		final JButton fpSelect = new JButton("Open...");
-		fpSelect.setBounds(380, 170, 75, 20);
-		fpSelect.addActionListener( new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				bfDir = ImageLoadingPaths.getInstance().getBfDir();
 				JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(bfDir);
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fc.showOpenDialog(LoadImagesPatterns.this);
 				if (returnVal != JFileChooser.APPROVE_OPTION) {
 					return;
 				}
-			
-				 fpDir = fc.getSelectedFile();
-				 fpPath.setText(fpDir.getAbsolutePath());
+
+				bfDir = fc.getSelectedFile();
+				bfPath.setText(bfDir.getAbsolutePath());
+			}
+		});
+		contentPanel.add(bfSelect);
+
+		fpPath = new JTextField();
+		fpPath.setText(ImageLoadingPaths.getInstance().getFpPath());
+		fpPath.setBounds(250, 170, 120, 20);
+		contentPanel.add(fpPath);
+		final JButton fpSelect = new JButton("Open...");
+		fpSelect.setBounds(380, 170, 75, 20);
+		fpSelect.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				fpDir = ImageLoadingPaths.getInstance().getFpDir();
+				JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(fpDir);
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int returnVal = fc.showOpenDialog(LoadImagesPatterns.this);
+				if (returnVal != JFileChooser.APPROVE_OPTION) {
+					return;
+				}
+
+				fpDir = fc.getSelectedFile();
+				fpPath.setText(fpDir.getAbsolutePath());
+				
 			}
 		});
 		contentPanel.add(fpSelect);
 		contentPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
 
 		txtUnevenIllumination.setBounds(170, 235, 45, 20);
+		txtUnevenIllumination.setText(ImageLoadingPaths.getInstance().getUiToken());
 		contentPanel.add(txtUnevenIllumination);
 		txtUnevenIllumination.setColumns(10);
-		
-		uiPath= new JTextField();
+
+		uiPath = new JTextField();
+		uiPath.setText(ImageLoadingPaths.getInstance().getUiPath());
 		uiPath.setBounds(250, 235, 120, 20);
 		contentPanel.add(uiPath);
 		uiPath.setColumns(10);
-		
+
 		final JButton uiSelect = new JButton("Open...");
 		uiSelect.setBounds(380, 235, 75, 20);
-		uiSelect.addActionListener( new ActionListener() {
-			
+		uiSelect.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				uiDir = ImageLoadingPaths.getInstance().getUiDir();
 				JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(uiDir);
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fc.showOpenDialog(LoadImagesPatterns.this);
 				if (returnVal != JFileChooser.APPROVE_OPTION) {
 					return;
 				}
-			
-				 uiDir = fc.getSelectedFile();
-				 uiPath.setText(uiDir.getAbsolutePath());
+
+				uiDir = fc.getSelectedFile();
+				uiPath.setText(uiDir.getAbsolutePath());
+				
 			}
 		});
 		contentPanel.add(uiSelect);
-		
-		JCheckBox chckbxUnevenIlluminationCorrection = new JCheckBox("<html>uneven illumination <br> correction image (basename)</html>");
+
+		chckbxUnevenIlluminationCorrection = new JCheckBox(
+				"<html>uneven illumination <br> correction image (basename)</html>");
 		chckbxUnevenIlluminationCorrection.setBounds(10, 220, 150, 50);
-		chckbxUnevenIlluminationCorrection.addChangeListener(new ChangeListener() {
+		chckbxUnevenIlluminationCorrection
+				.addChangeListener(new ChangeListener() {
 
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				AbstractButton abstractButton = (AbstractButton) arg0
-						.getSource();
-				ButtonModel buttonModel = abstractButton.getModel();
+					@Override
+					public void stateChanged(ChangeEvent arg0) {
+						AbstractButton abstractButton = (AbstractButton) arg0
+								.getSource();
+						ButtonModel buttonModel = abstractButton.getModel();
 
-				boolean selected = buttonModel.isSelected();
+						boolean selected = buttonModel.isSelected();
 
-				txtUnevenIllumination.setEnabled(selected);
-			}
-		});
+						txtUnevenIllumination.setEnabled(selected);
+						
+					}
+				});
+		chckbxUnevenIlluminationCorrection.setSelected(ImageLoadingPaths.getInstance().isUiCheck());
+		txtUnevenIllumination.setEditable(ImageLoadingPaths.getInstance().isUiCheck());
 		contentPanel.add(chckbxUnevenIlluminationCorrection);
 
 		txtCameraBackground.setBounds(170, 285, 45, 20);
+		txtCameraBackground.setText(ImageLoadingPaths.getInstance().getCbToken());
 		contentPanel.add(txtCameraBackground);
 		txtCameraBackground.setColumns(10);
-		
+
 		cbPath = new JTextField();
+		cbPath.setText(ImageLoadingPaths.getInstance().getCbPath());
 		cbPath.setBounds(250, 285, 120, 20);
 		contentPanel.add(cbPath);
 		cbPath.setColumns(10);
-		
+
 		final JButton cbSelect = new JButton("Open...");
 		cbSelect.setBounds(380, 285, 75, 20);
-		cbSelect.addActionListener( new ActionListener() {
-			
+		cbSelect.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				cbDir = ImageLoadingPaths.getInstance().getCbDir();
 				JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(cbDir);
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fc.showOpenDialog(LoadImagesPatterns.this);
 				if (returnVal != JFileChooser.APPROVE_OPTION) {
 					return;
 				}
-			
-				 cbDir = fc.getSelectedFile();
-				 cbPath.setText(cbDir.getAbsolutePath());
+
+				cbDir = fc.getSelectedFile();
+				cbPath.setText(cbDir.getAbsolutePath());
+				
 			}
 		});
 		contentPanel.add(cbSelect);
-		
-		JCheckBox chckbxCameraBackgroundCorrection = new JCheckBox("<html>camera background <br>correction image (basename)</html>");
+
+		chckbxCameraBackgroundCorrection = new JCheckBox(
+				"<html>camera background <br>correction image (basename)</html>");
 		chckbxCameraBackgroundCorrection.setBounds(10, 270, 150, 50);
-		chckbxCameraBackgroundCorrection.addChangeListener(new ChangeListener() {
+		chckbxCameraBackgroundCorrection
+				.addChangeListener(new ChangeListener() {
 
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				AbstractButton abstractButton = (AbstractButton) arg0
-						.getSource();
-				ButtonModel buttonModel = abstractButton.getModel();
+					@Override
+					public void stateChanged(ChangeEvent arg0) {
+						AbstractButton abstractButton = (AbstractButton) arg0
+								.getSource();
+						ButtonModel buttonModel = abstractButton.getModel();
 
-				boolean selected = buttonModel.isSelected();
+						boolean selected = buttonModel.isSelected();
 
-				txtCameraBackground.setEnabled(selected);
-			}
-		});
+						txtCameraBackground.setEnabled(selected);
+						
+					}
+				});
+		chckbxCameraBackgroundCorrection.setSelected(ImageLoadingPaths.getInstance().isCbCheck());
+		txtCameraBackground.setEditable(ImageLoadingPaths.getInstance().isCbCheck());
 		contentPanel.add(chckbxCameraBackgroundCorrection);
-		
-		JCheckBox chckbxForceSamePath = new JCheckBox("force same path");
+
+		chckbxForceSamePath = new JCheckBox("force same path");
 		chckbxForceSamePath.setBounds(250, 330, 150, 25);
 		chckbxForceSamePath.addChangeListener(new ChangeListener() {
 
@@ -449,16 +447,19 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 				uiSelect.setEnabled(!selected);
 				cbPath.setEnabled(!selected);
 				cbSelect.setEnabled(!selected);
+				
 			}
 		});
+		chckbxForceSamePath.setSelected(ImageLoadingPaths.getInstance().isForcePath());
 		contentPanel.add(chckbxForceSamePath);
 
 		JLabel lblGroupBy = new JLabel("group images by");
 		lblGroupBy.setBounds(15, 380, 150, 15);
 		contentPanel.add(lblGroupBy);
-		
+
 		JComboBox groupBy = new JComboBox();
-		groupBy.setModel(new DefaultComboBoxModel(new String[] { "file name pattern", "time (metamorph)" }));
+		groupBy.setModel(new DefaultComboBoxModel(new String[] {
+				"file name pattern", "time (metamorph)" }));
 		groupBy.setBounds(225, 380, 150, 20);
 		contentPanel.add(groupBy);
 
@@ -468,18 +469,36 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				ImageNamePattern.getInstance().setPositionFlag(chckbxPositionToken.isSelected());
-				ImageNamePattern.getInstance().setTimeFlag(chckbxTimeToken.isSelected());
-				ImageNamePattern.getInstance().setPositionPattern(txtPosition.getText());
-				ImageNamePattern.getInstance().setTimePattern(txtTime.getText());
-				ImageNamePattern.getInstance().setSeparatorFlag(chckbxSepCharacter.isSelected());
-				ImageNamePattern.getInstance().setSeparator(txtSeparator.getText());
-				ImageNamePattern.getInstance().setBrightfieldChannelPattern(txtBf.getText());
-				ImageNamePattern.getInstance().setFluorChannelPattern(txtFl.getText());
+
+				ImageNamePattern.getInstance().setTimeFlag(
+						chckbxTimeToken.isSelected());
+				ImageNamePattern.getInstance().setPositionPattern(
+						txtPosition.getText());
+				ImageNamePattern.getInstance()
+						.setTimePattern(txtTime.getText());
+				ImageNamePattern.getInstance().setSeparator(
+						txtSeparator.getText());
+				ImageNamePattern.getInstance().setBrightfieldChannelPattern(
+						txtBf.getText());
+				ImageNamePattern.getInstance().setFluorChannelPattern(
+						txtFl.getText());
+				ImageLoadingPaths.getInstance().setBfPath(bfPath.getText());
+				ImageLoadingPaths.getInstance().setBfDir(bfDir);
+				ImageLoadingPaths.getInstance().setFpPath(fpPath.getText());
+				ImageLoadingPaths.getInstance().setFpDir(fpDir);
+				ImageLoadingPaths.getInstance().setUiToken(txtUnevenIllumination.getText());
+				ImageLoadingPaths.getInstance().setUiPath(uiPath.getText());
+				ImageLoadingPaths.getInstance().setUiDir(uiDir);
+				ImageLoadingPaths.getInstance().setUiCheck(chckbxUnevenIlluminationCorrection.isSelected());
+				ImageLoadingPaths.getInstance().setCbToken(txtCameraBackground.getText());
+				ImageLoadingPaths.getInstance().setCbPath(cbPath.getText());
+				ImageLoadingPaths.getInstance().setCbDir(cbDir);
+				ImageLoadingPaths.getInstance().setCbCheck(chckbxCameraBackgroundCorrection.isSelected());
+				ImageLoadingPaths.getInstance().setForcePath(chckbxForceSamePath.isSelected());
+				new LoadImages().run();
 				dispose();
 			}
 		});
@@ -487,11 +506,11 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				ImageNamePattern.getInstance().restoreDefault();
-				dispose();	
+				// ImageNamePattern.getInstance().restoreDefault();
+				dispose();
 			}
 		});
 		buttonPane.add(cancelButton);
@@ -499,13 +518,14 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		setResizable(false);
 		setVisible(true);
 	}
-	
-	private String prepareName(){
-		return "?"+ txtFl.getText() 
-				+ (chckbxSepCharacter.isSelected() == true ? txtSeparator.getText() : "")
-				+ ( chckbxPositionToken.isSelected() == true ? txtPosition.getText() + "(d*)" : "")
-				+ (chckbxSepCharacter.isSelected() == true ? txtSeparator.getText() : "")
-				+ (chckbxTimeToken.isSelected() == true ? txtTime.getText() + "(d*))" : "")
-				+ ".tif";
+
+	private String prepareName() {
+		return "?"
+				+ txtFl.getText()
+				+ txtSeparator.getText()
+				+ txtPosition.getText()
+				+ txtSeparator.getText()
+				+ (chckbxTimeToken.isSelected() == true ? txtTime.getText()
+						+ "(d*))" : "") + ".tif";
 	}
 }

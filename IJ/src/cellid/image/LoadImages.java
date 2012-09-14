@@ -10,9 +10,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.AbstractButton;
@@ -20,7 +18,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -29,7 +26,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import utils.DisplayRangeObject;
-import utils.tree.Finder;
+import utils.ImageLoadingPaths;
 import utils.tree.TreeGenerator;
 
 /**
@@ -58,20 +55,20 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 	/**
 	 * Call when called, performs the frame generation.
 	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void run(){
 
 		removeAll();
 
 		//Select directory where images are located
-		JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int returnVal = fc.showOpenDialog(LoadImages.this);
-		if (returnVal != JFileChooser.APPROVE_OPTION) {
-			return;
-		}
-
-		final File file = fc.getSelectedFile();
+//		JFileChooser fc = new JFileChooser();
+//		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//		int returnVal = fc.showOpenDialog(LoadImages.this);
+//		if (returnVal != JFileChooser.APPROVE_OPTION) {
+//			return;
+//		}
+//
+//		final File file = fc.getSelectedFile();
+		final File file = ImageLoadingPaths.getInstance().getBfDir();
 
 //		List<String> patterns = new ArrayList<String>();
 //		// Pattern para los fields
@@ -690,5 +687,11 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 			nextNode = (DefaultMutableTreeNode) node.getFirstChild();
 		}
 		return nextNode;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

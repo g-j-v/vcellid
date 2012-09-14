@@ -26,10 +26,14 @@ import utils.run.CellIdRunner;
 public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * VCellID buttons
 	 */
 	JButton cellIdPathButton;
-	JButton loadImagesButton;
+//	JButton loadImagesButton;
 	JButton imagesSetupButton;
 	JButton imagesNameButton;
 	JButton helpButton;
@@ -62,8 +66,8 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		cellIdPathButton.addActionListener(new CellIdPath());
 //		cellIdPathButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		
-		loadImagesButton = new JButton("Load Images");
-		loadImagesButton.addActionListener(new LoadImages());
+//		loadImagesButton = new JButton("Load Images");
+//		loadImagesButton.addActionListener(new LoadImages());
 //		loadImagesButton.setBounds(cellIdPathButton.getX(), cellIdPathButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
 		
 		imagesSetupButton = new JButton("Images Setup");
@@ -88,8 +92,8 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		Box buttonBox = Box.createVerticalBox();
 		buttonBox.add(cellIdPathButton);
 		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
-		buttonBox.add(loadImagesButton);
-		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
+//		buttonBox.add(loadImagesButton);
+//		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
 		buttonBox.add(imagesSetupButton);
 		buttonBox.add(Box.createVerticalStrut(BUTTON_SPACING));
 		buttonBox.add(imagesNameButton);

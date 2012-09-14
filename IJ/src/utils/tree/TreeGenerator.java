@@ -71,7 +71,7 @@ public class TreeGenerator {
 	 */
 	public TreeGenerator( File directory) {
 		ImageNamePattern pattern = ImageNamePattern.getInstance();
-		this.finder = new Finder(pattern.isSeparatorFlag() == true ? pattern.getSeparator() : "", pattern.generatePatternList());
+		this.finder = new Finder(pattern.getSeparator(), pattern.generatePatternList());
 		this.directory = directory;
 		this.fileNames = finder.find(directory);
 		this.fluorChannels = finder.getFluorChannels(fileNames);
