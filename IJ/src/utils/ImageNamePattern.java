@@ -3,6 +3,11 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPopupMenu.Separator;
+
+import utils.tree.PositionImage;
+import utils.tree.TimeImage;
+
 public class ImageNamePattern {
 
 	private static ImageNamePattern instance;
@@ -13,6 +18,7 @@ public class ImageNamePattern {
 	private boolean timeFlag;
 	private String TimePattern;
 	private String separator;
+	private String extension;
 
 	public ImageNamePattern(){
 		BrightfieldChannelPattern = "BF";
@@ -21,6 +27,7 @@ public class ImageNamePattern {
 		timeFlag = true;
 		TimePattern = "time_";
 		separator = "_";
+		extension = ".tif";
 		
 	}
 	
@@ -29,6 +36,25 @@ public class ImageNamePattern {
 			instance = new ImageNamePattern();
 		}
 		return instance;
+	}
+	
+	public String generateImageName(PositionImage image){
+		String name = "";
+		if(image.isEmpty()){
+			name += "EMPTY_";
+		}
+		name += image.getChannel();
+		name += separator;
+		name += (PositionPattern + image.getPositionId());
+		name += separator;
+		if(image instanceof TimeImage){
+			name += (TimePattern + ((TimeImage)image).getTimeId());
+		}
+		name += extension;
+		if(image.isOut()){
+			name += (".out" + extension);
+		}
+		return name;
 	}
 
 	public String getBrightfieldChannelPattern() {
@@ -84,13 +110,14 @@ public class ImageNamePattern {
 		//TODO: Ver como validar los tipos de canales de fluor
 		List<String> patterns = new ArrayList<String>();
 		// Pattern para los fields
-		patterns.add("("+ BrightfieldChannelPattern +"|([A-Z])FP)");
+		patterns.add("("+ BrightfieldChannelPattern +"|([A-Z])" + FluorChannelPattern + ")");
 		// Pattern para la posicion
-			patterns.add(PositionPattern + "\\d*");
+			patterns.add(separator + PositionPattern + "\\d*");
 		// Pattern para el tiempo
 		if(timeFlag){
-			patterns.add( TimePattern + "\\d*.tif");			
+			patterns.add(separator + TimePattern + "\\d*");	
 		}
+		patterns.add(extension +"(|.out"+extension+")");
 		return patterns;
 	}
 

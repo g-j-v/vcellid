@@ -42,6 +42,6 @@ public class PositionNode {
 
     @Override
     public String toString(){
-        return "position" + number + "_" ;
+        return "Position" + number ;
     }
 }

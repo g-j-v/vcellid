@@ -47,13 +47,11 @@ public class Finder {
     	List<String> fileNames = new ArrayList<String>();
     	
         String pattern = "";
-        for(String str : patterns){
-            pattern += str;
-            pattern += separator;
+        for(int i = 0; i < patterns.size(); ++i){
+            pattern += patterns.get(i);
         }
         
         
-        pattern = pattern.substring(0, pattern.length()-1);
         System.out.println("pattern: " + pattern);
         Pattern pat = Pattern.compile(pattern);
         for(String fileName : directory.list()){

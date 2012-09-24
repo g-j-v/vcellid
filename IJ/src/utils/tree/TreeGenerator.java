@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,7 @@ import utils.node.TimeNode;
 
 
 import cellid.Segmentation;
+import cellid.image.LoadImagesPatterns;
 
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 
@@ -266,11 +268,11 @@ public class TreeGenerator {
 								evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().substring(0, 2).equals("BF")) {
+							.getImage().getChannel().equals("BF")) {
 						BfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().substring(1,3).equals("FP")) {
+							.getImage().getChannel().substring(1,3).equals("FP")) {
 						FlImagePopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else {
@@ -308,11 +310,11 @@ public class TreeGenerator {
 								evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().substring(0,2).equals("BF")) {
+							.getImage().getChannel().equals("BF")) {
 						BfPopup.show(evt.getComponent(), evt.getX(), evt.getY());
 					} else if (((ImageNode) ((DefaultMutableTreeNode) selPath
 							.getLastPathComponent()).getUserObject())
-							.getImageName().substring(1,3).equals("FP")) {
+							.getImage().getChannel().substring(1,3).equals("FP")) {
 						FlImagePopup.show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					} else {
@@ -351,65 +353,31 @@ public class TreeGenerator {
 	 */
 	public void createNodes(DefaultMutableTreeNode top, File directory) {
 
-		List<String> fileNames = finder.find(directory);
+		List<PositionImage> images = filesToImages(finder.find(directory));
 
 		System.out.println("TAM: " + fileNames.size());
-		int maxPositions = getMaxPosition();
-		int maxTimeAllPosition = getMaxTime();
+		int maxPositions = getMaxPosition(images);
+		int maxTimeAllPosition = getMaxTime(images);
 		for (int i = 1; i <= maxPositions; ++i) {
-			PositionNode position = new PositionNode(i);
+			PositionNode positionNode = new PositionNode(i);
 			// Adding position to root
-			DefaultMutableTreeNode positionNode = new DefaultMutableTreeNode(
-					position);
-			top.add(positionNode);
+			DefaultMutableTreeNode treePositionNode = new DefaultMutableTreeNode(
+					positionNode);
+			top.add(treePositionNode);
 			for (int j = 1; j <= maxTimeAllPosition; ++j) {
-				TimeNode time = new TimeNode(position, j);
-				DefaultMutableTreeNode timeNode = new DefaultMutableTreeNode(
-						time);
+				TimeNode timeNode = new TimeNode(positionNode, j);
+				DefaultMutableTreeNode treeTimeNode = new DefaultMutableTreeNode(
+						timeNode);
 				// Adding Time node to position
-				positionNode.add(timeNode);
-				File[] files = directory.listFiles(new NameFilter(position,
-						time));
-				time.setFiles(files);
+				treePositionNode.add(treeTimeNode);
+				List<PositionImage> imageNames = getImages(images,positionNode,timeNode);
+				
+				//agrego todas las imagenes que encontre en el directorio. Las que no existen ya fueron creadas como "empty" en getImages();
+				for(PositionImage positionImage: imageNames){
+					timeNode.addImageNode(new ImageNode(positionNode, timeNode, positionImage, positionImage.isEmpty()));
+					treeTimeNode.add(new DefaultMutableTreeNode(new ImageNode(positionNode, timeNode, positionImage, positionImage.isEmpty())));
+				}
 
-				String name;
-				name = getBf(files);
-				if (name == null) {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, "Empty_BF", true)));
-				} else {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, name, false)));
-				}
-				name = getBfOut(files);
-				if (name == null) {
-					
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, "Empty_BF_OUT", true)));
-				} else {
-					timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-							position, time, name, false)));
-				}
-				for(String channel: fluorChannels){
-					name = getFp(files,channel);
-					if (name == null) {
-						
-						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-								position, time, "Empty_" + channel, true)));
-					} else {
-						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-								position, time, name, false)));
-					}
-					name = getFpOut(files,channel);
-					if (name == null) {
-						
-						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-								position, time, "Empty_"+ channel +"_OUT", true)));
-					} else {
-						timeNode.add(new DefaultMutableTreeNode(new ImageNode(
-								position, time, name, false)));
-					}
-				}
 			}
 
 		}
@@ -417,29 +385,17 @@ public class TreeGenerator {
 
 	/**
 	 * Looks for the biggest position.
+	 * @param images list of @PositionImage to look for the biggest time 
 	 * @return the maximum position
 	 */
-	public int getMaxPosition() {
+	public int getMaxPosition(List<PositionImage> images) {
 
 		// TODO: Para generalizar todavia mas podemos recibir un parametro
 		// que identifique el nombre con el que empieza la posicion, o guardarlo
 		// como variable de instancia de Position
 		int max = 0;
-		for (String name : fileNames) {
-			int aux;
-
-			String[] info = name.split(finder.separator);
-			String position = info[1];
-			int endPos = position.length();
-			int i;
-			for (i = endPos - 1; position.charAt(i) >= '0'
-					&& position.charAt(i) <= '9'; i--) {
-				;
-			}
-			i++;
-			System.out.println(i + " - " + endPos + " - "
-					+ position.substring(endPos - i, endPos));
-			aux = Integer.valueOf(position.substring(i, endPos));
+		for (PositionImage image : images) {
+			int aux = Integer.valueOf(image.getPositionId());
 			if (aux > max) {
 				max = aux;
 			}
@@ -451,27 +407,20 @@ public class TreeGenerator {
 	/**
 	 * Looks for the biggest time in a given position
 	 * @param position
+	 * @param images list of @PositionImage to look for the biggest time 
 	 * @return the maximum time
 	 */
-	public int getMaxTime(PositionNode position) {
+	public int getMaxTime(PositionNode position, List<PositionImage> images) {
 
 		// TODO: Para generalizar todavia mas podemos recibir un parametro
 		// que identifique el nombre con el que empieza el tiempo, o guardarlo
 		// como variable de instancia de Time
 		int max = 0;
-		for (String name : fileNames) {
+		for (PositionImage image : images) {
 			int aux;
 
-			if (name.toLowerCase().contains(position.toString())) {
-				int endPos = name.toLowerCase().indexOf(".");
-				int i;
-				for (i = endPos - 1; name.charAt(i) >= '0'
-						&& name.charAt(i) <= '9'; i--) {
-					;
-				}
-				System.out.println("time: " + (i + 1) + " - " + endPos + " - "
-						+ name.substring(i, endPos));
-				aux = Integer.valueOf(name.substring(i + 1, endPos));
+			if (Integer.valueOf(image.getPositionId()) == position.getNumber()) {
+				aux = Integer.valueOf(((TimeImage)image).getTimeId());
 				if (aux > max) {
 					max = aux;
 				}
@@ -484,85 +433,230 @@ public class TreeGenerator {
 
 	/**
 	 * Looks for the biggest time for all the positions
-	 * @return the maximum time
+	 * @param images list of @PositionImage to look for the biggest time 
+	 * @return the maximum time or 1 if the images do not have time
 	 */
-	public int getMaxTime() {
+	public int getMaxTime(List<PositionImage> images) {
 		int max = 0;
-		for (int i = 0; i < getMaxPosition(); ++i) {
-			int currentMax = getMaxTime(new PositionNode(i));
+		if(!(images.get(0) instanceof TimeImage)){
+			return 1;
+		}
+		for (int i = 0; i < getMaxPosition(images); ++i) {
+			int currentMax = getMaxTime(new PositionNode(i), images);
 			if (currentMax > max) {
 				max = currentMax;
 			}
 		}
 		return max;
 	}
-
+	
 	/**
 	 * 
-	 * @author alejandropetit
-	 *
+	 * @param fileNames name of the images to convert to PositionImage
+	 * @return the PositionImages corresponding to each file name
 	 */
-	private class NameFilter implements FilenameFilter {
-
-		PositionNode position;
-		TimeNode time;
-
-		private NameFilter(PositionNode position, TimeNode time) {
-
-			this.position = position;
-			this.time = time;
-		}
-
-		public boolean accept(File dir, String name) {
-			if (name.toLowerCase().contains(position.toString())
-					&& name.toLowerCase().contains(time.toString())) {
-				return true;
-			} else {
-				return false;
+	private List<PositionImage> filesToImages(List<String> fileNames){
+		
+		List<PositionImage> images = new ArrayList<PositionImage>();
+		ImageNamePattern namePattern = ImageNamePattern.getInstance();
+		
+		for(String name: fileNames){
+			
+			String channel = "";
+			boolean out = false;
+			
+			//Channel
+			if(name.toLowerCase().contains(namePattern.getBrightfieldChannelPattern().toLowerCase())){
+				channel = namePattern.getBrightfieldChannelPattern();
+			}else if(name.toLowerCase().contains(namePattern.getFluorChannelPattern().toLowerCase())){
+				channel = name.charAt(0) + namePattern.getFluorChannelPattern();
+			}else{
+				//Image does not contain any of the channel patterns specified
+				return null;
 			}
+			
+			//Position Id in string
+			String position = name.split(namePattern.getPositionPattern())[1];
+			
+			int i;
+			for (i = 0 ; position.charAt(i) >= '0'
+					&& position.charAt(i) <= '9'; i++) {
+				;
+			}
+			
+			//Output image
+			if(name.toLowerCase().contains(".out")){
+				out = true;
+			}
+			
+			//Time Id if exists
+			if(namePattern.isTimeFlag()){
+				
+				String time = name.split(namePattern.getTimePattern())[1];
+				
+				int j;
+				for (j = 0 ; time.charAt(j) >= '0'
+						&& time.charAt(j) <= '9'; j++) {
+					;
+				}
+				images.add(new TimeImage(channel, position.substring(0,i), out, time.substring(0,j),false));
+			}else{
+				images.add(new PositionImage(channel, position.substring(0,i), out, false));
+								
+			}
+			
 		}
-
+		return images;
 	}
 
-	private String getBf(File[] files) {
-		for (File file : files) {
-			if (file.getName().toLowerCase().contains("bf")
-					&& !file.getName().toLowerCase().contains(".out.tif")) {
-				return file.getName();
+	/**
+	 * Gets the images for a given time and position and completes the missing ones
+	 * @param images the images found in the directory
+	 * @param positionNode the position to get the images from
+	 * @param timeNode	the time to get the images from
+	 * @return the complete list of images (empty or not) corresponding to that position and time
+	 */
+	private List<PositionImage> getImages(List<PositionImage> images, PositionNode positionNode, TimeNode timeNode){
+		
+		if(images == null || images.size() == 0){
+			System.out.println("No images to process");
+			return null;
+		}
+		if(positionNode == null || timeNode == null){
+			System.out.println("Invalid Position or Time Node");
+			return null;
+		}
+		boolean time = images.get(0) instanceof TimeImage;
+		List<PositionImage> selectedImages = new ArrayList<PositionImage>();
+		for(PositionImage img: images){
+			if(Integer.valueOf(img.getPositionId()) == positionNode.getNumber()){
+				if(time){
+					if(Integer.valueOf(((TimeImage)img).getTimeId()) == timeNode.getNumber()) {
+						selectedImages.add(img);
+					}
+				}else{
+					selectedImages.add(img);
+				}
 			}
 		}
-		return null;
+		
+		boolean[] existentImages = new boolean[2 + fluorChannels.size()*2];
+		for(PositionImage img: selectedImages){
+			if(img.isBF() && !img.isOut()){
+				existentImages[0] = true;
+			}else if(img.isBF() && img.isOut()){
+				existentImages[1] = true;
+			}else if(fluorChannels.contains(img.getChannel()) && !img.isOut()){
+				existentImages[2 + 2 * (fluorChannels.indexOf(img.getChannel()))] = true;
+			}else if(fluorChannels.contains(img.getChannel()) && img.isOut()){
+				existentImages[3 + (2 * fluorChannels.indexOf(img.getChannel()))] = true;
+			}else{
+				System.out.println("There is a strange image");
+				return null;
+			}
+		}
+		for(int i = 0; i < existentImages.length ; ++i){
+			ImageNamePattern pattern = ImageNamePattern.getInstance();
+			if(!existentImages[i]){
+				if( i == 0){
+					if(time){
+						selectedImages.add(i,new TimeImage(pattern.getBrightfieldChannelPattern(), String.valueOf(positionNode.getNumber()), false, String.valueOf(timeNode.getNumber()), true));
+					}else{
+						selectedImages.add(i,new PositionImage(pattern.getBrightfieldChannelPattern(), String.valueOf(positionNode.getNumber()), false,true));
+					}
+				}else if (i == 1){
+					if(time){
+						selectedImages.add(i,new TimeImage(pattern.getBrightfieldChannelPattern(), String.valueOf(positionNode.getNumber()), true, String.valueOf(timeNode.getNumber()), true));
+					}else{
+						selectedImages.add(i,new PositionImage(pattern.getBrightfieldChannelPattern(), String.valueOf(positionNode.getNumber()), true,true));
+					}
+				}else if(i % 2 == 0){
+					if(time){
+						selectedImages.add(i,new TimeImage(fluorChannels.get((i-2)/2), String.valueOf(positionNode.getNumber()), false, String.valueOf(timeNode.getNumber()), true));
+					}else{
+						selectedImages.add(i,new PositionImage(fluorChannels.get((i-2)/2), String.valueOf(positionNode.getNumber()), false,true));
+					}
+				}else if(i % 2 == 1){
+					if(time){
+						selectedImages.add(i,new TimeImage(fluorChannels.get((i-3)/2), String.valueOf(positionNode.getNumber()), true, String.valueOf(timeNode.getNumber()), true));
+					}else{
+						selectedImages.add(i,new PositionImage(fluorChannels.get((i-3)/2), String.valueOf(positionNode.getNumber()), true,true));
+					}
+				}else{
+					System.out.println("Should have never reached this location");
+					return null;
+				}
+			}
+		}
+		return selectedImages;
 	}
+	
+//	/**
+//	 * 
+//	 * @author alejandropetit
+//	 *
+//	 */
+//	private class NameFilter implements FilenameFilter {
+//
+//		PositionNode position;
+//		TimeNode time;
+//
+//		private NameFilter(PositionNode position, TimeNode time) {
+//
+//			this.position = position;
+//			this.time = time;
+//		}
+//
+//		public boolean accept(File dir, String name) {
+//			if (name.toLowerCase().contains(position.toString())
+//					&& name.toLowerCase().contains(time.toString())) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		}
+//
+//	}
 
-	private String getBfOut(File[] files) {
-		for (File file : files) {
-			if (file.getName().toLowerCase().contains("bf")
-					&& file.getName().toLowerCase().contains(".out.tif")) {
-				return file.getName();
-			}
-		}
-		return null;
-	}
-
-	private String getFp(File[] files, String channel) {
-		for (File file : files) {
-			if (file.getName().toLowerCase().contains(channel.toLowerCase())
-					&& !file.getName().toLowerCase().contains(".out.tif")) {
-				return file.getName();
-			}
-		}
-		return null;
-	}
-
-	private String getFpOut(File[] files, String channel) {
-		for (File file : files) {
-			if (file.getName().toLowerCase().contains(channel.toLowerCase())
-					&& file.getName().toLowerCase().contains(".out.tif")) {
-				return file.getName();
-			}
-		}
-		return null;
-	}
+//	private PositionImage getBf(List<PositionImage> images) {
+//		for (PositionImage image : images) {
+//			if (image.getChannel().toUpperCase().equals("BF")
+//					&& !image.isOut()) {
+//				return image;
+//			}
+//		}
+//		return null;
+//	}
+//
+//	private String getBfOut(File[] files) {
+//		for (File file : files) {
+//			if (file.getName().toLowerCase().contains("bf")
+//					&& file.getName().toLowerCase().contains(".out.tif")) {
+//				return file.getName();
+//			}
+//		}
+//		return null;
+//	}
+//
+//	private String getFp(File[] files, String channel) {
+//		for (File file : files) {
+//			if (file.getName().toLowerCase().contains(channel.toLowerCase())
+//					&& !file.getName().toLowerCase().contains(".out.tif")) {
+//				return file.getName();
+//			}
+//		}
+//		return null;
+//	}
+//
+//	private String getFpOut(File[] files, String channel) {
+//		for (File file : files) {
+//			if (file.getName().toLowerCase().contains(channel.toLowerCase())
+//					&& file.getName().toLowerCase().contains(".out.tif")) {
+//				return file.getName();
+//			}
+//		}
+//		return null;
+//	}
 
 
 	

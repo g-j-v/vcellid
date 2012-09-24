@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class TimeNode {
 
-    List<File> files;
+    List<ImageNode> imageNodes;
     PositionNode position;
     Integer number;
 
@@ -20,7 +20,7 @@ public class TimeNode {
      * @param number to identify the time
      */
     public TimeNode(PositionNode position, int number){
-        this(position,number,new ArrayList<File>());
+        this(position,number,new ArrayList<ImageNode>());
     }
 
     /**
@@ -29,40 +29,40 @@ public class TimeNode {
      * @param number to identify the time
      * @param files which belong to this time
      */
-    public TimeNode(PositionNode position, int number, List<File> files){
+    public TimeNode(PositionNode position, int number, List<ImageNode> imageNodes){
         setPosition(position);
         setNumber(number);
-        setFiles(files);
+        setImageNodes(imageNodes);
     }
 
-    public List<File> getFiles() {
-        return files;
+    public List<ImageNode> getFiles() {
+        return imageNodes;
     }
 
-    public void addFile(File file){
+    public void addImageNode(ImageNode imageNode){
 
-        if(file != null){
-            this.files.add(file);
+        if(imageNode != null){
+            this.imageNodes.add(imageNode);
         }
     }
-    public void addFiles(List<File> files){
-        this.files.addAll(files);
+    public void addImageNodes(List<ImageNode> imageNodes){
+        this.imageNodes.addAll(imageNodes);
     }
 
-    public void setFiles(List<File> files) {
-        if(files != null){
-            this.files = files;
+    public void setImageNodes(List<ImageNode> imageNodes) {
+        if(imageNodes != null){
+            this.imageNodes = imageNodes;
         }
         else{
             throw new IllegalArgumentException("Null File List");
         }
     }
-    public void setFiles(File[] files){
-        this.files.clear();
-        for(File f: files){
-            this.files.add(f);
-        }
-    }
+//    public void setImageNodes(ImageNode[] imageNodes){
+//        this.imageNodes.clear();
+//        for(ImageNode image: imageNodes){
+//            this.imageNodes.add(image);
+//        }
+//    }
 
     public void setNumber(Integer number) {
         if (number > 0){
@@ -93,13 +93,7 @@ public class TimeNode {
     @Override
     public String toString(){
 
-        if(number > 99){
-            return "time_" + number;
-        }else if(number > 9){
-            return "time_0"+ number;
-        }else{
-            return "time_00" + number;
-        }
+        return "Time" + number;
 
     }
 }
