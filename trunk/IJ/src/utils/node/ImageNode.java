@@ -7,13 +7,15 @@ package utils.node;
 
 import java.util.List;
 
+import utils.ImageNamePattern;
+import utils.tree.PositionImage;
+
 
 public class ImageNode {
 
 	PositionNode position;
 	TimeNode time;
-	String channel;
-	String imageName;
+	PositionImage image;
 	boolean fake;
 	
 	/**
@@ -23,11 +25,10 @@ public class ImageNode {
 	 * @param name of the image
 	 * @param fake if there is no real image
 	 */
-	public ImageNode(PositionNode position,TimeNode time,String name,boolean fake){
+	public ImageNode(PositionNode position,TimeNode time,PositionImage image,boolean fake){
 		this.position = position;
 		this.time = time;
-		this.imageName = name;
-		this.channel = name.substring(0,2).toUpperCase();
+		this.image = image;
 		this.fake = fake;
 	}
 
@@ -51,25 +52,16 @@ public class ImageNode {
 		this.time = time;
 	}
 	
-	public String getChannel() {
-		return channel;
-	}
-
-
-	public void setChannel(String channel) {
-		this.channel = channel;
-	}
-
-
-	public String getImageName() {
-		return imageName;
-	}
-
-
-	public void setImageName(String imageName) {
-		this.imageName = imageName;
-	}
 	
+	public PositionImage getImage() {
+		return image;
+	}
+
+
+	public void setImage(PositionImage image) {
+		this.image = image;
+	}
+
 	public boolean isFake() {
 		return fake;
 	}
@@ -80,6 +72,6 @@ public class ImageNode {
 
 	@Override
 	public String toString(){
-		return imageName;
+		return ImageNamePattern.getInstance().generateImageName(image);
 	}
 }
