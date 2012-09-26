@@ -18,6 +18,7 @@ public class SegmentationValues {
 	//ImageSetup Parameters
 	private boolean BFasFLflag = false;
 	private boolean nucleusFromChannel = false;
+	private String nucleusChannel = "";
 	private boolean fretImage = false;
 	private String fretImageValue = "top";
 	
@@ -170,5 +171,14 @@ public class SegmentationValues {
 		this.fretImageValue = fretImageValue;
 	}
 
+	public String getNucleusChannel() {
+		return nucleusChannel;
+	}
+
+	public void setNucleusChannel(String nucleusChannel) {
+		this.nucleusChannel = nucleusChannel;
+	}
+
+	
 	
 }

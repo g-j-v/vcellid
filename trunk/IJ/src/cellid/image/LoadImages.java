@@ -25,6 +25,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import cellid.error.ErrorWindow;
+
 import utils.DisplayRangeObject;
 import utils.ImageLoadingPaths;
 import utils.tree.TreeGenerator;
@@ -59,26 +61,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 		removeAll();
 
-		//Select directory where images are located
-//		JFileChooser fc = new JFileChooser();
-//		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//		int returnVal = fc.showOpenDialog(LoadImages.this);
-//		if (returnVal != JFileChooser.APPROVE_OPTION) {
-//			return;
-//		}
-//
-//		final File file = fc.getSelectedFile();
 		final File file = ImageLoadingPaths.getInstance().getBfDir();
-
-//		List<String> patterns = new ArrayList<String>();
-//		// Pattern para los fields
-//		patterns.add("(BF|CFP|YFP)");
-//		// Pattern para la posicion
-//		patterns.add("Position\\d*");
-//		// Pattern para el tiempo
-//		patterns.add("time_\\d*.tif");
-//
-//		Finder finder = new Finder(patterns);
 
 		//TreeGenerator contains the information to generate the tree. based on the Finder and the directory
 		treeGenerator = new TreeGenerator(file);

@@ -94,6 +94,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 		nucleusFromChannelTextbox = new JTextField();
 		nucleusFromChannelTextbox.setBounds(240, 86, 86, 20);
 		nucleusFromChannelTextbox.setEnabled(false);
+		nucleusFromChannelTextbox.setText(SegmentationValues.getInstance().getNucleusChannel());
 		contentPane.add(nucleusFromChannelTextbox);
 		nucleusFromChannelTextbox.setColumns(10);
 
@@ -173,6 +174,7 @@ public class ImagesSetup extends PlugInFrame implements ActionListener {
 	private void saveValues(){
 		SegmentationValues.getInstance().setBFasFLflag(chckbxBfAsFl.isSelected());
 		SegmentationValues.getInstance().setNucleusFromChannel(chckbxNucleusFromChannel.isSelected());
+		SegmentationValues.getInstance().setNucleusChannel(nucleusFromChannelTextbox.getText());
 		SegmentationValues.getInstance().setFretImage(chckbxSplittedFretImage.isSelected());
 		SegmentationValues.getInstance().setFretImageValue(comboBox.getSelectedIndex() == 0 ? "top" : "bottom");
 
