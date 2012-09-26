@@ -437,6 +437,10 @@ public class TreeGenerator {
 	 * @return the maximum time or 1 if the images do not have time
 	 */
 	public int getMaxTime(List<PositionImage> images) {
+
+		if(!ImageNamePattern.getInstance().isTimeFlag()){
+			return 1;
+		}
 		int max = 0;
 		if(!(images.get(0) instanceof TimeImage)){
 			return 1;

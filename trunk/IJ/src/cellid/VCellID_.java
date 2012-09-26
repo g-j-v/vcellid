@@ -9,6 +9,8 @@
 package cellid;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -75,7 +77,14 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 //		imagesSetupButton.setBounds(loadImagesButton.getX(), loadImagesButton.getY()+BUTTON_HEIGHT+BUTTON_SPACING,BUTTON_WIDTH, BUTTON_HEIGHT);
 		
 		imagesNameButton = new JButton("Images Name");
-		imagesNameButton.addActionListener(new LoadImagesPatterns());
+//		imagesNameButton.addActionListener(new LoadImagesPatterns());
+		imagesNameButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						new LoadImagesPatterns().setVisible(true);
+					}
+				});
 //		imagesNameButton.addActionListener();
 
 		helpButton = new JButton("Help");

@@ -116,8 +116,11 @@ public class ImageNamePattern {
 		// Pattern para el tiempo
 		if(timeFlag){
 			patterns.add(separator + TimePattern + "\\d*");	
+		}else{
+			patterns.add(".tif");
 		}
 		patterns.add(extension +"(|.out"+extension+")");
+
 		return patterns;
 	}
 
