@@ -33,7 +33,7 @@ import cellid.error.ErrorWindow;
 import utils.ImageLoadingPaths;
 import utils.ImageNamePattern;
 
-public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
+public class LoadImagesPatterns extends PlugInFrame {
 
 	private JPanel contentPanel;
 	private JTextField txtPosition;
@@ -62,12 +62,12 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 	 */
 	public LoadImagesPatterns() {
 		super("Load Images Patterns");
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-		removeAll();
+//	}
+//
+//	@Override
+//	public void actionPerformed(ActionEvent e) {
+//
+//		removeAll();
 
 		/**
 		 * Initialization
@@ -524,9 +524,9 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		return "?"
 				+ txtFl.getText()
 				+ txtSeparator.getText()
-				+ txtPosition.getText()
+				+ txtPosition.getText() + "(d*)"
 				+ txtSeparator.getText()
 				+ (chckbxTimeToken.isSelected() == true ? txtTime.getText()
-						+ "(d*))" : "") + ".tif";
+						+ "(d*)" : "") + ".tif";
 	}
 }

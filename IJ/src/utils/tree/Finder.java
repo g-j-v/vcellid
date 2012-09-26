@@ -50,8 +50,7 @@ public class Finder {
         for(int i = 0; i < patterns.size(); ++i){
             pattern += patterns.get(i);
         }
-        
-        
+    
         System.out.println("pattern: " + pattern);
         Pattern pat = Pattern.compile(pattern);
         for(String fileName : directory.list()){
