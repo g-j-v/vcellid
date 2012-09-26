@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import utils.ImageNamePattern;
+
 /**
  * Class looks for images in the given directory according to the patterns specified
  * @author alejandropetit
@@ -69,9 +71,10 @@ public class Finder {
     public List<String> getFluorChannels(List<String> filenames){
     	
     	List<String> channels = new ArrayList<String>();
+    	ImageNamePattern pattern = ImageNamePattern.getInstance();
     	
     	for(String name: filenames){
-    		if(name.substring(1,3).toUpperCase().equals("FP") && !channels.contains(name.substring(0,3).toUpperCase())){
+    		if(name.substring(1,3).toUpperCase().equals(pattern.getFluorChannelPattern()) && !channels.contains(name.substring(0,3).toUpperCase())){
     			channels.add(name.substring(0,3).toUpperCase());
     		}
     	}

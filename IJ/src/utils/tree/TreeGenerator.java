@@ -370,6 +370,8 @@ public class TreeGenerator {
 						timeNode);
 				// Adding Time node to position
 				treePositionNode.add(treeTimeNode);
+				if(j == 20101)
+					System.out.println(j);
 				List<PositionImage> imageNames = getImages(images,positionNode,timeNode);
 				
 				//agrego todas las imagenes que encontre en el directorio. Las que no existen ya fueron creadas como "empty" en getImages();
@@ -533,9 +535,9 @@ public class TreeGenerator {
 		boolean time = images.get(0) instanceof TimeImage;
 		List<PositionImage> selectedImages = new ArrayList<PositionImage>();
 		for(PositionImage img: images){
-			if(Integer.valueOf(img.getPositionId()) == positionNode.getNumber()){
+			if(Integer.valueOf(img.getPositionId()).equals(positionNode.getNumber())){
 				if(time){
-					if(Integer.valueOf(((TimeImage)img).getTimeId()) == timeNode.getNumber()) {
+					if(Integer.valueOf(((TimeImage)img).getTimeId()).equals(timeNode.getNumber())) {
 						selectedImages.add(img);
 					}
 				}else{
