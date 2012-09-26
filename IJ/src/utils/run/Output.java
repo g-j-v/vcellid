@@ -55,7 +55,6 @@ public class Output {
 	 * Generates the files considering a run with BF and FL images
 	 */
 	public void generateRun(){
-
 		TreePath selected = tree.getSelectionPath();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		int positions;

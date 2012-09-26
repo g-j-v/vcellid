@@ -28,6 +28,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import cellid.error.ErrorWindow;
+
 import utils.ImageLoadingPaths;
 import utils.ImageNamePattern;
 
@@ -151,23 +153,6 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 		});
 		contentPanel.add(txtTime);
 		txtTime.setColumns(10);
-
-		final JCheckBox chckbxTimeToken = new JCheckBox("Time token");
-		chckbxTimeToken.setBounds(25, 35, 110, 30);
-		chckbxTimeToken.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				AbstractButton abstractButton = (AbstractButton) arg0
-						.getSource();
-				ButtonModel buttonModel = abstractButton.getModel();
-
-				boolean selected = buttonModel.isSelected();
-
-				txtTime.setEnabled(selected);
-			}
-		});
-		contentPanel.add(chckbxTimeToken);
 
 		final JLabel labelSepCharacter = new JLabel("Character separator");
 		labelSepCharacter.setBounds(25, 75, 180, 25);
@@ -313,14 +298,15 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 				fpDir = fc.getSelectedFile();
 				fpPath.setText(fpDir.getAbsolutePath());
-				
+
 			}
 		});
 		contentPanel.add(fpSelect);
 		contentPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
 
 		txtUnevenIllumination.setBounds(170, 235, 45, 20);
-		txtUnevenIllumination.setText(ImageLoadingPaths.getInstance().getUiToken());
+		txtUnevenIllumination.setText(ImageLoadingPaths.getInstance()
+				.getUiToken());
 		contentPanel.add(txtUnevenIllumination);
 		txtUnevenIllumination.setColumns(10);
 
@@ -347,7 +333,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 				uiDir = fc.getSelectedFile();
 				uiPath.setText(uiDir.getAbsolutePath());
-				
+
 			}
 		});
 		contentPanel.add(uiSelect);
@@ -367,15 +353,18 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 						boolean selected = buttonModel.isSelected();
 
 						txtUnevenIllumination.setEnabled(selected);
-						
+
 					}
 				});
-		chckbxUnevenIlluminationCorrection.setSelected(ImageLoadingPaths.getInstance().isUiCheck());
-		txtUnevenIllumination.setEditable(ImageLoadingPaths.getInstance().isUiCheck());
+		chckbxUnevenIlluminationCorrection.setSelected(ImageLoadingPaths
+				.getInstance().isUiCheck());
+		txtUnevenIllumination.setEditable(ImageLoadingPaths.getInstance()
+				.isUiCheck());
 		contentPanel.add(chckbxUnevenIlluminationCorrection);
 
 		txtCameraBackground.setBounds(170, 285, 45, 20);
-		txtCameraBackground.setText(ImageLoadingPaths.getInstance().getCbToken());
+		txtCameraBackground.setText(ImageLoadingPaths.getInstance()
+				.getCbToken());
 		contentPanel.add(txtCameraBackground);
 		txtCameraBackground.setColumns(10);
 
@@ -402,7 +391,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 				cbDir = fc.getSelectedFile();
 				cbPath.setText(cbDir.getAbsolutePath());
-				
+
 			}
 		});
 		contentPanel.add(cbSelect);
@@ -422,11 +411,13 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 						boolean selected = buttonModel.isSelected();
 
 						txtCameraBackground.setEnabled(selected);
-						
+
 					}
 				});
-		chckbxCameraBackgroundCorrection.setSelected(ImageLoadingPaths.getInstance().isCbCheck());
-		txtCameraBackground.setEditable(ImageLoadingPaths.getInstance().isCbCheck());
+		chckbxCameraBackgroundCorrection.setSelected(ImageLoadingPaths
+				.getInstance().isCbCheck());
+		txtCameraBackground.setEditable(ImageLoadingPaths.getInstance()
+				.isCbCheck());
 		contentPanel.add(chckbxCameraBackgroundCorrection);
 
 		chckbxForceSamePath = new JCheckBox("force same path");
@@ -447,10 +438,11 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 				uiSelect.setEnabled(!selected);
 				cbPath.setEnabled(!selected);
 				cbSelect.setEnabled(!selected);
-				
+
 			}
 		});
-		chckbxForceSamePath.setSelected(ImageLoadingPaths.getInstance().isForcePath());
+		chckbxForceSamePath.setSelected(ImageLoadingPaths.getInstance()
+				.isForcePath());
 		contentPanel.add(chckbxForceSamePath);
 
 		JLabel lblGroupBy = new JLabel("group images by");
@@ -472,34 +464,43 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				ImageNamePattern.getInstance().setTimeFlag(
-						chckbxTimeToken.isSelected());
-				ImageNamePattern.getInstance().setPositionPattern(
-						txtPosition.getText());
-				ImageNamePattern.getInstance()
-						.setTimePattern(txtTime.getText());
-				ImageNamePattern.getInstance().setSeparator(
-						txtSeparator.getText());
-				ImageNamePattern.getInstance().setBrightfieldChannelPattern(
-						txtBf.getText());
-				ImageNamePattern.getInstance().setFluorChannelPattern(
-						txtFl.getText());
-				ImageLoadingPaths.getInstance().setBfPath(bfPath.getText());
-				ImageLoadingPaths.getInstance().setBfDir(bfDir);
-				ImageLoadingPaths.getInstance().setFpPath(fpPath.getText());
-				ImageLoadingPaths.getInstance().setFpDir(fpDir);
-				ImageLoadingPaths.getInstance().setUiToken(txtUnevenIllumination.getText());
-				ImageLoadingPaths.getInstance().setUiPath(uiPath.getText());
-				ImageLoadingPaths.getInstance().setUiDir(uiDir);
-				ImageLoadingPaths.getInstance().setUiCheck(chckbxUnevenIlluminationCorrection.isSelected());
-				ImageLoadingPaths.getInstance().setCbToken(txtCameraBackground.getText());
-				ImageLoadingPaths.getInstance().setCbPath(cbPath.getText());
-				ImageLoadingPaths.getInstance().setCbDir(cbDir);
-				ImageLoadingPaths.getInstance().setCbCheck(chckbxCameraBackgroundCorrection.isSelected());
-				ImageLoadingPaths.getInstance().setForcePath(chckbxForceSamePath.isSelected());
-				new LoadImages().run();
-				dispose();
+				if (bfPath == null || bfPath.getText().trim().isEmpty()) {
+					new ErrorWindow(
+							"<html>El directorio seleccionado <br/> no puede ser nulo.</html>");
+				} else {
+					ImageNamePattern.getInstance().setTimeFlag(
+							chckbxTimeToken.isSelected());
+					ImageNamePattern.getInstance().setPositionPattern(
+							txtPosition.getText());
+					ImageNamePattern.getInstance().setTimePattern(
+							txtTime.getText());
+					ImageNamePattern.getInstance().setSeparator(
+							txtSeparator.getText());
+					ImageNamePattern.getInstance()
+							.setBrightfieldChannelPattern(txtBf.getText());
+					ImageNamePattern.getInstance().setFluorChannelPattern(
+							txtFl.getText());
+					ImageLoadingPaths.getInstance().setBfPath(bfPath.getText());
+					ImageLoadingPaths.getInstance().setBfDir(bfDir);
+					ImageLoadingPaths.getInstance().setFpPath(fpPath.getText());
+					ImageLoadingPaths.getInstance().setFpDir(fpDir);
+					ImageLoadingPaths.getInstance().setUiToken(
+							txtUnevenIllumination.getText());
+					ImageLoadingPaths.getInstance().setUiPath(uiPath.getText());
+					ImageLoadingPaths.getInstance().setUiDir(uiDir);
+					ImageLoadingPaths.getInstance().setUiCheck(
+							chckbxUnevenIlluminationCorrection.isSelected());
+					ImageLoadingPaths.getInstance().setCbToken(
+							txtCameraBackground.getText());
+					ImageLoadingPaths.getInstance().setCbPath(cbPath.getText());
+					ImageLoadingPaths.getInstance().setCbDir(cbDir);
+					ImageLoadingPaths.getInstance().setCbCheck(
+							chckbxCameraBackgroundCorrection.isSelected());
+					ImageLoadingPaths.getInstance().setForcePath(
+							chckbxForceSamePath.isSelected());
+					new LoadImages().run();
+					dispose();
+				}
 			}
 		});
 		buttonPane.add(okButton);
