@@ -89,6 +89,10 @@ public class CellIdRunner {
 			}else{
 				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "fl_vcellid.txt");	
 			}
+			if(keepResults){
+				command.add("--third");
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "nuc_vcellid.txt");
+			}
 			command.add("--param");
 			if(keepResults){
 				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "parameters_vcellid_out.txt");

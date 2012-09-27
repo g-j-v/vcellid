@@ -2,6 +2,8 @@ package utils.tree;
 
 import javax.naming.directory.InvalidAttributesException;
 
+import cellid.image.LoadImagesPatterns;
+
 import utils.ImageNamePattern;
 
 public class PositionImage {
@@ -56,11 +58,11 @@ public class PositionImage {
 	}
 	
 	public boolean isBF(){
-		return channel.equals("BF");
+		return channel.equals(ImageNamePattern.getInstance().getBrightfieldChannelPattern());
 	}
 	
 	public boolean isFL(){
-		return channel.substring(1, 3).equals("FL");
+		return channel.substring(1, 3).equals(ImageNamePattern.getInstance().getFluorChannelPattern());
 	}
 	
 	@Override

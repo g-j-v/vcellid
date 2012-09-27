@@ -24,7 +24,9 @@ import javax.swing.tree.TreePath;
 import cellid.Segmentation;
 
 import utils.SegmentationValues;
+import utils.node.ImageNode;
 import utils.node.PositionNode;
+import utils.tree.PositionImage;
 
 
 
@@ -83,8 +85,11 @@ public class Output {
 				return;
 			}
 			createFiles(positionDirectory);
-			List<String> allPositionImages = getAllImages(node);
-			for(String image: allPositionImages){
+			if(SegmentationValues.getInstance().isNucleusFromChannel()){
+				createNucFile(positionDirectory);
+			}
+			List<PositionImage> allPositionImages = getAllImages(node);
+			for(PositionImage image: allPositionImages){
 				appendToFiles(image,(i+1));
 			}
 			//True is passed because as we are not testing, and results should not go on Test folder
@@ -134,14 +139,14 @@ public class Output {
 				return;
 			}
 			createFiles(positionDirectory);
-			List<String> allPositionImages;
+			List<PositionImage> allPositionImages;
 			if(tree.getSelectionPath().getParentPath() == null ||
 					((DefaultMutableTreeNode)tree.getSelectionPath().getLastPathComponent()).getUserObject() instanceof PositionNode ){
 				allPositionImages = getAllImages(node);				
 			}else{
 				allPositionImages = getTimeImages((DefaultMutableTreeNode)tree.getSelectionPath().getPathComponent(2));
 			}
-			for(String image: allPositionImages){
+			for(PositionImage image: allPositionImages){
 				appendToBF(image,(i+1),keepResults);
 			}
 			loadParameters(i+1, keepResults);
@@ -188,10 +193,10 @@ public class Output {
 	 * @param position where to add the image
 	 * @param keepResults indicated if its a test. If keepResults is true, image is added to files in Test directory
 	 */
-	private void appendToBF(String image, int position, boolean keepResults ) {
-		if(!image.toLowerCase().contains(".out")){
+	private void appendToBF(PositionImage image, int position, boolean keepResults ) {
+		if(!image.isOut()){
 
-			if(image.toUpperCase().contains("BF")){
+			if(image.isBF()){
 
 				File bfFile;
 				if(keepResults){
@@ -203,13 +208,13 @@ public class Output {
 				try {
 					FileWriter writer = new FileWriter(bfFile,true);
 					if(keepResults){
-						if(image.toLowerCase().contains("empty")){
+						if(image.isEmpty()){
 							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");
 						}
 					}else{
-						if(image.toLowerCase().contains("empty")){
+						if(image.isEmpty()){
 							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");		
 						}else{
 							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
@@ -230,13 +235,13 @@ public class Output {
 				try {
 					FileWriter writer = new FileWriter(FlFile,true);
 					if(keepResults){
-						if(image.toLowerCase().contains("empty")){
+						if(image.isEmpty()){
 							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");
 						}
 					}else{
-						if(image.toLowerCase().contains("empty")){
+						if(image.isEmpty()){
 							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
@@ -247,10 +252,10 @@ public class Output {
 					System.out.println("Could not add BF image to fl_vcellid.txt");
 					return;
 				}
-				if(image.toLowerCase().contains("empty")){
-					copyImagesForTest(directory, position, "EmptyImage.tiff");
+				if(image.isEmpty()){
+					copyImagesForTest(directory, position, "EmptyImage.tiff", null,true);
 				}else{						
-					copyImagesForTest(directory,position,image);
+					copyImagesForTest(directory,position,image.toString(), null,true);
 				}
 			}else{
 				System.out.println("No image to add");
@@ -265,10 +270,10 @@ public class Output {
 	 * @param image to add to the files
 	 * @param position where to add the image
 	 */
-	private void appendToFiles(String image, int position ) {
-		if(!image.toLowerCase().contains(".out") && !image.toLowerCase().contains("_out") ){
+	private void appendToFiles(PositionImage image, int position ) {
 
-			if(image.toUpperCase().contains("BF")){
+		if(!image.isOut()){
+			if(image.isBF()){
 
 				File bfFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "bf_vcellid.txt");
 
@@ -276,7 +281,7 @@ public class Output {
 					
 					FileWriter writer = new FileWriter(bfFile,true);
 					for(String fluorChannel : flourChannels){
-						if(image.toLowerCase().contains("empty")){
+						if(image.isEmpty()){
 							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");						
@@ -289,18 +294,37 @@ public class Output {
 					return;
 				}
 
-			}else if(image.toUpperCase().substring(1, 3).equals("FP") || image.toUpperCase().subSequence(7, 9).equals("FP")){
+			}else if(image.isFL()){
 
 				File FlFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "fl_vcellid.txt");
-
+				File NucFile = null;
+				if(SegmentationValues.getInstance().isNucleusFromChannel()){
+					NucFile = new File(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "nuc_vcellid.txt");
+				}
 				try {
 					FileWriter writer = new FileWriter(FlFile,true);
-					if(image.toLowerCase().contains("empty")){
+					FileWriter nucWriter = null;
+					if(NucFile != null){
+						nucWriter = new FileWriter(NucFile,true);
+					}
+					if(image.isEmpty()){
 						writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+						if(nucWriter != null){
+							nucWriter.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+						}
 					}else{
-						writer.append(directory + systemDirSeparator +image + "\r\n");
+						writer.append(directory + systemDirSeparator + image + "\r\n");
+						if(nucWriter != null){
+							nucWriter.append(directory + systemDirSeparator + "3" + image.toString().substring(1) + "\r\n");
+							if(image.getChannel().equals(SegmentationValues.getInstance().getNucleusChannel())){
+								copyImagesForTest(directory, position, image.toString() , "3" + image.toString().substring(1), false);
+							}
+						}
 					}
 					writer.close();
+					if(nucWriter != null){
+						nucWriter.close();
+					}
 				} catch (IOException e) {
 					System.out.println("Could not add FL image to fl_vcellid.txt");
 					return;
@@ -317,16 +341,15 @@ public class Output {
 	 * @param node where to look for the images.
 	 * @return list of all the images under the node
 	 */
-	private List<String> getAllImages(DefaultMutableTreeNode node) {
-		List<String> images = new ArrayList<String>();
+	private List<PositionImage> getAllImages(DefaultMutableTreeNode node) {
+		List<PositionImage> images = new ArrayList<PositionImage>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
 		int i = -1;
 //		List<String> imagesFromPosition = new ArrayList<String>();
 //		boolean incompleteTime = false;
 		while(childNode != null){
 			DefaultMutableTreeNode leaf = (DefaultMutableTreeNode) childNode.getChildAt(++i);
-			String fileName = leaf.getUserObject().toString();
-			images.add(fileName);
+			images.add(((ImageNode)leaf.getUserObject()).getImage());
 //			imagesFromPosition.add(fileName);
 //			if(checkEmpty(fileName)){
 //				incompleteTime = true;
@@ -350,8 +373,8 @@ public class Output {
 	 * @param node where to look for the images
 	 * @return the images found
 	 */
-	private List<String> getTimeImages(DefaultMutableTreeNode node){
-		List<String> images = new ArrayList<String>();
+	private List<PositionImage> getTimeImages(DefaultMutableTreeNode node){
+		List<PositionImage> images = new ArrayList<PositionImage>();
 		DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(0);
 		while(childNode != null){
 //			String fileName = childNode.getUserObject().toString();
@@ -359,7 +382,7 @@ public class Output {
 //				images.clear();
 //				return images;
 //			}
-			images.add(childNode.getUserObject().toString());
+			images.add(((ImageNode)childNode.getUserObject()).getImage());
 			childNode = childNode.getNextSibling();
 		}
 		return images;
@@ -418,6 +441,25 @@ public class Output {
 		System.out.println("All files were successfully created");
 	}
 
+	/**
+	 * 
+	 * @param positionDirectory directory where to create the nuc_vcellid.txt file.
+	 */
+	private void createNucFile(File positionDirectory) {
+		File nuc_file = new File(positionDirectory.getAbsoluteFile() + systemDirSeparator + "nuc_vcellid.txt");
+			if(!nuc_file.exists()){
+			try {
+				nuc_file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("nuc_vcellid.txt could not be created");
+				return;
+			}
+		}
+		System.out.println("All files were successfully created");
+	}
+
+	
 	/**
 	 * Creates the position for a given directory 
 	 * @param i is the number of the position
@@ -486,6 +528,9 @@ public class Output {
 				writer.append("fret bf_bottom_and_top\r\n");
 				writer.append("fret nuclear_"+segmentationValues.getFretImageValue()+"\r\n");
 			}
+			if( keepResults && segmentationValues.isNucleusFromChannel()){
+				writer.append("third_image nuclear_label\r\n");
+			}
 //			writer.append(" fret bf_bottom_and_top\r\n");
 //			writer.append(" fret nuclear_top\r\n");
 			//TODO: aca van parametros sin valores
@@ -499,18 +544,28 @@ public class Output {
 	/**
 	 * Makes a copy of the BF to the Test directory to run cellid in test mode
 	 * @param directory where to find the images
-	 * @param position in which image should be copied
+	 * @param position in which image should be copied. This value is ignored if inTime is false
+	 * @param name of the new image. If this value is null or empty same name as default image will be used.
 	 * @param imageName to copy
+	 * @param inTime if true image will be copied in Test folder if not in default directory
 	 */
-	private void copyImagesForTest(File directory, int position, String imageName) {
-		File destination = new File(directory.getAbsoluteFile()+ systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + imageName);
+	private void copyImagesForTest(File directory, int position, String imageName, String targetName, boolean inTest) {
+		File destination;
+		if(targetName == null || targetName.trim().isEmpty()){
+			targetName = imageName;
+		}
+		if(inTest){
+			destination = new File(directory.getAbsoluteFile()+ systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + targetName);			
+		}else{
+			destination = new File(directory.getAbsoluteFile()+ systemDirSeparator  + targetName);
+		}
 		InputStream inputStream;
 		OutputStream outputStream;
 		try {
 			inputStream = new FileInputStream(directory + systemDirSeparator + imageName );
 			outputStream = new FileOutputStream(destination);
 		} catch (FileNotFoundException e) {
-			System.out.println("Could not copy files for test");
+			System.out.println("Could not copy files images");
 			return;
 		}
 		int length;
@@ -522,7 +577,7 @@ public class Output {
 			inputStream.close();
 			outputStream.close();
 		}catch(IOException e){
-			System.out.println("Could not copy files for test");
+			System.out.println("Could not copy files images");
 		}	
 		
 	}
