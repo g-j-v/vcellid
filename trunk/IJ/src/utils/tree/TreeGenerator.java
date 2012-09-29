@@ -375,8 +375,8 @@ public class TreeGenerator {
 						timeNode);
 				// Adding Time node to position
 				treePositionNode.add(treeTimeNode);
-
-				List<PositionImage> imageNames = getImages(images,positionNode,timeNode);
+				
+				List<PositionImage> imageNames = getImages(images,positionNode,timeNode,isUneven(images,positions));
 				
 				//agrego todas las imagenes que encontre en el directorio. Las que no existen ya fueron creadas como "empty" en getImages();
 				for(PositionImage positionImage: imageNames){
@@ -387,6 +387,34 @@ public class TreeGenerator {
 			}
 
 		}
+	}
+	
+	private boolean isUneven(List<PositionImage> images, List<Integer> positions){
+		if(!(images.get(0) instanceof TimeImage)){
+			return false;
+		}
+		Map<Integer,Integer> bfCounter = new HashMap<Integer,Integer>();
+		Map<Integer,List<Integer>> timeCounter = new HashMap<Integer,List<Integer>>();
+		for(Integer posNumber : positions){
+			bfCounter.put(posNumber, 0);
+			timeCounter.put(posNumber, new ArrayList<Integer>());
+		}
+		for(PositionImage img :images){
+			int aux = Integer.valueOf(img.getPositionId());
+			if(img.isBF() && !img.isOut()){
+				bfCounter.put(aux,bfCounter.get(aux) + 1);
+			}
+			int auxTime = Integer.valueOf(((TimeImage)img).getTimeId());
+			if(!timeCounter.get(aux).contains(auxTime)){
+				timeCounter.get(aux).add(auxTime);	
+			}
+		}
+		for(Integer pos: positions){
+			if(bfCounter.get(pos).compareTo((timeCounter.get(pos).size())) < 0){
+				return true;
+			}
+		}
+		return false;
 	}
 
 //	/**
@@ -565,9 +593,10 @@ public class TreeGenerator {
 	 * @param images the images found in the directory
 	 * @param positionNode the position to get the images from
 	 * @param timeNode	the time to get the images from
+	 * @param uneven used to indicate that there is not a BF for each time, so closest should be used. Should be true false if there is no time
 	 * @return the complete list of images (empty or not) corresponding to that position and time
 	 */
-	private List<PositionImage> getImages(List<PositionImage> images, PositionNode positionNode, TimeNode timeNode){
+	private List<PositionImage> getImages(List<PositionImage> images, PositionNode positionNode, TimeNode timeNode, boolean uneven){
 		
 		if(images == null || images.size() == 0){
 			System.out.println("No images to process");
@@ -578,17 +607,36 @@ public class TreeGenerator {
 			return null;
 		}
 		boolean time = images.get(0) instanceof TimeImage;
+		boolean bfTimeImage = false;
 		List<PositionImage> selectedImages = new ArrayList<PositionImage>();
 		for(PositionImage img: images){
 			if(Integer.valueOf(img.getPositionId()).equals(positionNode.getNumber())){
 				if(time){
 					if(Integer.valueOf(((TimeImage)img).getTimeId()).equals(timeNode.getNumber())) {
 						selectedImages.add(img);
+						if(img.isBF() && !img.isOut()){
+							// To know in case of an uneven experiment where a BF for time is missing, that we should use the closest BF
+							bfTimeImage = true;
+						}
 					}
 				}else{
 					selectedImages.add(img);
 				}
 			}
+		}
+		if(uneven && !selectedImages.isEmpty() && !bfTimeImage){
+			TimeImage closestBf = null;
+			for(PositionImage img: images){
+				if(img.isBF() && !img.isOut() && Integer.valueOf(img.getPositionId()).equals(positionNode.getNumber())){
+					TimeImage aux = (TimeImage)img;
+					if(closestBf == null){
+						closestBf = aux;
+					}else if(Math.abs(Integer.valueOf(aux.getTimeId()).compareTo(timeNode.getNumber())) < Math.abs(Integer.valueOf(aux.getTimeId()).compareTo(Integer.valueOf(closestBf.getTimeId())))){
+						closestBf = aux;
+					}
+				}
+			}
+			selectedImages.add(0,closestBf);
 		}
 		
 		boolean[] existentImages = new boolean[2 + fluorChannels.size()*2];
