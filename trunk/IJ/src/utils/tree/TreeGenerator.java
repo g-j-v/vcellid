@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -356,22 +357,21 @@ public class TreeGenerator {
 		List<PositionImage> images = filesToImages(finder.find(directory));
 
 		System.out.println("TAM: " + fileNames.size());
-		int maxPositions = getMaxPosition(images);
-		int maxTimeAllPosition = getMaxTime(images);
-		for (int i = 1; i <= maxPositions; ++i) {
-			PositionNode positionNode = new PositionNode(i);
+		List<Integer> positions = getPositions(images);
+		List<Integer> times = getTimes(images);
+		for (Integer position : positions) {
+			PositionNode positionNode = new PositionNode(position);
 			// Adding position to root
 			DefaultMutableTreeNode treePositionNode = new DefaultMutableTreeNode(
 					positionNode);
 			top.add(treePositionNode);
-			for (int j = 1; j <= maxTimeAllPosition; ++j) {
-				TimeNode timeNode = new TimeNode(positionNode, j);
+			for (Integer time: times) {
+				TimeNode timeNode = new TimeNode(positionNode, time);
 				DefaultMutableTreeNode treeTimeNode = new DefaultMutableTreeNode(
 						timeNode);
 				// Adding Time node to position
 				treePositionNode.add(treeTimeNode);
-				if(j == 20101)
-					System.out.println(j);
+
 				List<PositionImage> imageNames = getImages(images,positionNode,timeNode);
 				
 				//agrego todas las imagenes que encontre en el directorio. Las que no existen ya fueron creadas como "empty" en getImages();
@@ -385,75 +385,109 @@ public class TreeGenerator {
 		}
 	}
 
+//	/**
+//	 * Looks for the biggest position.
+//	 * @param images list of @PositionImage to look for the biggest time 
+//	 * @return the maximum position
+//	 */
+//	public int getMaxPosition(List<PositionImage> images) {
+//
+//		// TODO: Para generalizar todavia mas podemos recibir un parametro
+//		// que identifique el nombre con el que empieza la posicion, o guardarlo
+//		// como variable de instancia de Position
+//		int max = 0;
+//		for (PositionImage image : images) {
+//			int aux = Integer.valueOf(image.getPositionId());
+//			if (aux > max) {
+//				max = aux;
+//			}
+//		}
+//		System.out.println("Max Pos: " + max);
+//		return max;
+//	}
+	
 	/**
-	 * Looks for the biggest position.
-	 * @param images list of @PositionImage to look for the biggest time 
-	 * @return the maximum position
+	 * Gets all the positions
+	 * @param images
+	 * @return a list of positions
 	 */
-	public int getMaxPosition(List<PositionImage> images) {
-
-		// TODO: Para generalizar todavia mas podemos recibir un parametro
-		// que identifique el nombre con el que empieza la posicion, o guardarlo
-		// como variable de instancia de Position
-		int max = 0;
-		for (PositionImage image : images) {
-			int aux = Integer.valueOf(image.getPositionId());
-			if (aux > max) {
-				max = aux;
+	public List<Integer> getPositions(List<PositionImage> images){
+		List<Integer> positions = new ArrayList<Integer>();
+		for (PositionImage image : images){
+			Integer position = Integer.valueOf(image.getPositionId());
+			if(!positions.contains(position)){
+				positions.add(position);
 			}
 		}
-		System.out.println("Max Pos: " + max);
-		return max;
+		Collections.sort(positions);
+		return positions;
 	}
 
+//	/**
+//	 * Looks for the biggest time in a given position
+//	 * @param position
+//	 * @param images list of @PositionImage to look for the biggest time 
+//	 * @return the maximum time
+//	 */
+//	public int getMaxTime(PositionNode position, List<PositionImage> images) {
+//
+//		// TODO: Para generalizar todavia mas podemos recibir un parametro
+//		// que identifique el nombre con el que empieza el tiempo, o guardarlo
+//		// como variable de instancia de Time
+//		int max = 0;
+//		for (PositionImage image : images) {
+//			int aux;
+//
+//			if (Integer.valueOf(image.getPositionId()) == position.getNumber()) {
+//				aux = Integer.valueOf(((TimeImage)image).getTimeId());
+//				if (aux > max) {
+//					max = aux;
+//				}
+//
+//			}
+//		}
+//		// System.out.println("Max time:" + max);
+//		return max;
+//	}
+//
+//	/**
+//	 * Looks for the biggest time for all the positions
+//	 * @param images list of @PositionImage to look for the biggest time 
+//	 * @return the maximum time or 1 if the images do not have time
+//	 */
+//	public int getMaxTime(List<PositionImage> images, List<Integer> positions) {
+//
+//		if(!ImageNamePattern.getInstance().isTimeFlag()){
+//			return 1;
+//		}
+//		int max = 0;
+//		if(!(images.get(0) instanceof TimeImage)){
+//			return 1;
+//		}
+//		for (Integer position: positions) {
+//			int currentMax = getMaxTime(new PositionNode(position), images);
+//			if (currentMax > max) {
+//				max = currentMax;
+//			}
+//		}
+//		return max;
+//	}
+	
 	/**
-	 * Looks for the biggest time in a given position
-	 * @param position
-	 * @param images list of @PositionImage to look for the biggest time 
-	 * @return the maximum time
+	 * Looks for all the times in the given list
+	 * @param images list of images
+	 * @return	list of times. No repetitions. 
 	 */
-	public int getMaxTime(PositionNode position, List<PositionImage> images) {
-
-		// TODO: Para generalizar todavia mas podemos recibir un parametro
-		// que identifique el nombre con el que empieza el tiempo, o guardarlo
-		// como variable de instancia de Time
-		int max = 0;
-		for (PositionImage image : images) {
-			int aux;
-
-			if (Integer.valueOf(image.getPositionId()) == position.getNumber()) {
-				aux = Integer.valueOf(((TimeImage)image).getTimeId());
-				if (aux > max) {
-					max = aux;
-				}
-
+	public List<Integer> getTimes(List<PositionImage> images) {
+		List<Integer> times = new ArrayList<Integer>();
+		for(PositionImage image: images){
+			Integer time = Integer.valueOf(((TimeImage)image).getTimeId());
+			if(!times.contains(time)){
+				times.add(time);
 			}
 		}
-		// System.out.println("Max time:" + max);
-		return max;
-	}
-
-	/**
-	 * Looks for the biggest time for all the positions
-	 * @param images list of @PositionImage to look for the biggest time 
-	 * @return the maximum time or 1 if the images do not have time
-	 */
-	public int getMaxTime(List<PositionImage> images) {
-
-		if(!ImageNamePattern.getInstance().isTimeFlag()){
-			return 1;
-		}
-		int max = 0;
-		if(!(images.get(0) instanceof TimeImage)){
-			return 1;
-		}
-		for (int i = 0; i < getMaxPosition(images); ++i) {
-			int currentMax = getMaxTime(new PositionNode(i), images);
-			if (currentMax > max) {
-				max = currentMax;
-			}
-		}
-		return max;
+		Collections.sort(times);
+		return times;
 	}
 	
 	/**
