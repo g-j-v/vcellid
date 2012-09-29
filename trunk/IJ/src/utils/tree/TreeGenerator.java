@@ -356,9 +356,13 @@ public class TreeGenerator {
 
 		List<PositionImage> images = filesToImages(finder.find(directory));
 
-		System.out.println("TAM: " + fileNames.size());
+		if(images == null || images.isEmpty()){
+			return;
+		}
+		
 		List<Integer> positions = getPositions(images);
 		List<Integer> times = getTimes(images);
+		
 		for (Integer position : positions) {
 			PositionNode positionNode = new PositionNode(position);
 			// Adding position to root
@@ -479,7 +483,14 @@ public class TreeGenerator {
 	 * @return	list of times. No repetitions. 
 	 */
 	public List<Integer> getTimes(List<PositionImage> images) {
+
 		List<Integer> times = new ArrayList<Integer>();
+
+		if(!(images.get(0) instanceof TimeImage)){
+			times.add(1);
+			return times;
+		}
+		
 		for(PositionImage image: images){
 			Integer time = Integer.valueOf(((TimeImage)image).getTimeId());
 			if(!times.contains(time)){

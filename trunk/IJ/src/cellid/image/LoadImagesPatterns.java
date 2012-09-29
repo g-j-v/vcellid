@@ -258,6 +258,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 		contentPanel.add(bfPath);
 		final JButton bfSelect = new JButton("Open...");
 		bfSelect.setBounds(380, 140, 75, 20);
+		bfDir = ImageLoadingPaths.getInstance().getBfDir();
 		bfSelect.addActionListener(new ActionListener() {
 
 			@Override
@@ -283,6 +284,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 		contentPanel.add(fpPath);
 		final JButton fpSelect = new JButton("Open...");
 		fpSelect.setBounds(380, 170, 75, 20);
+		fpDir = ImageLoadingPaths.getInstance().getFpDir();
 		fpSelect.addActionListener(new ActionListener() {
 
 			@Override
@@ -318,6 +320,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 
 		final JButton uiSelect = new JButton("Open...");
 		uiSelect.setBounds(380, 235, 75, 20);
+		uiDir = ImageLoadingPaths.getInstance().getUiDir();
 		uiSelect.addActionListener(new ActionListener() {
 
 			@Override
@@ -466,7 +469,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (bfPath == null || bfPath.getText().trim().isEmpty()) {
 					new ErrorWindow(
-							"<html>El directorio seleccionado <br/> no puede ser nulo.</html>");
+							"<html>No selecciono ningun directorio</html>");
 				} else {
 					ImageNamePattern.getInstance().setTimeFlag(
 							chckbxTimeToken.isSelected());
