@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import utils.SegmentationValues;
+
 import cellid.Segmentation;
 
 
@@ -89,7 +91,7 @@ public class CellIdRunner {
 			}else{
 				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "fl_vcellid.txt");	
 			}
-			if(keepResults){
+			if(keepResults && SegmentationValues.getInstance().isNucleusFromChannel()){
 				command.add("--third");
 				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "nuc_vcellid.txt");
 			}
