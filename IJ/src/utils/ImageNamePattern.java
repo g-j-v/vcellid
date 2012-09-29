@@ -3,8 +3,6 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPopupMenu.Separator;
-
 import utils.tree.PositionImage;
 import utils.tree.TimeImage;
 
@@ -116,8 +114,6 @@ public class ImageNamePattern {
 		// Pattern para el tiempo
 		if(timeFlag){
 			patterns.add(separator + TimePattern + "\\d*");	
-		}else{
-			patterns.add(".tif");
 		}
 		patterns.add(extension +"(|.out"+extension+")");
 
