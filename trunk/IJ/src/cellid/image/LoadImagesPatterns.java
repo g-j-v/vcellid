@@ -306,11 +306,11 @@ public class LoadImagesPatterns extends PlugInFrame {
 		contentPanel.add(fpSelect);
 		contentPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
 
-		txtUnevenIllumination.setBounds(170, 235, 45, 20);
+		txtUnevenIllumination.setBounds(170, 235, 65, 20);
 		txtUnevenIllumination.setText(ImageLoadingPaths.getInstance()
-				.getUiToken());
+				.getUiBasename());
+		txtUnevenIllumination.setColumns(50);
 		contentPanel.add(txtUnevenIllumination);
-		txtUnevenIllumination.setColumns(10);
 
 		uiPath = new JTextField();
 		uiPath.setText(ImageLoadingPaths.getInstance().getUiPath());
@@ -355,7 +355,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 
 						boolean selected = buttonModel.isSelected();
 
-						txtUnevenIllumination.setEnabled(selected);
+						txtUnevenIllumination.setEditable(selected);
 
 					}
 				});
@@ -365,11 +365,11 @@ public class LoadImagesPatterns extends PlugInFrame {
 				.isUiCheck());
 		contentPanel.add(chckbxUnevenIlluminationCorrection);
 
-		txtCameraBackground.setBounds(170, 285, 45, 20);
+		txtCameraBackground.setBounds(170, 285, 65, 20);
 		txtCameraBackground.setText(ImageLoadingPaths.getInstance()
 				.getCbToken());
+		txtCameraBackground.setColumns(50);
 		contentPanel.add(txtCameraBackground);
-		txtCameraBackground.setColumns(10);
 
 		cbPath = new JTextField();
 		cbPath.setText(ImageLoadingPaths.getInstance().getCbPath());
@@ -413,7 +413,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 
 						boolean selected = buttonModel.isSelected();
 
-						txtCameraBackground.setEnabled(selected);
+						txtCameraBackground.setEditable(selected);
 
 					}
 				});
