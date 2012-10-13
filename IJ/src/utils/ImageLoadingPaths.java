@@ -61,7 +61,7 @@ public class ImageLoadingPaths {
 		return uiPath;
 	}
 
-	public String getUiToken() {
+	public String getUiBasename() {
 		return uiToken;
 	}
 
