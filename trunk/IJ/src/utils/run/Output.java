@@ -540,7 +540,7 @@ public class Output {
 				} else {
 					path = imageLoadingPaths.getUiPath();
 				}
-				writer.append("flat=" + path + systemDirSeparator + imageLoadingPaths.getUiBasename());
+				writer.append("flat=" + path + systemDirSeparator + imageLoadingPaths.getUiBasename()+systemNewLineSeparator);
 			}
 			if(imageLoadingPaths.isCbCheck()){
 				String path;
@@ -549,7 +549,7 @@ public class Output {
 				} else {
 					path = imageLoadingPaths.getCbPath();
 				}
-				writer.append("dark=" + path + systemDirSeparator + imageLoadingPaths.getCbToken());
+				writer.append("dark=" + path + systemDirSeparator + imageLoadingPaths.getCbToken()+systemNewLineSeparator);
 			}
 //			writer.append(" fret bf_bottom_and_top\r\n");
 //			writer.append(" fret nuclear_top\r\n");
