@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import utils.ImageLoadingPaths;
 import utils.SegmentationValues;
 
 import cellid.Segmentation;
@@ -113,6 +114,27 @@ public class CellIdRunner {
 				for(String str: params){
 					command.add(str);
 				}
+			}
+			
+			ImageLoadingPaths imageLoadingPaths = ImageLoadingPaths.getInstance();
+			
+			if(imageLoadingPaths.isUiCheck()){
+				String path;
+				if(imageLoadingPaths.isForcePath()){
+					path= imageLoadingPaths.getBfPath();
+				} else {
+					path = imageLoadingPaths.getUiPath();
+				}
+				command.add("--flat="+path + systemDirSeparator + imageLoadingPaths.getUiBasename());
+			}
+			if(imageLoadingPaths.isCbCheck()){
+				String path;
+				if(imageLoadingPaths.isForcePath()){
+					path= imageLoadingPaths.getBfPath();
+				} else {
+					path = imageLoadingPaths.getCbPath();
+				}
+				command.add("--dark="+path + systemDirSeparator + imageLoadingPaths.getCbToken());
 			}
 
 			ProcessBuilder processBuilder = new ProcessBuilder(command);

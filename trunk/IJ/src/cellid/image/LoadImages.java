@@ -7,6 +7,7 @@ import ij.gui.ImageWindow;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -79,26 +80,21 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 		add(jScrollPane1);
 
 		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setPreferredSize(new Dimension(300, 150));
 		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 2));
 		buttonsPanel.setBackground(Color.white);
 
 		Box buttonsBox = Box.createVerticalBox();
-		buttonsBox.setPreferredSize(new Dimension(280, 130));
+		buttonsBox.setPreferredSize(new Dimension(280, 150));
 
-		Box rootBox;
-		Box channelBox;
-		Box timeBox;
-		Box positionBox;
 		Box synchroBox;
+		Box rootBox;
+		Box navigateBox;
 
 		Dimension buttonSize = new Dimension(140, 20);
 
-		rootBox = createBox();
-		channelBox = createBox();
-		timeBox = createBox();
-		positionBox = createBox();
 		synchroBox = createBox();
+		rootBox = createBox();
+		navigateBox = createBox();
 
 		buttonsPanel.add(buttonsBox);
 
@@ -142,7 +138,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-		positionBox.add(previousPositionButton);
 
 		JButton previousTimeButton = new JButton("Previous Time");
 		previousTimeButton.setPreferredSize(buttonSize);
@@ -183,7 +178,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-		timeBox.add(previousTimeButton);
 
 		final JButton previousButton = new JButton("Previous Channel");
 		previousButton.setPreferredSize(buttonSize);
@@ -225,7 +219,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 			}
 
 		});
-		channelBox.add(previousButton);
 
 		JButton rootButton = new JButton("Root");
 		rootButton.setPreferredSize(buttonSize);
@@ -280,7 +273,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-		channelBox.add(nextButton);
 
 		JButton nextTimeButton = new JButton("Next Time");
 		nextTimeButton.setPreferredSize(buttonSize);
@@ -322,7 +314,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 				}
 			}
 		});
-		timeBox.add(nextTimeButton);
 
 		JButton nextPositionButton = new JButton("Next Position");
 		nextPositionButton.setPreferredSize(buttonSize);
@@ -367,7 +358,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 			}
 
 		});
-		positionBox.add(nextPositionButton);
 
 		synchronize = new JCheckBox("Synchronize");
 		synchronize.addActionListener(new ActionListener() {
@@ -384,11 +374,21 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 		});
 		synchroBox.add(synchronize);
 
+
+		JPanel navigatePanel = new JPanel(new GridLayout(3, 2, 10, 10));
+		navigatePanel.add(previousButton);
+		navigatePanel.add(nextButton);
+		navigatePanel.add(previousTimeButton);
+		navigatePanel.add(nextTimeButton);
+		navigatePanel.add(previousPositionButton);
+		navigatePanel.add(nextPositionButton);
+		navigateBox.add(navigatePanel);
+		
 		buttonsBox.add(synchroBox);
+		buttonsBox.add(Box.createVerticalStrut(10));
 		buttonsBox.add(rootBox);
-		buttonsBox.add(channelBox);
-		buttonsBox.add(timeBox);
-		buttonsBox.add(positionBox);
+		buttonsBox.add(Box.createVerticalStrut(10));
+		buttonsBox.add(navigateBox);
 
 		buttonsPanel.add(buttonsBox);
 

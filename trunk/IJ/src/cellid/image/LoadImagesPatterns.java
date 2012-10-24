@@ -33,7 +33,7 @@ import cellid.error.ErrorWindow;
 import utils.ImageLoadingPaths;
 import utils.ImageNamePattern;
 
-public class LoadImagesPatterns extends PlugInFrame {
+public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 
 	private JPanel contentPanel;
 	private JTextField txtPosition;
@@ -62,12 +62,12 @@ public class LoadImagesPatterns extends PlugInFrame {
 	 */
 	public LoadImagesPatterns() {
 		super("Load Images Patterns");
-//	}
-//
-//	@Override
-//	public void actionPerformed(ActionEvent e) {
-//
-//		removeAll();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		removeAll();
 
 		/**
 		 * Initialization
@@ -522,6 +522,7 @@ public class LoadImagesPatterns extends PlugInFrame {
 		setResizable(false);
 		setVisible(true);
 	}
+	
 
 	private String prepareName() {
 		return "?"
