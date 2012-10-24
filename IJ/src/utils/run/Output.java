@@ -499,7 +499,6 @@ public class Output {
 	public void loadParameters(int position, boolean keepResults){
 		
 		SegmentationValues segmentationValues = SegmentationValues.getInstance();
-		ImageLoadingPaths imageLoadingPaths = ImageLoadingPaths.getInstance();
 		
 		File bfFile;
 		if(keepResults){
@@ -533,24 +532,7 @@ public class Output {
 			if( keepResults && segmentationValues.isNucleusFromChannel()){
 				writer.append("third_image nuclear_label\r\n");
 			}
-			if(imageLoadingPaths.isUiCheck()){
-				String path;
-				if(imageLoadingPaths.isForcePath()){
-					path= imageLoadingPaths.getBfPath();
-				} else {
-					path = imageLoadingPaths.getUiPath();
-				}
-				writer.append("flat=" + path + systemDirSeparator + imageLoadingPaths.getUiBasename()+systemNewLineSeparator);
-			}
-			if(imageLoadingPaths.isCbCheck()){
-				String path;
-				if(imageLoadingPaths.isForcePath()){
-					path= imageLoadingPaths.getBfPath();
-				} else {
-					path = imageLoadingPaths.getCbPath();
-				}
-				writer.append("dark=" + path + systemDirSeparator + imageLoadingPaths.getCbToken()+systemNewLineSeparator);
-			}
+
 //			writer.append(" fret bf_bottom_and_top\r\n");
 //			writer.append(" fret nuclear_top\r\n");
 			//TODO: aca van parametros sin valores
