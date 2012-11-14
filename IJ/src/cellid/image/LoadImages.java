@@ -81,7 +81,6 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 2));
-		buttonsPanel.setBackground(Color.white);
 
 		Box buttonsBox = Box.createVerticalBox();
 		buttonsBox.setPreferredSize(new Dimension(280, 150));
