@@ -125,7 +125,8 @@ public class CellIdRunner {
 				} else {
 					path = imageLoadingPaths.getUiPath();
 				}
-				command.add("--flat="+path + systemDirSeparator + imageLoadingPaths.getUiBasename());
+				command.add("--flat");
+				command.add(path + systemDirSeparator + imageLoadingPaths.getUiBasename());
 			}
 			if(imageLoadingPaths.isCbCheck()){
 				String path;
@@ -134,7 +135,8 @@ public class CellIdRunner {
 				} else {
 					path = imageLoadingPaths.getCbPath();
 				}
-				command.add("--dark="+path + systemDirSeparator + imageLoadingPaths.getCbToken());
+				command.add("--dark");
+				command.add(path + systemDirSeparator + imageLoadingPaths.getCbToken());
 			}
 
 			ProcessBuilder processBuilder = new ProcessBuilder(command);
