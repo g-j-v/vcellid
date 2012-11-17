@@ -389,6 +389,12 @@ public class TreeGenerator {
 		}
 	}
 	
+	/**
+	 * Analyzes if the experiment is even by comparing the amount of bf and times in each position.
+	 * @param images All the images of the experiment
+	 * @param positions	the positions of the experiment, as the positions might not be sequential
+	 * @return	true if for any position, the number of bf is different from the number of times
+	 */
 	private boolean isUneven(List<PositionImage> images, List<Integer> positions){
 		if(!(images.get(0) instanceof TimeImage)){
 			return false;

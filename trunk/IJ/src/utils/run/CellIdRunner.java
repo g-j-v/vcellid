@@ -22,9 +22,6 @@ import utils.SegmentationValues;
 import cellid.Segmentation;
 
 
-
-
-
 public class CellIdRunner {
 	
 	/**

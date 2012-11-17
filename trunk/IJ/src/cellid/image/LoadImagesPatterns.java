@@ -343,7 +343,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 
 		chckbxUnevenIlluminationCorrection = new JCheckBox(
 				"<html>uneven illumination <br> correction image (basename)</html>");
-		chckbxUnevenIlluminationCorrection.setBounds(10, 220, 150, 50);
+		chckbxUnevenIlluminationCorrection.setBounds(10, 220, 170, 60);
 		chckbxUnevenIlluminationCorrection
 				.addChangeListener(new ChangeListener() {
 
@@ -401,7 +401,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 
 		chckbxCameraBackgroundCorrection = new JCheckBox(
 				"<html>camera background <br>correction image (basename)</html>");
-		chckbxCameraBackgroundCorrection.setBounds(10, 270, 150, 50);
+		chckbxCameraBackgroundCorrection.setBounds(10, 290, 170, 70);
 		chckbxCameraBackgroundCorrection
 				.addChangeListener(new ChangeListener() {
 
