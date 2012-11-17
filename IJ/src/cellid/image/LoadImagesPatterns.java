@@ -519,10 +519,10 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 				if (bfPath == null || bfPath.getText().trim().isEmpty()) {
 					new ErrorWindow("<html>No path selected</html>");
 				} else if(chckbxCameraBackgroundCorrection.isSelected() && txtCameraBackground.getText().isEmpty()){
-					new ErrorWindow("<html>No file name for Background correction, but option enabled</html>");
+					new ErrorWindow("<html>Please specify a file name for background correction</html>");
 				}
 				else  if(chckbxUnevenIlluminationCorrection.isSelected() && txtUnevenIllumination.getText().isEmpty()){
-					new ErrorWindow("<html>No file name for Flat correction, but option enabled</html>");
+					new ErrorWindow("<html>Please specify a file name for flat correction</html>");
 				}
 				else
 				{
