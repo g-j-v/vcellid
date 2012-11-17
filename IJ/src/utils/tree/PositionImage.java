@@ -8,11 +8,21 @@ import utils.ImageNamePattern;
 
 public class PositionImage {
 
+	/**
+	 * Variables
+	 */
 	private String channel;
 	private String positionId;
 	private boolean out;
 	private boolean empty;
-	
+
+	/**
+	 * Constructor. This class represents an image for a given position with no time.
+	 * @param channel	the channel of the image.
+	 * @param positionId	the position
+	 * @param out	if it is an output image.
+	 * @param empty	if it is a fake image, used to complete the tree.
+	 */
 	public PositionImage(String channel, String positionId, boolean out, boolean empty){
 		this.channel = channel.toUpperCase();
 		setPositionId(positionId);

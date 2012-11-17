@@ -3,7 +3,7 @@ package utils.node;
 import java.util.List;
 
 /**
- * Class to represent a Position node of thre tree
+ * Class to represent a Position node of the tree
  * @author Alejandro Petit
  */
 public class PositionNode {

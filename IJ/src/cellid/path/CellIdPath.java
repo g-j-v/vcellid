@@ -9,6 +9,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import cellid.VCellID_;
+
 import utils.run.CellIdRunner;
 
 /**
@@ -37,13 +39,21 @@ public class CellIdPath extends ij.plugin.frame.PlugInFrame implements ActionLis
 			
 			@Override
 			public String getDescription() {
-				return ".exe";
+				if(VCellID_.isWindows()){
+					return ".exe";
+				}else{
+					return "";
+				}
 			}
 			
 			@Override
 			public boolean accept(File f) {
 				String filename = f.getName();
-				return filename.endsWith(".exe");
+				if(VCellID_.isWindows()){
+					return filename.endsWith(".exe");					
+				}else{
+					return filename.endsWith("");
+				}
 			}
 		});
 		int returnVal = fc.showOpenDialog(CellIdPath.this);

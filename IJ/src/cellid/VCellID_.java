@@ -19,11 +19,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import utils.run.CellIdRunner;
 import cellid.help.Help;
 import cellid.image.ImagesSetup;
 import cellid.image.LoadImagesPatterns;
 import cellid.path.CellIdPath;
+
+import utils.run.CellIdRunner;
+
+
 
 public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 
@@ -94,7 +97,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 	 * 
 	 * @return TRUE if the Operating System in which ImageJ is running is Windows.
 	 */
-	private static boolean isWindows() {
+	public static boolean isWindows() {
 		 
 		String os = System.getProperty("os.name").toLowerCase();
 		// windows
@@ -106,7 +109,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 	 * 
 	 * @return TRUE if the Operating System in which ImageJ is running is Mac OS.
 	 */
-	private static boolean isMac() {
+	public static boolean isMac() {
 		 
 		String os = System.getProperty("os.name").toLowerCase();
 		// Mac
@@ -118,7 +121,7 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 	 * 
 	 * @return TRUE if the Operating System in which ImageJ is running is Unix or linux.
 	 */
-	private static boolean isUnix() {
+	public static boolean isUnix() {
  
 		String os = System.getProperty("os.name").toLowerCase();
 		// linux or unix

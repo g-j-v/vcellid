@@ -127,7 +127,6 @@ public class Output {
 			}
 			
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
-			String fileName = node.getUserObject().toString();
 			
 			File positionDirectory;
 			if(keepResults){
