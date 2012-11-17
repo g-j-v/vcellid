@@ -83,7 +83,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 2));
 
 		Box buttonsBox = Box.createVerticalBox();
-		buttonsBox.setPreferredSize(new Dimension(280, 150));
+		buttonsBox.setPreferredSize(new Dimension(320, 150));
 
 		Box synchroBox;
 		Box rootBox;
@@ -393,7 +393,7 @@ public class LoadImages extends ij.plugin.frame.PlugInFrame implements ActionLis
 
 		add(buttonsPanel, BorderLayout.SOUTH);
 
-		setSize(300, 700);
+		setSize(350, 700);
 		setResizable(true);
 		setVisible(true);
 	}
