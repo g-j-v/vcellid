@@ -255,6 +255,18 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 		bfPath = new JTextField();
 		bfPath.setText(ImageLoadingPaths.getInstance().getBfPath());
 		bfPath.setBounds(250, 140, 120, 20);
+		bfPath.addFocusListener(new FocusListener(){
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				bfDir = validatePath(bfPath.getText());
+			}
+		});
 		contentPanel.add(bfPath);
 		final JButton bfSelect = new JButton("Open...");
 		bfSelect.setBounds(380, 140, 75, 20);
@@ -281,6 +293,18 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 		fpPath = new JTextField();
 		fpPath.setText(ImageLoadingPaths.getInstance().getFpPath());
 		fpPath.setBounds(250, 170, 120, 20);
+		fpPath.addFocusListener(new FocusListener(){
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				fpDir = validatePath(fpPath.getText());
+			}
+		});
 		contentPanel.add(fpPath);
 		final JButton fpSelect = new JButton("Open...");
 		fpSelect.setBounds(380, 170, 75, 20);
@@ -315,6 +339,18 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 		uiPath = new JTextField();
 		uiPath.setText(ImageLoadingPaths.getInstance().getUiPath());
 		uiPath.setBounds(250, 235, 120, 20);
+		uiPath.addFocusListener(new FocusListener(){
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				uiDir = validatePath(uiPath.getText());
+			}
+		});
 		contentPanel.add(uiPath);
 		uiPath.setColumns(10);
 
@@ -374,6 +410,19 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 		cbPath = new JTextField();
 		cbPath.setText(ImageLoadingPaths.getInstance().getCbPath());
 		cbPath.setBounds(250, 285, 120, 20);
+		cbPath.addFocusListener(new FocusListener(){
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				cbDir = validatePath(cbPath.getText());
+			}
+			
+		});
 		contentPanel.add(cbPath);
 		cbPath.setColumns(10);
 
@@ -468,9 +517,15 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (bfPath == null || bfPath.getText().trim().isEmpty()) {
-					new ErrorWindow(
-							"<html>No selecciono ningun directorio</html>");
-				} else {
+					new ErrorWindow("<html>No path selected</html>");
+				} else if(chckbxCameraBackgroundCorrection.isSelected() && txtCameraBackground.getText().isEmpty()){
+					new ErrorWindow("<html>No file name for Background correction, but option enabled</html>");
+				}
+				else  if(chckbxUnevenIlluminationCorrection.isSelected() && txtUnevenIllumination.getText().isEmpty()){
+					new ErrorWindow("<html>No file name for Flat correction, but option enabled</html>");
+				}
+				else
+				{
 					ImageNamePattern.getInstance().setTimeFlag(
 							chckbxTimeToken.isSelected());
 					ImageNamePattern.getInstance().setPositionPattern(
@@ -523,7 +578,20 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 		setVisible(true);
 	}
 	
-
+	private File validatePath(String path) {
+		if(!path.isEmpty()){
+			File aux = new File(path);
+			if(!aux.exists()){
+				new ErrorWindow("<html>Invalid Path</html>");
+			}else if(!aux.isDirectory()){
+				new ErrorWindow("<html>Path is not a directory</html>");
+			}else{
+				return aux;
+			}
+		}
+		return null;
+	}
+	
 	private String prepareName() {
 		return "?"
 				+ txtFl.getText()
