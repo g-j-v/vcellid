@@ -61,7 +61,8 @@ public class VCellID_ extends ij.plugin.frame.PlugInFrame {
 		}else if(isUnix()){
 			CellIdRunner.getInstance().setCellIdPath("");
 		}
-
+		
+		
 		//Creamos los botones y les asignamos los ActionListeners
 		
 		cellIdPathButton = new JButton("CellID Path");

@@ -598,7 +598,7 @@ public class LoadImagesPatterns extends PlugInFrame implements ActionListener{
 				+ txtSeparator.getText()
 				+ txtPosition.getText() + "(d*)"
 				+ txtSeparator.getText()
-				+ (chckbxTimeToken.isSelected() == true ? txtTime.getText()
+				+ (chckbxTimeToken.isSelected() == true ? /*txtSeparator.getText() + */ txtTime.getText()
 						+ "(d*)" : "") + ".tif";
 	}
 }

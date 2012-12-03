@@ -23,7 +23,7 @@ public class ImageNamePattern {
 		FluorChannelPattern = "FP";
 		PositionPattern = "Position";
 		timeFlag = true;
-		TimePattern = "time_";
+		TimePattern = "time";
 		separator = "_";
 		extension = ".tif";
 		
@@ -46,6 +46,7 @@ public class ImageNamePattern {
 		name += (PositionPattern + image.getPositionId());
 		name += separator;
 		if(image instanceof TimeImage){
+//			name += separator;
 			name += (TimePattern + ((TimeImage)image).getTimeId());
 		}
 		name += extension;
