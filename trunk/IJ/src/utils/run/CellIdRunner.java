@@ -101,10 +101,10 @@ public class CellIdRunner {
 			}
 			if(!keepResults){
 				command.add("--output");
-				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator);
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "out");
 			}else{
 				command.add("--output");
-				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator);
+				command.add(directory.getAbsolutePath() + systemDirSeparator + "Position" + position + systemDirSeparator + "out");
 			}
 			if(Segmentation.isParameterCheckBoxSelected()){
 				String params[] = Segmentation.getParameters().split(" ");

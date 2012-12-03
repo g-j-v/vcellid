@@ -328,14 +328,14 @@ public class Segmentation extends ij.plugin.frame.PlugInFrame {
 				.doubleValue();
 	}
 
-	public static int maxPixelsPerCell() {
+	public static double maxPixelsPerCell() {
 		return ((SpinnerNumberModel) maxPixelsSpinner.getModel()).getNumber()
-				.intValue();
+				.doubleValue();
 	}
 
-	public static int minPixelsPerCell() {
+	public static double minPixelsPerCell() {
 		return ((SpinnerNumberModel) minPixelsSpinner.getModel()).getNumber()
-				.intValue();
+				.doubleValue();
 	}
 
 	public static double backgroundRejectFactor() {

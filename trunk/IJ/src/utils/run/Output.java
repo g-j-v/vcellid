@@ -520,10 +520,10 @@ public class Output {
 			if(segmentationValues.isBFasFLflag()){
 				writer.append("treat_brightfield_as_fluorescence_also\r\n");
 			}
-			if(segmentationValues.isNucleusFromChannel()){
-				//Not sure yet what to do.
-				;
-			}
+//			if(segmentationValues.isNucleusFromChannel()){
+//				//Not sure yet what to do.
+//				;
+//			}
 			if(segmentationValues.isFretImage()){
 				writer.append("fret bf_bottom_and_top\r\n");
 				writer.append("fret nuclear_"+segmentationValues.getFretImageValue()+"\r\n");
