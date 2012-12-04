@@ -66,6 +66,9 @@ public class TreeGenerator {
 	private List<String> fluorChannels;
 	private Map<Integer, DisplayRangeObject> displayRanges;
 	private Map<ImageWindow, DefaultMutableTreeNode> windows;
+	//for Open in New Window use
+	private DefaultMutableTreeNode lastSelectedNode;
+	
 
 	/**
 	 * Constructor
@@ -175,15 +178,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
-								.getLastSelectedPathComponent();
-						System.out.println("Evento Right");
-						if (node == null || node.getChildCount() > 0) {
-							System.out.println("hola");
-							return;
-						}
-
-						openImageInNewWindow(node);
+						selectedOpenInNewWindow(tree);
 					}
 				});
 
@@ -194,15 +189,7 @@ public class TreeGenerator {
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
-								.getLastSelectedPathComponent();
-						System.out.println("Evento Right");
-						if (node == null || node.getChildCount() > 0) {
-							System.out.println("hola");
-							return;
-						}
-
-						openImageInNewWindow(node);
+						selectedOpenInNewWindow(tree);
 					}
 				});
 		FlImagePopup.setInvoker(tree);
@@ -212,10 +199,13 @@ public class TreeGenerator {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 
-				if (e.getOldLeadSelectionPath() != null) {
+				
+				if (windows.get(WindowManager.getCurrentWindow()) != null) {
 					checkDisplayRange(windows.get(WindowManager.getCurrentWindow()));
 //					checkDisplayRange(e.getOldLeadSelectionPath()
 //							.getLastPathComponent());
+					lastSelectedNode = windows.get(WindowManager.getCurrentWindow());
+					
 				}
 
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
@@ -931,7 +921,9 @@ public class TreeGenerator {
 	}
 
 	/**
-	 * 
+	 * Updates hue, brightness and saturation for the parameter's channel. 
+	 * If these values have never been set, it creates them. 
+	 *   
 	 * @param lastPathComponent
 	 */
 	private void checkDisplayRange(Object lastPathComponent) {
@@ -1019,6 +1011,24 @@ public class TreeGenerator {
 
 	public void setFluorChannels(List<String> fluorChannels) {
 		this.fluorChannels = fluorChannels;
+	}
+
+	private void selectedOpenInNewWindow(final JTree tree) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+				.getLastSelectedPathComponent();
+		System.out.println("Evento Right");
+		if (node == null || node.getChildCount() > 0) {
+			System.out.println("hola");
+			return;
+		}
+
+		ImagePlus imp = WindowManager.getCurrentImage();
+		if (imp != null) {
+			openImageInCurrentWindow(imp, lastSelectedNode);
+		}
+
+		openImageInNewWindow(node);
+		
 	}
 
 }
