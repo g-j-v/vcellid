@@ -236,13 +236,13 @@ public class Output {
 					FileWriter writer = new FileWriter(FlFile,true);
 					if(keepResults){
 						if(image.isEmpty()){
-							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+//							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");
 						}
 					}else{
 						if(image.isEmpty()){
-							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");
+//							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
 						}
@@ -282,6 +282,7 @@ public class Output {
 					FileWriter writer = new FileWriter(bfFile,true);
 					for(String fluorChannel : flourChannels){
 						if(image.isEmpty()){
+							
 							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");						
