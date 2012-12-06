@@ -23,6 +23,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import utils.ImageLoadingPaths;
+import utils.ImageNamePattern;
 import utils.SegmentationValues;
 import utils.node.ImageNode;
 import utils.node.PositionNode;
@@ -111,11 +112,13 @@ public class Output {
 		this.keepResults = keepResults;
 		
 		boolean singlePosition;
+		String posToken = ImageNamePattern.getInstance().getPositionPattern();
 		if(selected.getParentPath() == null){
-			positions = tree.getModel().getChildCount(root);;
+			positions = tree.getModel().getChildCount(root);
 			singlePosition = false;
 		}else{
-			positions = ((PositionNode)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
+			String positionName = ((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject().toString();
+			positions = Integer.valueOf(positionName.substring(posToken.length(),positionName.length()));
 			singlePosition = true;
 		}
 
