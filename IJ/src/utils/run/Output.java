@@ -65,11 +65,13 @@ public class Output {
 		this.keepResults = true;
 		
 		boolean singlePosition;
+		String posToken = ImageNamePattern.getInstance().getPositionPattern();
 		if(selected.getParentPath() == null){
 			positions = tree.getModel().getChildCount(root);;
 			singlePosition = false;
 		}else{
-			positions = ((PositionNode)((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject()).getNumber();
+			String positionName = ((DefaultMutableTreeNode)selected.getPathComponent(1)).getUserObject().toString();
+			positions = Integer.valueOf(positionName.substring(posToken.length(),positionName.length()));
 			singlePosition = true;
 		}
 
@@ -78,10 +80,16 @@ public class Output {
 			if(singlePosition){
 				i = positions -1; 
 			}
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
-			String fileName = node.getUserObject().toString();
+			DefaultMutableTreeNode node;
+			if(selected.getParentPath() == null){
+				node = (DefaultMutableTreeNode) root.getChildAt(i);
+			}else{
+				node = (DefaultMutableTreeNode) selected.getPathComponent(1);				
+			}
+//			String fileName = node.getUserObject().toString();
 			
-			File positionDirectory = createDirectory(i + 1);
+			PositionNode posNode = (PositionNode) node.getUserObject();
+			File positionDirectory = createDirectory(posNode.getNumber());
 			if(positionDirectory == null){
 				System.out.println("Directory could not be created");
 				return;
@@ -92,10 +100,10 @@ public class Output {
 			}
 			List<PositionImage> allPositionImages = getAllImages(node);
 			for(PositionImage image: allPositionImages){
-				appendToFiles(image,(i+1));
+				appendToFiles(image,posNode.getNumber());
 			}
 			//True is passed because as we are not testing, and results should not go on Test folder
-			loadParameters(i+1,keepResults);
+			loadParameters(posNode.getNumber(),keepResults);
 			
 		}
 	}
@@ -128,14 +136,19 @@ public class Output {
 			if(singlePosition){
 				i = positions -1; 
 			}
-			
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
+			DefaultMutableTreeNode node;
+			if(selected.getParentPath() == null){
+				node = (DefaultMutableTreeNode) root.getChildAt(i);
+			}else{
+				node = (DefaultMutableTreeNode) selected.getPathComponent(1);				
+			}
 			
 			File positionDirectory;
+			PositionNode posNode = (PositionNode) node.getUserObject();
 			if(keepResults){
-				positionDirectory = createDirectory(i + 1);
+				positionDirectory = createDirectory(posNode.getNumber());
 			}else{
-				positionDirectory = createTestDirectory(i + 1);
+				positionDirectory = createTestDirectory(posNode.getNumber());
 			}
 			if(positionDirectory == null){
 				System.out.println("Directory could not be created");
@@ -150,9 +163,9 @@ public class Output {
 				allPositionImages = getTimeImages((DefaultMutableTreeNode)tree.getSelectionPath().getPathComponent(2));
 			}
 			for(PositionImage image: allPositionImages){
-				appendToBF(image,(i+1),keepResults);
+				appendToBF(image,(posNode.getNumber()),keepResults);
 			}
-			loadParameters(i+1, keepResults);
+			loadParameters(posNode.getNumber(), keepResults);
 			
 		}
 	}
@@ -164,8 +177,12 @@ public class Output {
 		
 		TreePath selected = tree.getSelectionPath();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-		int positions = tree.getModel().getChildCount(root);
+		List<Integer> positions = new ArrayList();
 		int position;
+		
+		for(int i = 0; i < root.getChildCount(); ++i){
+			positions.add(((PositionNode)((DefaultMutableTreeNode)root.getChildAt(i)).getUserObject()).getNumber());
+		}
 		
 		if(selected.getParentPath() == null){
 			position = 0;
@@ -175,7 +192,7 @@ public class Output {
 		
 		int positionsToRun;
 		if(position == 0){
-			positionsToRun = positions;
+			positionsToRun = positions.size();
 		}else{
 			positionsToRun = 1;
 		}
@@ -239,13 +256,13 @@ public class Output {
 					FileWriter writer = new FileWriter(FlFile,true);
 					if(keepResults){
 						if(image.isEmpty()){
-//							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
+							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");
 						}
 					}else{
 						if(image.isEmpty()){
-//							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");
+							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + "Position" + position + systemDirSeparator + "Test" + systemDirSeparator + image + "\r\n");
 						}
@@ -285,7 +302,6 @@ public class Output {
 					FileWriter writer = new FileWriter(bfFile,true);
 					for(String fluorChannel : flourChannels){
 						if(image.isEmpty()){
-							
 							writer.append(directory + systemDirSeparator + "EmptyImage.tiff\r\n");
 						}else{
 							writer.append(directory + systemDirSeparator + image + "\r\n");						
@@ -597,7 +613,7 @@ public class Output {
 		Task task;
 		File directory;
 		int position;
-		int maxPositions;
+		List<Integer> maxPositions;
 		boolean keepResults;
 			
 		/**
@@ -608,7 +624,7 @@ public class Output {
 		 * @param maxPositions in the tree
 		 * @param keepResults to indentify a test
 		 */
-		public RunAndCleanPosition(Task task,File directory,int position, int maxPositions,boolean keepResults){
+		public RunAndCleanPosition(Task task,File directory,int position, List<Integer> maxPositions,boolean keepResults){
 			this.task = task;
 			this.directory = directory;
 			this.position = position;
@@ -622,11 +638,11 @@ public class Output {
 			System.out.println("Running.........");
 			if(position > 0){
 				CellIdRunner.getInstance().run(directory,position,keepResults);
-				task.getPosition().getAndIncrement();
+				task.getPosition().getAndSet(position);
 			}else{
-				for(int i = 1; i <= maxPositions; ++i){
+				for(Integer i: maxPositions){
 					CellIdRunner.getInstance().run(directory,i,keepResults);
-					task.getPosition().getAndIncrement();
+					task.getPosition().getAndSet(i);
 				}
 			}
 			

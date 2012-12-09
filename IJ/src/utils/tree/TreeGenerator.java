@@ -1,5 +1,5 @@
 /**
- * Class which creates the tree and its behaviour
+  * Class which creates the tree and its behaviour
  */
 
 package utils.tree;
