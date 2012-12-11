@@ -29,6 +29,7 @@ import utils.node.ImageNode;
 import utils.node.PositionNode;
 import utils.tree.PositionImage;
 import cellid.Segmentation;
+import cellid.error.ErrorWindow;
 
 
 
@@ -637,11 +638,21 @@ public class Output {
 			
 			System.out.println("Running.........");
 			if(position > 0){
-				CellIdRunner.getInstance().run(directory,position,keepResults);
+				try {
+					CellIdRunner.getInstance().run(directory,position,keepResults);
+				} catch (Exception e) {
+					new ErrorWindow(e.getMessage());
+					return;
+				}
 				task.getPosition().getAndSet(position);
 			}else{
 				for(Integer i: maxPositions){
-					CellIdRunner.getInstance().run(directory,i,keepResults);
+					try {
+						CellIdRunner.getInstance().run(directory,i,keepResults);
+					} catch (Exception e) {
+						new ErrorWindow(e.getMessage());
+						return;
+					}
 					task.getPosition().getAndSet(i);
 				}
 			}
