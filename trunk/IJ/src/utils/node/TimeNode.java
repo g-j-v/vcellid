@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.ImageNamePattern;
+
 /**
  * Class that represents a TimeNode of the tree
  * @author apetit
@@ -93,7 +95,7 @@ public class TimeNode {
     @Override
     public String toString(){
 
-        return "Time" + number;
+        return ImageNamePattern.getInstance().getTimePattern() + number;
 
     }
 }

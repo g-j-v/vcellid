@@ -2,6 +2,8 @@ package utils.node;
 
 import java.util.List;
 
+import utils.ImageNamePattern;
+
 /**
  * Class to represent a Position node of the tree
  * @author Alejandro Petit
@@ -42,6 +44,6 @@ public class PositionNode {
 
     @Override
     public String toString(){
-        return "Position" + number ;
+        return ImageNamePattern.getInstance().getPositionPattern() + number ;
     }
 }
